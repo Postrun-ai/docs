@@ -628,7 +628,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, profilesCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "get": {
         "operationId": "profiles.list",
@@ -1289,7 +1296,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, profilesList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/profiles/{id}": {
@@ -1852,7 +1866,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, profilesGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "profiles.update",
@@ -2471,7 +2492,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, profilesUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "profiles.delete",
@@ -2966,7 +2994,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, profilesDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/profiles/{id}/connections": {
@@ -3601,7 +3636,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsListByProfile, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsListByProfile({\n    client,\n    path: { id: '…' },\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/connections/{id}": {
@@ -4167,7 +4209,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "connections.select",
@@ -4826,7 +4875,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsSelect, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsSelect({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "connections.delete",
@@ -5321,7 +5377,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/connections/{id}/accounts": {
@@ -5942,7 +6005,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsListAccounts, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsListAccounts({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/profiles/{id}/connect": {
@@ -6466,7 +6536,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, connectionsConnect, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsConnect({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/media": {
@@ -6666,6 +6743,7 @@
                                 "publishing_unavailable",
                                 "x_duplicate_content",
                                 "x_not_authorized",
+                                "x_rate_limited",
                                 "x_publish_failed",
                                 "x_media_upload_failed",
                                 "linkedin_duplicate_content",
@@ -6680,6 +6758,11 @@
                                 "instagram_rate_limited",
                                 "instagram_not_authorized",
                                 "instagram_publish_failed",
+                                "facebook_reel_processing",
+                                "facebook_reel_failed",
+                                "facebook_rate_limited",
+                                "facebook_not_authorized",
+                                "facebook_publish_failed",
                                 "connection_platform_mismatch"
                               ],
                               "type": "string"
@@ -6926,6 +7009,7 @@
                                     "publishing_unavailable",
                                     "x_duplicate_content",
                                     "x_not_authorized",
+                                    "x_rate_limited",
                                     "x_publish_failed",
                                     "x_media_upload_failed",
                                     "linkedin_duplicate_content",
@@ -6940,6 +7024,11 @@
                                     "instagram_rate_limited",
                                     "instagram_not_authorized",
                                     "instagram_publish_failed",
+                                    "facebook_reel_processing",
+                                    "facebook_reel_failed",
+                                    "facebook_rate_limited",
+                                    "facebook_not_authorized",
+                                    "facebook_publish_failed",
                                     "connection_platform_mismatch"
                                   ],
                                   "type": "string"
@@ -7549,7 +7638,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, mediaCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/media/{id}": {
@@ -7667,6 +7763,7 @@
                                 "publishing_unavailable",
                                 "x_duplicate_content",
                                 "x_not_authorized",
+                                "x_rate_limited",
                                 "x_publish_failed",
                                 "x_media_upload_failed",
                                 "linkedin_duplicate_content",
@@ -7681,6 +7778,11 @@
                                 "instagram_rate_limited",
                                 "instagram_not_authorized",
                                 "instagram_publish_failed",
+                                "facebook_reel_processing",
+                                "facebook_reel_failed",
+                                "facebook_rate_limited",
+                                "facebook_not_authorized",
+                                "facebook_publish_failed",
                                 "connection_platform_mismatch"
                               ],
                               "type": "string"
@@ -7927,6 +8029,7 @@
                                     "publishing_unavailable",
                                     "x_duplicate_content",
                                     "x_not_authorized",
+                                    "x_rate_limited",
                                     "x_publish_failed",
                                     "x_media_upload_failed",
                                     "linkedin_duplicate_content",
@@ -7941,6 +8044,11 @@
                                     "instagram_rate_limited",
                                     "instagram_not_authorized",
                                     "instagram_publish_failed",
+                                    "facebook_reel_processing",
+                                    "facebook_reel_failed",
+                                    "facebook_rate_limited",
+                                    "facebook_not_authorized",
+                                    "facebook_publish_failed",
                                     "connection_platform_mismatch"
                                   ],
                                   "type": "string"
@@ -8486,7 +8594,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, mediaGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "media.update",
@@ -8674,6 +8789,7 @@
                                 "publishing_unavailable",
                                 "x_duplicate_content",
                                 "x_not_authorized",
+                                "x_rate_limited",
                                 "x_publish_failed",
                                 "x_media_upload_failed",
                                 "linkedin_duplicate_content",
@@ -8688,6 +8804,11 @@
                                 "instagram_rate_limited",
                                 "instagram_not_authorized",
                                 "instagram_publish_failed",
+                                "facebook_reel_processing",
+                                "facebook_reel_failed",
+                                "facebook_rate_limited",
+                                "facebook_not_authorized",
+                                "facebook_publish_failed",
                                 "connection_platform_mismatch"
                               ],
                               "type": "string"
@@ -8934,6 +9055,7 @@
                                     "publishing_unavailable",
                                     "x_duplicate_content",
                                     "x_not_authorized",
+                                    "x_rate_limited",
                                     "x_publish_failed",
                                     "x_media_upload_failed",
                                     "linkedin_duplicate_content",
@@ -8948,6 +9070,11 @@
                                     "instagram_rate_limited",
                                     "instagram_not_authorized",
                                     "instagram_publish_failed",
+                                    "facebook_reel_processing",
+                                    "facebook_reel_failed",
+                                    "facebook_rate_limited",
+                                    "facebook_not_authorized",
+                                    "facebook_publish_failed",
                                     "connection_platform_mismatch"
                                   ],
                                   "type": "string"
@@ -9518,7 +9645,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, mediaUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "media.delete",
@@ -10010,7 +10144,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, mediaDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/posts": {
@@ -11607,6 +11748,7 @@
                                       "publishing_unavailable",
                                       "x_duplicate_content",
                                       "x_not_authorized",
+                                      "x_rate_limited",
                                       "x_publish_failed",
                                       "x_media_upload_failed",
                                       "linkedin_duplicate_content",
@@ -11621,6 +11763,11 @@
                                       "instagram_rate_limited",
                                       "instagram_not_authorized",
                                       "instagram_publish_failed",
+                                      "facebook_reel_processing",
+                                      "facebook_reel_failed",
+                                      "facebook_rate_limited",
+                                      "facebook_not_authorized",
+                                      "facebook_publish_failed",
                                       "connection_platform_mismatch"
                                     ],
                                     "type": "string"
@@ -11770,7 +11917,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, postsCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "get": {
         "operationId": "posts.list",
@@ -12655,7 +12809,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, postsList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/posts/{id}": {
@@ -13432,7 +13593,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, postsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "posts.update",
@@ -15046,6 +15214,7 @@
                                       "publishing_unavailable",
                                       "x_duplicate_content",
                                       "x_not_authorized",
+                                      "x_rate_limited",
                                       "x_publish_failed",
                                       "x_media_upload_failed",
                                       "linkedin_duplicate_content",
@@ -15060,6 +15229,11 @@
                                       "instagram_rate_limited",
                                       "instagram_not_authorized",
                                       "instagram_publish_failed",
+                                      "facebook_reel_processing",
+                                      "facebook_reel_failed",
+                                      "facebook_rate_limited",
+                                      "facebook_not_authorized",
+                                      "facebook_publish_failed",
                                       "connection_platform_mismatch"
                                     ],
                                     "type": "string"
@@ -15209,7 +15383,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, postsUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "posts.delete",
@@ -15701,7 +15882,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, postsDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/account": {
@@ -16252,7 +16440,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaAccount, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAccount({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/insights": {
@@ -16914,7 +17109,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaInsights, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaInsights({\n    client,\n    path: { connection_id: '…' },\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/campaigns": {
@@ -17475,7 +17677,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaCampaigns, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaCampaigns({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/campaigns/{campaign_id}": {
@@ -18029,7 +18238,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaCampaign({\n    client,\n    path: { connection_id: '…', campaign_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/adsets": {
@@ -18594,7 +18810,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaAdsets, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAdsets({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/adsets/{adset_id}": {
@@ -19152,7 +19375,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaAdset, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAdset({\n    client,\n    path: { connection_id: '…', adset_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/ads": {
@@ -19697,7 +19927,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaAds, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAds({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/meta/{connection_id}/ads/{ad_id}": {
@@ -20235,7 +20472,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, metaAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAd({\n    client,\n    path: { connection_id: '…', ad_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/account": {
@@ -20775,11 +21019,18 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetAccount, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAccount({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/insights": {
-      "get": {
+      "post": {
         "operationId": "google.getInsights",
         "summary": "Google Ads performance insights",
         "description": "Performance metrics for the connection’s account, at a chosen level (account / campaign / ad group), for a date range, with optional breakdowns. The flagship cross-checked read; use `/gaql` for anything outside this shape.",
@@ -20795,102 +21046,79 @@
               "type": "string",
               "description": "The id of a Google Ads connection in your account."
             }
-          },
-          {
-            "name": "level",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "enum": [
-                "account",
-                "campaign",
-                "ad_group"
-              ],
-              "type": "string",
-              "description": "Aggregation level: the connected account, a campaign, or an ad group.",
-              "default": "campaign"
-            },
-            "allowEmptyValue": true,
-            "allowReserved": true
-          },
-          {
-            "name": "metrics",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "enum": [
-                  "impressions",
-                  "clicks",
-                  "ctr",
-                  "average_cpc",
-                  "cost_micros",
-                  "conversions",
-                  "conversions_value",
-                  "cost_per_conversion"
-                ],
-                "type": "string"
-              },
-              "default": [
-                "impressions",
-                "clicks",
-                "cost_micros",
-                "conversions"
-              ],
-              "description": "The metrics to report. At least one."
-            },
-            "style": "deepObject",
-            "explode": true,
-            "allowEmptyValue": true,
-            "allowReserved": true
-          },
-          {
-            "name": "segments",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "enum": [
-                  "date",
-                  "device"
-                ],
-                "type": "string"
-              },
-              "description": "Optional breakdowns (e.g. by date or device)."
-            },
-            "style": "deepObject",
-            "explode": true,
-            "allowEmptyValue": true,
-            "allowReserved": true
-          },
-          {
-            "name": "since",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "description": "Start date, inclusive (YYYY-MM-DD)."
-            },
-            "allowEmptyValue": true,
-            "allowReserved": true
-          },
-          {
-            "name": "until",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "description": "End date, inclusive (YYYY-MM-DD)."
-            },
-            "allowEmptyValue": true,
-            "allowReserved": true
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "enum": [
+                      "account",
+                      "campaign",
+                      "ad_group"
+                    ],
+                    "type": "string",
+                    "description": "Aggregation level: the connected account, a campaign, or an ad group.",
+                    "default": "campaign"
+                  },
+                  "metrics": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "enum": [
+                        "impressions",
+                        "clicks",
+                        "ctr",
+                        "average_cpc",
+                        "cost_micros",
+                        "conversions",
+                        "conversions_value",
+                        "cost_per_conversion"
+                      ],
+                      "type": "string"
+                    },
+                    "default": [
+                      "impressions",
+                      "clicks",
+                      "cost_micros",
+                      "conversions"
+                    ],
+                    "description": "The metrics to report. At least one."
+                  },
+                  "segments": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "date",
+                        "device"
+                      ],
+                      "type": "string"
+                    },
+                    "description": "Optional breakdowns (e.g. by date or device)."
+                  },
+                  "since": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "description": "Start date, inclusive (YYYY-MM-DD)."
+                  },
+                  "until": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "description": "End date, inclusive (YYYY-MM-DD)."
+                  }
+                },
+                "required": [
+                  "since",
+                  "until"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -21418,7 +21646,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetInsights, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetInsights({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/gaql": {
@@ -21938,7 +22173,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleRunGaql, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleRunGaql({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/budgets": {
@@ -22488,7 +22730,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateBudget({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/budgets/{id}": {
@@ -23027,7 +23276,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEditBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditBudget({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "google.deleteBudget",
@@ -23554,7 +23810,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleDeleteBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteBudget({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/campaigns": {
@@ -24127,7 +24390,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListCampaigns, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListCampaigns({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.createCampaign",
@@ -24701,7 +24971,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateCampaign({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/campaigns/{id}": {
@@ -25269,7 +25546,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "google.editCampaign",
@@ -25805,7 +26089,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEditCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "google.deleteCampaign",
@@ -26332,7 +26623,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleDeleteCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/campaigns/{id}/pause": {
@@ -26862,7 +27160,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googlePauseCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/campaigns/{id}/enable": {
@@ -27392,7 +27697,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEnableCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ad-groups": {
@@ -27952,7 +28264,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListAdGroups, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListAdGroups({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.createAdGroup",
@@ -28516,7 +28835,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateAdGroup({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ad-groups/{id}": {
@@ -29071,7 +29397,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "google.editAdGroup",
@@ -29607,7 +29940,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEditAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "google.deleteAdGroup",
@@ -30134,7 +30474,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleDeleteAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ad-groups/{id}/bids": {
@@ -30689,7 +31036,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleSetAdGroupBids, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetAdGroupBids({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ad-groups/{id}/pause": {
@@ -31219,7 +31573,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googlePauseAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ad-groups/{id}/enable": {
@@ -31749,7 +32110,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEnableAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ads": {
@@ -32324,7 +32692,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListAds, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListAds({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.createAd",
@@ -32943,7 +33318,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateAd({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ads/{id}": {
@@ -33513,7 +33895,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "google.deleteAd",
@@ -34040,7 +34429,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleDeleteAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/display-ads": {
@@ -34755,7 +35151,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateDisplayAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateDisplayAd({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ads/{id}/pause": {
@@ -35285,7 +35688,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googlePauseAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/ads/{id}/enable": {
@@ -35815,7 +36225,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEnableAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/keywords": {
@@ -36365,7 +36782,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListKeywords, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListKeywords({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.createKeyword",
@@ -36935,7 +37359,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateKeyword({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/keywords/{id}": {
@@ -37480,7 +37911,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "google.deleteKeyword",
@@ -38007,7 +38445,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleDeleteKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/keywords/{id}/bid": {
@@ -38546,7 +38991,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleSetKeywordBid, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetKeywordBid({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/keywords/{id}/pause": {
@@ -39076,7 +39528,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googlePauseKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/keywords/{id}/enable": {
@@ -39606,7 +40065,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleEnableKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/conversion-actions": {
@@ -40338,7 +40804,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListConversionActions, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListConversionActions({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.createConversionAction",
@@ -40966,7 +41439,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleCreateConversionAction, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateConversionAction({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/conversion-actions/{id}": {
@@ -41693,7 +42173,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleGetConversionAction, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetConversionAction({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/conversion-goals": {
@@ -42238,7 +42725,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleListConversionGoals, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListConversionGoals({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "post": {
         "operationId": "google.setConversionGoal",
@@ -42839,7 +43333,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleSetConversionGoal, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetConversionGoal({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/conversion-uploads": {
@@ -43500,7 +44001,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleUploadConversions, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleUploadConversions({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/google/{connection_id}/assets/images": {
@@ -44040,7 +44548,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, googleUploadImageAsset, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleUploadImageAsset({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/logs": {
@@ -44913,7 +45428,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, logsList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await logsList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/logs/{id}": {
@@ -45623,7 +46145,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, logsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await logsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/webhooks/endpoints": {
@@ -46168,7 +46697,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksCreateEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksCreateEndpoint({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "get": {
         "operationId": "webhooks.listEndpoints",
@@ -46746,7 +47282,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksListEndpoints, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksListEndpoints({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/webhooks/endpoints/{id}": {
@@ -47266,7 +47809,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksGetEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksGetEndpoint({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       },
       "patch": {
         "operationId": "webhooks.updateEndpoint",
@@ -47820,7 +48370,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksUpdateEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksUpdateEndpoint({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       },
       "delete": {
         "operationId": "webhooks.deleteEndpoint",
@@ -48315,7 +48872,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksDeleteEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksDeleteEndpoint({\n    client,\n    path: { id: '…' },\n  }),\n);"
+          }
+        ]
       }
     },
     "/webhooks/portal": {
@@ -48791,7 +49355,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksCreatePortal, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksCreatePortal({\n    client,\n  }),\n);"
+          }
+        ]
       }
     },
     "/webhooks/event-types": {
@@ -49280,7 +49851,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksListEventTypes, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksListEventTypes({\n    client,\n  }),\n);"
+          }
+        ]
       }
     },
     "/webhooks/ping": {
@@ -49774,7 +50352,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, webhooksPing, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksPing({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     },
     "/tokens": {
@@ -50357,7 +50942,14 @@
               }
             }
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "javascript",
+            "label": "@postrun/js",
+            "source": "import { createPostrunClient, tokensMint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await tokensMint({\n    client,\n    body: { /* … */ },\n  }),\n);"
+          }
+        ]
       }
     }
   }
