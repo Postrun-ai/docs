@@ -633,7 +633,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, profilesCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, profilesCreate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await profilesCreate({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -1301,7 +1301,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, profilesList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, profilesList } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await profilesList({\n  client,\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -1871,7 +1871,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, profilesGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, profilesGet } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await profilesGet({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       },
@@ -2497,7 +2497,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, profilesUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, profilesUpdate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await profilesUpdate({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -2999,7 +2999,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, profilesDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await profilesDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, profilesDelete } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await profilesDelete({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -3641,7 +3641,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsListByProfile, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsListByProfile({\n    client,\n    path: { id: '…' },\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsListByProfile } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsListByProfile({\n  client,\n  path: { id: '…' },\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -4214,7 +4214,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsGet } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsGet({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       },
@@ -4880,7 +4880,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsSelect, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsSelect({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsSelect } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsSelect({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -5382,7 +5382,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsDelete } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsDelete({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -6010,7 +6010,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsListAccounts, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsListAccounts({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsListAccounts } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsListAccounts({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -6541,7 +6541,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, connectionsConnect, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await connectionsConnect({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, connectionsConnect } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await connectionsConnect({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -7643,7 +7643,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, mediaCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, mediaCreate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await mediaCreate({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -8599,7 +8599,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, mediaGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, mediaGet } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await mediaGet({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       },
@@ -9650,7 +9650,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, mediaUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, mediaUpdate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await mediaUpdate({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -10149,7 +10149,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, mediaDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await mediaDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, mediaDelete } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await mediaDelete({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -10881,18 +10881,6 @@
                                   "type": "string",
                                   "format": "uri",
                                   "description": "URL to unfurl. A feed post needs a body (message) OR a link."
-                                },
-                                "place": {
-                                  "type": "string",
-                                  "description": "Page id of a location to tag."
-                                },
-                                "targeting": {
-                                  "type": "object",
-                                  "properties": {
-                                    "geo_locations": {}
-                                  },
-                                  "additionalProperties": false,
-                                  "description": "Optional geo gating (shape only; values are validated at publish)."
                                 }
                               },
                               "additionalProperties": false,
@@ -11922,7 +11910,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, postsCreate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsCreate({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, postsCreate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await postsCreate({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -12814,7 +12802,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, postsList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, postsList } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await postsList({\n  client,\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -13598,7 +13586,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, postsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, postsGet } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await postsGet({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       },
@@ -14352,18 +14340,6 @@
                                   "type": "string",
                                   "format": "uri",
                                   "description": "URL to unfurl. A feed post needs a body (message) OR a link."
-                                },
-                                "place": {
-                                  "type": "string",
-                                  "description": "Page id of a location to tag."
-                                },
-                                "targeting": {
-                                  "type": "object",
-                                  "properties": {
-                                    "geo_locations": {}
-                                  },
-                                  "additionalProperties": false,
-                                  "description": "Optional geo gating (shape only; values are validated at publish)."
                                 }
                               },
                               "additionalProperties": false,
@@ -15388,7 +15364,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, postsUpdate, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsUpdate({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, postsUpdate } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await postsUpdate({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -15887,7 +15863,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, postsDelete, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await postsDelete({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, postsDelete } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await postsDelete({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -16445,7 +16421,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaAccount, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAccount({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaAccount } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaAccount({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       }
@@ -17114,7 +17090,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaInsights, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaInsights({\n    client,\n    path: { connection_id: '…' },\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, metaInsights } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaInsights({\n  client,\n  path: { connection_id: '…' },\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -17682,7 +17658,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaCampaigns, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaCampaigns({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaCampaigns } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaCampaigns({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       }
@@ -18243,7 +18219,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaCampaign({\n    client,\n    path: { connection_id: '…', campaign_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaCampaign({\n  client,\n  path: { connection_id: '…', campaign_id: '…' },\n});"
           }
         ]
       }
@@ -18815,7 +18791,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaAdsets, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAdsets({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaAdsets } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaAdsets({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       }
@@ -19380,7 +19356,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaAdset, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAdset({\n    client,\n    path: { connection_id: '…', adset_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaAdset } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaAdset({\n  client,\n  path: { connection_id: '…', adset_id: '…' },\n});"
           }
         ]
       }
@@ -19932,7 +19908,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaAds, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAds({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaAds } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaAds({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       }
@@ -20477,7 +20453,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, metaAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await metaAd({\n    client,\n    path: { connection_id: '…', ad_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, metaAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await metaAd({\n  client,\n  path: { connection_id: '…', ad_id: '…' },\n});"
           }
         ]
       }
@@ -21024,7 +21000,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetAccount, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAccount({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetAccount } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetAccount({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       }
@@ -21651,7 +21627,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetInsights, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetInsights({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetInsights } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetInsights({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -22178,7 +22154,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleRunGaql, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleRunGaql({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleRunGaql } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleRunGaql({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -22735,7 +22711,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateBudget({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateBudget } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateBudget({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -23281,7 +23257,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEditBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditBudget({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEditBudget } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEditBudget({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -23815,7 +23791,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleDeleteBudget, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteBudget({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleDeleteBudget } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleDeleteBudget({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -24395,7 +24371,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListCampaigns, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListCampaigns({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListCampaigns } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListCampaigns({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -24976,7 +24952,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateCampaign({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateCampaign({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -25551,7 +25527,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetCampaign({\n  client,\n  path: { connection_id: '…', id: '…' },\n});"
           }
         ]
       },
@@ -26094,7 +26070,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEditCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEditCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEditCampaign({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -26628,7 +26604,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleDeleteCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleDeleteCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleDeleteCampaign({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -27165,7 +27141,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googlePauseCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googlePauseCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googlePauseCampaign({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -27702,7 +27678,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEnableCampaign, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableCampaign({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEnableCampaign } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEnableCampaign({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -28269,7 +28245,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListAdGroups, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListAdGroups({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListAdGroups } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListAdGroups({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -28840,7 +28816,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateAdGroup({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateAdGroup({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -29402,7 +29378,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetAdGroup({\n  client,\n  path: { connection_id: '…', id: '…' },\n});"
           }
         ]
       },
@@ -29945,7 +29921,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEditAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEditAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEditAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEditAdGroup({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -30479,7 +30455,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleDeleteAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleDeleteAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleDeleteAdGroup({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -31041,7 +31017,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleSetAdGroupBids, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetAdGroupBids({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleSetAdGroupBids } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleSetAdGroupBids({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -31578,7 +31554,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googlePauseAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googlePauseAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googlePauseAdGroup({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -32115,7 +32091,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEnableAdGroup, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableAdGroup({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEnableAdGroup } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEnableAdGroup({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -32697,7 +32673,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListAds, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListAds({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListAds } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListAds({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -33323,7 +33299,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateAd({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateAd({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -33900,7 +33876,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetAd({\n  client,\n  path: { connection_id: '…', id: '…' },\n});"
           }
         ]
       },
@@ -34434,7 +34410,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleDeleteAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleDeleteAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleDeleteAd({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -35156,7 +35132,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateDisplayAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateDisplayAd({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateDisplayAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateDisplayAd({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -35693,7 +35669,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googlePauseAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googlePauseAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googlePauseAd({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -36230,7 +36206,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEnableAd, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableAd({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEnableAd } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEnableAd({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -36787,7 +36763,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListKeywords, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListKeywords({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListKeywords } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListKeywords({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -37364,7 +37340,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateKeyword({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateKeyword } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateKeyword({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -37916,7 +37892,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetKeyword } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetKeyword({\n  client,\n  path: { connection_id: '…', id: '…' },\n});"
           }
         ]
       },
@@ -38450,7 +38426,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleDeleteKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleDeleteKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleDeleteKeyword } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleDeleteKeyword({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -38996,7 +38972,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleSetKeywordBid, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetKeywordBid({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleSetKeywordBid } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleSetKeywordBid({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -39533,7 +39509,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googlePauseKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googlePauseKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googlePauseKeyword } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googlePauseKeyword({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -40070,7 +40046,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleEnableKeyword, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleEnableKeyword({\n    client,\n    path: { connection_id: '…', id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleEnableKeyword } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleEnableKeyword({\n  client,\n  path: { connection_id: '…', id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -40809,7 +40785,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListConversionActions, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListConversionActions({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListConversionActions } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListConversionActions({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -41444,7 +41420,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleCreateConversionAction, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleCreateConversionAction({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleCreateConversionAction } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleCreateConversionAction({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -42178,7 +42154,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleGetConversionAction, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleGetConversionAction({\n    client,\n    path: { connection_id: '…', id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleGetConversionAction } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleGetConversionAction({\n  client,\n  path: { connection_id: '…', id: '…' },\n});"
           }
         ]
       }
@@ -42730,7 +42706,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleListConversionGoals, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleListConversionGoals({\n    client,\n    path: { connection_id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, googleListConversionGoals } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleListConversionGoals({\n  client,\n  path: { connection_id: '…' },\n});"
           }
         ]
       },
@@ -43338,7 +43314,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleSetConversionGoal, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleSetConversionGoal({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleSetConversionGoal } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleSetConversionGoal({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -44006,7 +43982,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleUploadConversions, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleUploadConversions({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleUploadConversions } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleUploadConversions({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -44553,7 +44529,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, googleUploadImageAsset, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await googleUploadImageAsset({\n    client,\n    path: { connection_id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, googleUploadImageAsset } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await googleUploadImageAsset({\n  client,\n  path: { connection_id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -45433,7 +45409,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, logsList, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await logsList({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, logsList } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await logsList({\n  client,\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -46150,7 +46126,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, logsGet, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await logsGet({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, logsGet } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await logsGet({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -46702,7 +46678,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksCreateEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksCreateEndpoint({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksCreateEndpoint } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksCreateEndpoint({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -47287,7 +47263,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksListEndpoints, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksListEndpoints({\n    client,\n    query: { /* filters */ },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksListEndpoints } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksListEndpoints({\n  client,\n  query: { /* filters */ },\n});"
           }
         ]
       }
@@ -47814,7 +47790,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksGetEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksGetEndpoint({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksGetEndpoint } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksGetEndpoint({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       },
@@ -48375,7 +48351,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksUpdateEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksUpdateEndpoint({\n    client,\n    path: { id: '…' },\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksUpdateEndpoint } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksUpdateEndpoint({\n  client,\n  path: { id: '…' },\n  body: { /* … */ },\n});"
           }
         ]
       },
@@ -48877,7 +48853,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksDeleteEndpoint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksDeleteEndpoint({\n    client,\n    path: { id: '…' },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksDeleteEndpoint } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksDeleteEndpoint({\n  client,\n  path: { id: '…' },\n});"
           }
         ]
       }
@@ -49360,7 +49336,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksCreatePortal, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksCreatePortal({\n    client,\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksCreatePortal } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksCreatePortal({\n  client,\n});"
           }
         ]
       }
@@ -49856,7 +49832,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksListEventTypes, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksListEventTypes({\n    client,\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksListEventTypes } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksListEventTypes({\n  client,\n});"
           }
         ]
       }
@@ -50357,7 +50333,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, webhooksPing, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await webhooksPing({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, webhooksPing } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await webhooksPing({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       }
@@ -50947,7 +50923,7 @@
           {
             "lang": "javascript",
             "label": "@postrun/js",
-            "source": "import { createPostrunClient, tokensMint, unwrap } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst data = unwrap(\n  await tokensMint({\n    client,\n    body: { /* … */ },\n  }),\n);"
+            "source": "import { createPostrunClient, tokensMint } from '@postrun/js';\n\nconst client = createPostrunClient({ getToken });\n\nconst { data } = await tokensMint({\n  client,\n  body: { /* … */ },\n});"
           }
         ]
       }
