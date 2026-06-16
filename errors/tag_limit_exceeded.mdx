@@ -1,0 +1,22 @@
+---
+title: "tag_limit_exceeded"
+description: "The Instagram caption has too many hashtags or mentions."
+---
+
+The Instagram caption has too many hashtags or mentions.
+
+## When it happens
+
+An Instagram variant’s caption exceeds Instagram’s limits — at most 30 hashtags or 20 @mentions. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Reduce the number of hashtags (≤30) or @mentions (≤20) in the caption and resubmit. Show your user a count as they type.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `tag_limit_exceeded` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

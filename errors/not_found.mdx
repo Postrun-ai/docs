@@ -1,0 +1,22 @@
+---
+title: "not_found"
+description: "The requested resource does not exist for this account."
+---
+
+The requested resource does not exist for this account.
+
+## When it happens
+
+A single-resource fetch/mutation references an id that is absent, or that belongs to another account. Existence is never leaked across accounts, so a foreign resource also returns 404 (not 403).
+
+## How to resolve
+
+Verify the id and that it belongs to the authenticated account. If you keyed it from your own `external_id`, re-resolve the mapping. Show your user: "We could not find that item."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `not_found` |
+| Channel | Transport — HTTP 404 problem response |
+| Retryable | No — the request must change before it can succeed. |

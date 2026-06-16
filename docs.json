@@ -15,13 +15,109 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["index", "quickstart"]
+            "pages": [
+              "index",
+              "quickstart"
+            ]
           }
         ]
       },
       {
         "tab": "API Reference",
         "openapi": "/api-reference/openapi.json"
+      },
+      {
+        "tab": "Errors",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "errors/overview"
+            ]
+          },
+          {
+            "group": "Transport errors",
+            "pages": [
+              "errors/account_not_available",
+              "errors/conflict",
+              "errors/connection_not_pending",
+              "errors/connection_reauth_required",
+              "errors/forbidden",
+              "errors/idempotency_key_invalid",
+              "errors/idempotency_key_reused",
+              "errors/idempotency_request_in_progress",
+              "errors/internal_error",
+              "errors/media_processing",
+              "errors/not_found",
+              "errors/not_implemented",
+              "errors/not_publishable",
+              "errors/rate_limited",
+              "errors/source_url_unsupported",
+              "errors/unauthorized",
+              "errors/validation_failed"
+            ]
+          },
+          {
+            "group": "Domain verdicts",
+            "pages": [
+              "errors/body_too_long",
+              "errors/connection_platform_mismatch",
+              "errors/content_conflict",
+              "errors/content_incomplete",
+              "errors/content_kind_mismatch",
+              "errors/content_missing",
+              "errors/document_format_unsupported",
+              "errors/document_too_large",
+              "errors/document_too_many_pages",
+              "errors/facebook_not_authorized",
+              "errors/facebook_publish_failed",
+              "errors/facebook_rate_limited",
+              "errors/facebook_reel_failed",
+              "errors/facebook_reel_processing",
+              "errors/instagram_container_expired",
+              "errors/instagram_container_failed",
+              "errors/instagram_media_processing",
+              "errors/instagram_not_authorized",
+              "errors/instagram_publish_failed",
+              "errors/instagram_rate_limited",
+              "errors/linkedin_auth_expired",
+              "errors/linkedin_duplicate_content",
+              "errors/linkedin_media_processing",
+              "errors/linkedin_media_upload_failed",
+              "errors/linkedin_permission_denied",
+              "errors/linkedin_publish_failed",
+              "errors/media_aspect_ratio_unsupported",
+              "errors/media_count_invalid",
+              "errors/media_failed",
+              "errors/media_gif_unsupported",
+              "errors/media_kind_mismatch",
+              "errors/media_not_ready",
+              "errors/media_resolution_too_low",
+              "errors/media_too_large",
+              "errors/media_type_mismatch",
+              "errors/media_unprobeable",
+              "errors/media_unsupported",
+              "errors/publishing_unavailable",
+              "errors/reel_field_on_non_reel",
+              "errors/tag_limit_exceeded",
+              "errors/video_aspect_unsupported",
+              "errors/video_audio_codec_unsupported",
+              "errors/video_codec_unsupported",
+              "errors/video_container_unsupported",
+              "errors/video_dimensions_unsupported",
+              "errors/video_duration_exceeds_max",
+              "errors/video_duration_too_short",
+              "errors/video_fps_unsupported",
+              "errors/video_too_large",
+              "errors/video_too_small",
+              "errors/x_duplicate_content",
+              "errors/x_media_upload_failed",
+              "errors/x_not_authorized",
+              "errors/x_publish_failed",
+              "errors/x_rate_limited"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -37,7 +133,16 @@
     }
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

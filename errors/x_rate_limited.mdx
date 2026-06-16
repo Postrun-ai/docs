@@ -1,0 +1,22 @@
+---
+title: "x_rate_limited"
+description: "X throttled the request (rate or usage cap)."
+---
+
+X throttled the request (rate or usage cap).
+
+## When it happens
+
+X returned a 429 or a usage-capped problem — application/user-level throttling. This is the in-200 domain code (distinct from the transport `rate_limited` 429 envelope). Returned as the X variant’s `outcome.error`.
+
+## How to resolve
+
+Wait and republish later; spread X publishes out. Transient — the same request can succeed once the window resets.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `x_rate_limited` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

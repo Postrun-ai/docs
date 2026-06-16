@@ -1,0 +1,22 @@
+---
+title: "video_audio_codec_unsupported"
+description: "The video’s audio codec is not accepted by the platform."
+---
+
+The video’s audio codec is not accepted by the platform.
+
+## When it happens
+
+On `POST /media`, the probed audio track’s codec is not in the target platform’s accepted set (e.g. an exotic codec where only AAC is allowed). Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Re-encode the audio to an accepted codec (typically AAC) and re-upload. Show your user: "This video’s audio format isn’t supported — please re-export as MP4 (AAC)."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_audio_codec_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

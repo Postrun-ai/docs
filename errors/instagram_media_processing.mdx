@@ -1,0 +1,22 @@
+---
+title: "instagram_media_processing"
+description: "The Instagram media container is still processing."
+---
+
+The Instagram media container is still processing.
+
+## When it happens
+
+The Instagram media container was still `IN_PROGRESS` when the adapter’s poll budget ran out. Returned as the Instagram variant’s `outcome.error`. Transient.
+
+## How to resolve
+
+Republish after a short wait — container processing usually finishes shortly. Retryable.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `instagram_media_processing` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

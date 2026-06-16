@@ -1,0 +1,22 @@
+---
+title: "video_codec_unsupported"
+description: "The video’s video codec is not accepted by the platform."
+---
+
+The video’s video codec is not accepted by the platform.
+
+## When it happens
+
+On `POST /media`, the probed video track’s codec is not in the target platform’s accepted set (e.g. HEVC where only H.264 is allowed). Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Re-encode the video to an accepted codec (typically H.264/AAC in an MP4 container) and re-upload. Show your user: "This video format isn’t supported — please upload an MP4 (H.264)."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_codec_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

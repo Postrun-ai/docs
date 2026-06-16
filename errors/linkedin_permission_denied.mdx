@@ -1,0 +1,22 @@
+---
+title: "linkedin_permission_denied"
+description: "The LinkedIn grant lacks permission for this action."
+---
+
+The LinkedIn grant lacks permission for this action.
+
+## When it happens
+
+LinkedIn returned a 403 / `ACCESS_DENIED` — a missing scope or insufficient member/page role. Returned as the LinkedIn variant’s `outcome.error`.
+
+## How to resolve
+
+Reconnect with the required scopes, or ensure the member has the needed role on the target, then republish. Show your user: "Your LinkedIn account doesn’t have permission to post here."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_permission_denied` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

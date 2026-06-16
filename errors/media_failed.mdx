@@ -1,0 +1,22 @@
+---
+title: "media_failed"
+description: "A referenced media asset terminally failed to process."
+---
+
+A referenced media asset terminally failed to process.
+
+## When it happens
+
+A publish variant references a media id whose asset is in `status: failed` (the original itself is unusable). The asset’s own failure reason is forwarded inline. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Re-upload the asset (a fresh `POST /media`), update the variant to reference the new id, and resubmit. Retrying with the failed asset will never succeed. Show your user: "This file failed to process — please upload it again."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

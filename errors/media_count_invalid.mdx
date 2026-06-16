@@ -1,0 +1,22 @@
+---
+title: "media_count_invalid"
+description: "The number of media items does not match the post type."
+---
+
+The number of media items does not match the post type.
+
+## When it happens
+
+A publish variant’s `media[]` count is wrong for its `post_type` on that platform — e.g. a text post with media, a single_image without exactly one image, or a carousel/multi_image outside the platform’s count band. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Attach exactly the media count the post type requires (`allowed`/`got` state the bound) or change `post_type` to match. This is a request-shape error; it will not pass until the variant changes.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_count_invalid` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

@@ -1,0 +1,22 @@
+---
+title: "instagram_container_failed"
+description: "The Instagram media container failed processing."
+---
+
+The Instagram media container failed processing.
+
+## When it happens
+
+The container reached `status_code: ERROR` — Instagram could not process the media. Returned as the Instagram variant’s `outcome.error`.
+
+## How to resolve
+
+Re-check the media against Instagram’s requirements, re-upload if needed, and republish. The forwarded detail gives the reason where Instagram provides one. Show your user: "Instagram couldn’t process this media."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `instagram_container_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

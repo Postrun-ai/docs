@@ -1,0 +1,22 @@
+---
+title: "video_too_large"
+description: "The video file exceeds the platform’s maximum size."
+---
+
+The video file exceeds the platform’s maximum size.
+
+## When it happens
+
+On `POST /media`, the video’s byte size is above the target platform’s documented maximum. Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Compress or trim the video below the cap (`allowed` states it) and re-upload, or drop the platform. Show your user: "This video is too large for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_too_large` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

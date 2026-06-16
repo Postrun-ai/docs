@@ -1,0 +1,22 @@
+---
+title: "not_implemented"
+description: "This capability is not yet available for the platform."
+---
+
+This capability is not yet available for the platform.
+
+## When it happens
+
+A feature was requested for a platform that has no adapter wired yet — e.g. account discovery on a connection whose platform Postrun does not yet support for that operation.
+
+## How to resolve
+
+Do not retry; the capability does not exist yet for this platform. Check the docs/changelog for supported platforms, or contact us about the roadmap.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `not_implemented` |
+| Channel | Transport — HTTP 501 problem response |
+| Retryable | No — the request must change before it can succeed. |

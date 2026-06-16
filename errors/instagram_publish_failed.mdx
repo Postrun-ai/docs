@@ -1,0 +1,22 @@
+---
+title: "instagram_publish_failed"
+description: "Instagram publish failed for an unclassified reason."
+---
+
+Instagram publish failed for an unclassified reason.
+
+## When it happens
+
+The Graph API returned an error that does not map to a more specific code. The real message is carried through (never swallowed). Returned as the Instagram variant’s `outcome.error`.
+
+## How to resolve
+
+Read the forwarded message for the cause. Some causes are transient (retry later); others require changing the post or media. If it persists, capture the message and contact support.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `instagram_publish_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

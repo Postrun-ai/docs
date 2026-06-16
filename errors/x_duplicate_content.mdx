@@ -1,0 +1,22 @@
+---
+title: "x_duplicate_content"
+description: "X rejected the post as duplicate content."
+---
+
+X rejected the post as duplicate content.
+
+## When it happens
+
+X returned a 403 with a "duplicate content" detail — the same text was already posted recently. Returned as the X variant’s `outcome.error`.
+
+## How to resolve
+
+Change the post text (X forbids posting identical content repeatedly) and republish. Show your user: "You’ve already posted this — please edit the text." Retrying the same text will fail again.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `x_duplicate_content` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

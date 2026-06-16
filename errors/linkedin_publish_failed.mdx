@@ -1,0 +1,22 @@
+---
+title: "linkedin_publish_failed"
+description: "LinkedIn publish failed for an unclassified reason."
+---
+
+LinkedIn publish failed for an unclassified reason.
+
+## When it happens
+
+LinkedIn returned an error (or a non-LinkedIn throw such as a network failure) that does not map to a more specific code. The real message is carried through (never swallowed). Returned as the LinkedIn variant’s `outcome.error`.
+
+## How to resolve
+
+Read the forwarded message for the cause. Some causes are transient (retry later); others require changing the post. If it persists, capture the message and contact support.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_publish_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

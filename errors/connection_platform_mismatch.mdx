@@ -1,0 +1,22 @@
+---
+title: "connection_platform_mismatch"
+description: "The variant’s connection is on a different platform."
+---
+
+The variant’s connection is on a different platform.
+
+## When it happens
+
+At dispatch, a publish variant’s `platform` did not match the platform its `connection_id` actually belongs to (e.g. an X payload routed through a LinkedIn grant). Returned as the variant’s `outcome.error`, never published.
+
+## How to resolve
+
+Point the variant at a connection that is on the same platform as `variant.platform`, then republish. This is a wiring bug; it will not pass until the connection and platform agree.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `connection_platform_mismatch` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

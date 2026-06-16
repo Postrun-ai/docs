@@ -1,0 +1,22 @@
+---
+title: "x_publish_failed"
+description: "X publish failed for an unclassified reason."
+---
+
+X publish failed for an unclassified reason.
+
+## When it happens
+
+The X API returned a problem that does not map to a more specific code. The real X message is carried through (never swallowed). Returned as the X variant’s `outcome.error`.
+
+## How to resolve
+
+Read the forwarded message for the specific cause. Some causes are transient (retry later); others require changing the post. If it persists, capture the message and contact support.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `x_publish_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

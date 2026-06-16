@@ -1,0 +1,22 @@
+---
+title: "internal_error"
+description: "An unexpected server-side failure."
+---
+
+An unexpected server-side failure.
+
+## When it happens
+
+An unmapped or unanticipated error occurred. The transport fallback for any `ORPCError` that has no specific code mapping; also the isolation code a publish variant gets if its adapter throws (a bug) instead of returning a typed outcome.
+
+## How to resolve
+
+Retry after a short delay — the failure may be transient. If it persists, capture the `request_id` from the problem body and contact support. Do not treat the operation as having succeeded.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `internal_error` |
+| Channel | Transport — HTTP 500 problem response |
+| Retryable | Yes — the same request may succeed if retried. |

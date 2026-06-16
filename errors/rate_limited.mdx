@@ -1,0 +1,22 @@
+---
+title: "rate_limited"
+description: "Too many requests for this account in the current window."
+---
+
+Too many requests for this account in the current window.
+
+## When it happens
+
+The per-account fair-use limiter (separate read and write buckets, 1-minute sliding window) was exceeded. Applies to every endpoint; the response carries `X-RateLimit-*` and `Retry-After`.
+
+## How to resolve
+
+Back off and retry after the `Retry-After` interval. Smooth out bursts and honour the `X-RateLimit-Remaining` header. This is the transport 429 envelope; a platform’s own throttle surfaces as a per-platform `*_rate_limited` domain code instead.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `rate_limited` |
+| Channel | Transport — HTTP 429 problem response |
+| Retryable | Yes — the same request may succeed if retried. |

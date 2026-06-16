@@ -1,0 +1,22 @@
+---
+title: "content_kind_mismatch"
+description: "The LinkedIn content_kind does not match the post_type."
+---
+
+The LinkedIn content_kind does not match the post_type.
+
+## When it happens
+
+A LinkedIn variant’s `settings.content_kind` is inconsistent with its `post_type` (e.g. `content_kind: video` on a `single_image` post). Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Set `content_kind` to the value that matches `post_type` (text/article/poll ride a text post; single_image ↔ single_image|document; video ↔ video; multi_image ↔ multi_image) and resubmit.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `content_kind_mismatch` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

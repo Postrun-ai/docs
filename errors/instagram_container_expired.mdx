@@ -1,0 +1,22 @@
+---
+title: "instagram_container_expired"
+description: "The Instagram media container expired before publishing."
+---
+
+The Instagram media container expired before publishing.
+
+## When it happens
+
+The container reached `status_code: EXPIRED` — it was not published within Instagram’s 24-hour window. Terminal. Returned as the Instagram variant’s `outcome.error`.
+
+## How to resolve
+
+Re-create the container by republishing from scratch (it cannot be reused). This is not a wait-and-retry case; the old container is dead.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `instagram_container_expired` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

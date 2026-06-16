@@ -1,0 +1,22 @@
+---
+title: "video_fps_unsupported"
+description: "The video frame rate exceeds the platform’s maximum."
+---
+
+The video frame rate exceeds the platform’s maximum.
+
+## When it happens
+
+On `POST /media`, the probed frame rate is above the target platform’s documented maximum FPS. Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Re-encode the video to a frame rate at or below the cap (`allowed` states it) and re-upload. Show your user: "This video’s frame rate is too high for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_fps_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

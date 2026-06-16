@@ -1,0 +1,22 @@
+---
+title: "video_aspect_unsupported"
+description: "The video aspect ratio is outside the platform’s accepted band."
+---
+
+The video aspect ratio is outside the platform’s accepted band.
+
+## When it happens
+
+On `POST /media`, the video’s width:height ratio falls outside the target platform’s documented aspect range. Returned per-platform with the accepted bounds in `allowed`.
+
+## How to resolve
+
+Re-frame or pad the video into the accepted aspect band and re-upload, or drop the platform. Show your user: "This video’s shape isn’t allowed on <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_aspect_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

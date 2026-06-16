@@ -1,0 +1,22 @@
+---
+title: "content_incomplete"
+description: "A declared content shape is missing a required part."
+---
+
+A declared content shape is missing a required part.
+
+## When it happens
+
+A publish variant declares a content kind but omits its required payload — e.g. a LinkedIn `article` kind with no `article.source`, a `poll` kind with no `poll` object, or a `document` kind with no `document.title`. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Fill in the required field for the declared `content_kind` (the error path names it) and resubmit. This will not pass until the shape is complete.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `content_incomplete` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

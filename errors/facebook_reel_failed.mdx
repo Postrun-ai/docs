@@ -1,0 +1,22 @@
+---
+title: "facebook_reel_failed"
+description: "The Facebook reel failed processing or publishing."
+---
+
+The Facebook reel failed processing or publishing.
+
+## When it happens
+
+The Facebook reel hit a `processing_phase` / `publishing_phase` error. Terminal. Returned as the Facebook variant’s `outcome.error`.
+
+## How to resolve
+
+Re-check the video against Facebook reel requirements, re-upload if needed, and republish. The forwarded detail gives the reason where Facebook provides one. Show your user: "Facebook couldn’t process this reel."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `facebook_reel_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

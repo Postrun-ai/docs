@@ -1,0 +1,95 @@
+---
+title: "Error codes"
+description: "Every error Postrun can return, with the condition that triggers it and how to resolve it."
+---
+
+Postrun returns a **closed set** of machine-readable error codes. Branch on the
+`code` field, never the message. Every error body's `type` links to that code's
+page here. Each endpoint's reference lists the finite set it can return.
+
+There are two channels, same vocabulary:
+
+- **Transport errors** ride a non-2xx [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) problem body (`{ type, title, status, code, detail, request_id }`).
+- **Domain verdicts** ride *inside a 200* (e.g. `media.per_platform[].errors[]`, a post variant's `error`) — the validation outcomes you resolve per item.
+
+## Transport errors
+
+| Code | Status | Retryable | Meaning |
+| --- | --- | --- | --- |
+| [`unauthorized`](/errors/unauthorized) | 401 | No | The request carried no valid Postrun credential. |
+| [`forbidden`](/errors/forbidden) | 403 | No | The credential is valid but not permitted to do this. |
+| [`not_found`](/errors/not_found) | 404 | No | The requested resource does not exist for this account. |
+| [`conflict`](/errors/conflict) | 409 | No | The request conflicts with the resource’s current state. |
+| [`validation_failed`](/errors/validation_failed) | 422 | No | The request body or parameters failed schema validation. |
+| [`rate_limited`](/errors/rate_limited) | 429 | Yes | Too many requests for this account in the current window. |
+| [`internal_error`](/errors/internal_error) | 500 | Yes | An unexpected server-side failure. |
+| [`idempotency_key_invalid`](/errors/idempotency_key_invalid) | 400 | No | The Idempotency-Key header is malformed. |
+| [`idempotency_key_reused`](/errors/idempotency_key_reused) | 422 | No | This Idempotency-Key was reused with a different payload. |
+| [`idempotency_request_in_progress`](/errors/idempotency_request_in_progress) | 409 | Yes | A request with this Idempotency-Key is still running. |
+| [`source_url_unsupported`](/errors/source_url_unsupported) | 422 | No | Server-side fetch of a `source_url` is not supported in v1. |
+| [`account_not_available`](/errors/account_not_available) | 422 | No | The chosen account is not selectable on this connection. |
+| [`connection_reauth_required`](/errors/connection_reauth_required) | 409 | No | The connection must be reconnected before selecting an account. |
+| [`connection_not_pending`](/errors/connection_not_pending) | 409 | No | This connection already has an account selected. |
+| [`not_implemented`](/errors/not_implemented) | 501 | No | This capability is not yet available for the platform. |
+| [`media_processing`](/errors/media_processing) | 409 | Yes | The media asset is still being processed. |
+| [`not_publishable`](/errors/not_publishable) | 422 | No | One or more variants are not ready to publish. |
+
+## Domain verdicts (in-response validation)
+
+| Code | Status | Retryable | Meaning |
+| --- | --- | --- | --- |
+| [`media_unprobeable`](/errors/media_unprobeable) | — | No | The uploaded original could not be decoded. |
+| [`media_too_large`](/errors/media_too_large) | — | No | The media exceeds the target platform’s byte limit. |
+| [`media_aspect_ratio_unsupported`](/errors/media_aspect_ratio_unsupported) | — | No | The image aspect ratio is outside the platform’s accepted band. |
+| [`media_resolution_too_low`](/errors/media_resolution_too_low) | — | No | The image is smaller than the platform’s minimum dimensions. |
+| [`media_gif_unsupported`](/errors/media_gif_unsupported) | — | No | The target platform does not accept GIF uploads. |
+| [`video_container_unsupported`](/errors/video_container_unsupported) | — | No | The video container format is not accepted by the platform. |
+| [`video_codec_unsupported`](/errors/video_codec_unsupported) | — | No | The video’s video codec is not accepted by the platform. |
+| [`video_audio_codec_unsupported`](/errors/video_audio_codec_unsupported) | — | No | The video’s audio codec is not accepted by the platform. |
+| [`video_too_large`](/errors/video_too_large) | — | No | The video file exceeds the platform’s maximum size. |
+| [`video_too_small`](/errors/video_too_small) | — | No | The video file is below the platform’s minimum size. |
+| [`video_dimensions_unsupported`](/errors/video_dimensions_unsupported) | — | No | A video side is below the platform’s minimum pixel dimension. |
+| [`video_fps_unsupported`](/errors/video_fps_unsupported) | — | No | The video frame rate exceeds the platform’s maximum. |
+| [`video_aspect_unsupported`](/errors/video_aspect_unsupported) | — | No | The video aspect ratio is outside the platform’s accepted band. |
+| [`video_duration_too_short`](/errors/video_duration_too_short) | — | No | The video is shorter than the platform’s minimum duration. |
+| [`video_duration_exceeds_max`](/errors/video_duration_exceeds_max) | — | No | The video is longer than the platform’s maximum duration. |
+| [`document_format_unsupported`](/errors/document_format_unsupported) | — | No | The document format is not accepted by the platform. |
+| [`document_too_large`](/errors/document_too_large) | — | No | The document exceeds the platform’s byte limit. |
+| [`document_too_many_pages`](/errors/document_too_many_pages) | — | No | The document has more pages than the platform allows. |
+| [`media_count_invalid`](/errors/media_count_invalid) | — | No | The number of media items does not match the post type. |
+| [`body_too_long`](/errors/body_too_long) | — | No | The post body exceeds the platform’s character limit. |
+| [`content_missing`](/errors/content_missing) | — | No | The variant has no publishable content. |
+| [`content_conflict`](/errors/content_conflict) | — | No | The variant declares mutually-exclusive content shapes. |
+| [`content_incomplete`](/errors/content_incomplete) | — | No | A declared content shape is missing a required part. |
+| [`content_kind_mismatch`](/errors/content_kind_mismatch) | — | No | The LinkedIn content_kind does not match the post_type. |
+| [`media_type_mismatch`](/errors/media_type_mismatch) | — | No | The Instagram media_type does not match the post_type. |
+| [`tag_limit_exceeded`](/errors/tag_limit_exceeded) | — | No | The Instagram caption has too many hashtags or mentions. |
+| [`reel_field_on_non_reel`](/errors/reel_field_on_non_reel) | — | No | A reel-only field was set on a non-reel post. |
+| [`media_not_ready`](/errors/media_not_ready) | — | Yes | A referenced media asset has not finished processing. |
+| [`media_failed`](/errors/media_failed) | — | No | A referenced media asset terminally failed to process. |
+| [`media_unsupported`](/errors/media_unsupported) | — | No | A referenced asset has no usable rendition for the platform. |
+| [`media_kind_mismatch`](/errors/media_kind_mismatch) | — | No | The asset kind does not fit the post type’s placement. |
+| [`publishing_unavailable`](/errors/publishing_unavailable) | — | No | No publish adapter is wired for this platform yet. |
+| [`x_duplicate_content`](/errors/x_duplicate_content) | — | No | X rejected the post as duplicate content. |
+| [`x_not_authorized`](/errors/x_not_authorized) | — | No | X rejected the request as unauthorized. |
+| [`x_rate_limited`](/errors/x_rate_limited) | — | Yes | X throttled the request (rate or usage cap). |
+| [`x_publish_failed`](/errors/x_publish_failed) | — | No | X publish failed for an unclassified reason. |
+| [`x_media_upload_failed`](/errors/x_media_upload_failed) | — | Yes | Uploading or processing media to X failed. |
+| [`linkedin_duplicate_content`](/errors/linkedin_duplicate_content) | — | No | LinkedIn rejected the post as a duplicate share. |
+| [`linkedin_auth_expired`](/errors/linkedin_auth_expired) | — | No | The LinkedIn access grant has expired. |
+| [`linkedin_permission_denied`](/errors/linkedin_permission_denied) | — | No | The LinkedIn grant lacks permission for this action. |
+| [`linkedin_media_processing`](/errors/linkedin_media_processing) | — | Yes | LinkedIn media was still processing after the retry budget. |
+| [`linkedin_media_upload_failed`](/errors/linkedin_media_upload_failed) | — | Yes | Uploading media to LinkedIn failed. |
+| [`linkedin_publish_failed`](/errors/linkedin_publish_failed) | — | No | LinkedIn publish failed for an unclassified reason. |
+| [`instagram_media_processing`](/errors/instagram_media_processing) | — | Yes | The Instagram media container is still processing. |
+| [`instagram_container_expired`](/errors/instagram_container_expired) | — | No | The Instagram media container expired before publishing. |
+| [`instagram_container_failed`](/errors/instagram_container_failed) | — | No | The Instagram media container failed processing. |
+| [`instagram_rate_limited`](/errors/instagram_rate_limited) | — | Yes | Instagram throttled the request. |
+| [`instagram_not_authorized`](/errors/instagram_not_authorized) | — | No | The Instagram/Page token is invalid or lacks permission. |
+| [`instagram_publish_failed`](/errors/instagram_publish_failed) | — | No | Instagram publish failed for an unclassified reason. |
+| [`facebook_reel_processing`](/errors/facebook_reel_processing) | — | Yes | The Facebook reel is still processing. |
+| [`facebook_reel_failed`](/errors/facebook_reel_failed) | — | No | The Facebook reel failed processing or publishing. |
+| [`facebook_rate_limited`](/errors/facebook_rate_limited) | — | Yes | Facebook throttled the request. |
+| [`facebook_not_authorized`](/errors/facebook_not_authorized) | — | No | The Facebook Page token is invalid or lacks permission. |
+| [`facebook_publish_failed`](/errors/facebook_publish_failed) | — | No | Facebook publish failed for an unclassified reason. |
+| [`connection_platform_mismatch`](/errors/connection_platform_mismatch) | — | No | The variant’s connection is on a different platform. |

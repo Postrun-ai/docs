@@ -1,0 +1,22 @@
+---
+title: "connection_reauth_required"
+description: "The connection must be reconnected before selecting an account."
+---
+
+The connection must be reconnected before selecting an account.
+
+## When it happens
+
+On account-selection, the short-lived platform token (e.g. a Facebook user token) had already expired before the account could be selected.
+
+## How to resolve
+
+Send the user back through the OAuth connect flow to refresh the grant, then retry account selection. Show your user: "Please reconnect your account to continue."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `connection_reauth_required` |
+| Channel | Transport — HTTP 409 problem response |
+| Retryable | No — the request must change before it can succeed. |

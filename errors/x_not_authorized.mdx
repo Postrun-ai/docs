@@ -1,0 +1,22 @@
+---
+title: "x_not_authorized"
+description: "X rejected the request as unauthorized."
+---
+
+X rejected the request as unauthorized.
+
+## When it happens
+
+X returned a not-authorized-for-resource / unsupported-authentication problem (bad or insufficient auth, or no access to the targeted resource). Returned as the X variant’s `outcome.error`.
+
+## How to resolve
+
+Reconnect the X account to refresh the grant and ensure the required scopes are present, then republish. Show your user: "Please reconnect your X account."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `x_not_authorized` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

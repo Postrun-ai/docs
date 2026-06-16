@@ -1,0 +1,22 @@
+---
+title: "linkedin_auth_expired"
+description: "The LinkedIn access grant has expired."
+---
+
+The LinkedIn access grant has expired.
+
+## When it happens
+
+LinkedIn returned a 401 / `EMPTY_ACCESS_TOKEN` — the token is missing or expired. Returned as the LinkedIn variant’s `outcome.error`.
+
+## How to resolve
+
+Send the user back through the LinkedIn OAuth flow to reconnect, then republish. Show your user: "Please reconnect your LinkedIn account."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_auth_expired` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

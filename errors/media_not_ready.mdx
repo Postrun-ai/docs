@@ -1,0 +1,22 @@
+---
+title: "media_not_ready"
+description: "A referenced media asset has not finished processing."
+---
+
+A referenced media asset has not finished processing.
+
+## When it happens
+
+A publish variant references a media id that is missing, still uploading, or still processing (not yet `ready`). Surfaced in the `not_publishable` `errors[]`. Transient — the asset may still become ready.
+
+## How to resolve
+
+Wait until the asset reaches `status: ready` (poll `GET /media/{id}`), then resubmit the publish. Retryable once processing completes.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_not_ready` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

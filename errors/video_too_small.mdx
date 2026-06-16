@@ -1,0 +1,22 @@
+---
+title: "video_too_small"
+description: "The video file is below the platform’s minimum size."
+---
+
+The video file is below the platform’s minimum size.
+
+## When it happens
+
+On `POST /media`, the video’s byte size is below a target platform’s documented minimum. Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Supply a higher-bitrate / longer source that meets the minimum, or drop the platform. Show your user: "This video is too small for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_too_small` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

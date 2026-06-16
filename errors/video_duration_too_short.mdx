@@ -1,0 +1,22 @@
+---
+title: "video_duration_too_short"
+description: "The video is shorter than the platform’s minimum duration."
+---
+
+The video is shorter than the platform’s minimum duration.
+
+## When it happens
+
+On `POST /media`, the probed duration is below the target platform’s documented minimum. A distinct code from the too-long case so you can branch on it. Returned per-platform.
+
+## How to resolve
+
+Use a longer clip that meets the minimum duration (`allowed` states the band) and re-upload. Show your user: "This video is too short for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_duration_too_short` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

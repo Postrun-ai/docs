@@ -1,0 +1,22 @@
+---
+title: "source_url_unsupported"
+description: "Server-side fetch of a `source_url` is not supported in v1."
+---
+
+Server-side fetch of a `source_url` is not supported in v1.
+
+## When it happens
+
+A `source_url` was supplied to `POST /media`. v1 only supports direct upload — the field is reserved and rejected, never silently ignored.
+
+## How to resolve
+
+Omit `source_url`. Call `POST /media` to get a signed upload target, then PUT the bytes to it directly (from the browser or your backend).
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `source_url_unsupported` |
+| Channel | Transport — HTTP 422 problem response |
+| Retryable | No — the request must change before it can succeed. |

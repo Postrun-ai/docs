@@ -1,0 +1,22 @@
+---
+title: "instagram_not_authorized"
+description: "The Instagram/Page token is invalid or lacks permission."
+---
+
+The Instagram/Page token is invalid or lacks permission.
+
+## When it happens
+
+The Graph API returned an `OAuthException` (or code 190) — an invalid/expired Page token or a missing permission. Returned as the Instagram variant’s `outcome.error`.
+
+## How to resolve
+
+Reconnect the Instagram/Facebook Page to refresh the token and grant the needed permissions, then republish. Show your user: "Please reconnect your Instagram account."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `instagram_not_authorized` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

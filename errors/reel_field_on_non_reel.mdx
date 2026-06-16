@@ -1,0 +1,22 @@
+---
+title: "reel_field_on_non_reel"
+description: "A reel-only field was set on a non-reel post."
+---
+
+A reel-only field was set on a non-reel post.
+
+## When it happens
+
+An Instagram variant whose `post_type` is not `reel` set a reel-only setting (a field valid only on reels). Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Remove the reel-only field (the error path names it), or change `post_type` to `reel` if a reel is what you intended, then resubmit.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `reel_field_on_non_reel` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

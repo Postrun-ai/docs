@@ -1,0 +1,22 @@
+---
+title: "idempotency_key_invalid"
+description: "The Idempotency-Key header is malformed."
+---
+
+The Idempotency-Key header is malformed.
+
+## When it happens
+
+An `Idempotency-Key` header was present but empty or longer than 255 characters. Raised by the idempotency middleware before the handler runs.
+
+## How to resolve
+
+Send a non-empty key of at most 255 characters — a UUID or other unique, opaque string. This is a client bug; fix the header and resend.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `idempotency_key_invalid` |
+| Channel | Transport — HTTP 400 problem response |
+| Retryable | No — the request must change before it can succeed. |

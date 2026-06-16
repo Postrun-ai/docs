@@ -1,0 +1,22 @@
+---
+title: "not_publishable"
+description: "One or more variants are not ready to publish."
+---
+
+One or more variants are not ready to publish.
+
+## When it happens
+
+A publish call (`now` / `schedule` / `dry_run`) ran the readiness gate and at least one variant failed. The 422 body’s `errors[]` carries the per-variant `not_publishable` domain codes (content/media/placement reasons) with their `variant_index` and `path`.
+
+## How to resolve
+
+Inspect each item in `errors[]`, fix the named variant problems (see the specific domain codes — `content_missing`, `media_not_ready`, etc.), and resubmit. Some inner reasons (e.g. `media_not_ready`) become resolvable once processing completes.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `not_publishable` |
+| Channel | Transport — HTTP 422 problem response |
+| Retryable | No — the request must change before it can succeed. |

@@ -1,0 +1,22 @@
+---
+title: "idempotency_request_in_progress"
+description: "A request with this Idempotency-Key is still running."
+---
+
+A request with this Idempotency-Key is still running.
+
+## When it happens
+
+A concurrent request with the same `Idempotency-Key` has not finished. The middleware blocks the duplicate so the operation runs exactly once.
+
+## How to resolve
+
+Wait briefly and retry the same request with the same key — once the in-flight call completes you receive its stored result. Retryable: the same key is correct here.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `idempotency_request_in_progress` |
+| Channel | Transport — HTTP 409 problem response |
+| Retryable | Yes — the same request may succeed if retried. |

@@ -1,0 +1,22 @@
+---
+title: "media_gif_unsupported"
+description: "The target platform does not accept GIF uploads."
+---
+
+The target platform does not accept GIF uploads.
+
+## When it happens
+
+On `POST /media`, a GIF was targeted at a platform that does not accept GIFs (Postrun never flattens an animation to a still). Also raised if a GIF-format file is mislabelled as a plain image and targeted at such a platform. Returned per-platform.
+
+## How to resolve
+
+Drop the platform that rejected GIF, or convert the GIF to an MP4 video and upload it as a video asset where animation is wanted. Show your user: "<platform> doesn’t support GIFs."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_gif_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

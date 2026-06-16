@@ -1,0 +1,22 @@
+---
+title: "video_duration_exceeds_max"
+description: "The video is longer than the platform’s maximum duration."
+---
+
+The video is longer than the platform’s maximum duration.
+
+## When it happens
+
+On `POST /media`, the probed duration is above the target platform’s documented maximum. A distinct code from the too-short case so you can branch on it. Returned per-platform.
+
+## How to resolve
+
+Trim the video under the maximum duration (`allowed` states the band) and re-upload. Show your user: "This video is too long for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_duration_exceeds_max` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

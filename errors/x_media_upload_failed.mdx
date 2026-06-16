@@ -1,0 +1,22 @@
+---
+title: "x_media_upload_failed"
+description: "Uploading or processing media to X failed."
+---
+
+Uploading or processing media to X failed.
+
+## When it happens
+
+The X media upload/processing step failed before the post could be created. Returned as the X variant’s `outcome.error`.
+
+## How to resolve
+
+Retry the publish; if it persists, re-check the asset and re-upload it. Read the forwarded message for the specific cause. Transient infrastructure failures can clear on retry.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `x_media_upload_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

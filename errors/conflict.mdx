@@ -1,0 +1,22 @@
+---
+title: "conflict"
+description: "The request conflicts with the resource’s current state."
+---
+
+The request conflicts with the resource’s current state.
+
+## When it happens
+
+A write contradicts the resource as it stands now — e.g. a uniqueness collision (`external_id` already in use) or a state transition that is not legal from the current state. The generic 409; specific conflicts carry their own code.
+
+## How to resolve
+
+Re-fetch the resource, reconcile the difference, and retry with a non-conflicting request. For an `external_id` collision, choose a unique value.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `conflict` |
+| Channel | Transport — HTTP 409 problem response |
+| Retryable | No — the request must change before it can succeed. |

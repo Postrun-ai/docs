@@ -1,0 +1,22 @@
+---
+title: "forbidden"
+description: "The credential is valid but not permitted to do this."
+---
+
+The credential is valid but not permitted to do this.
+
+## When it happens
+
+A read-only secret key attempted a write, OR a frontend token lacks the required scope or is bound to a profile it may not touch. Enforced globally by the scope/binding gate in `base.ts`.
+
+## How to resolve
+
+Use a write-enabled key for mutating calls, or mint a token whose scopes include the action and whose `profiles` claim covers the target. Money-value ad writes require the secret-key-only `ads:budget` scope — never mintable into a browser token.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `forbidden` |
+| Channel | Transport — HTTP 403 problem response |
+| Retryable | No — the request must change before it can succeed. |

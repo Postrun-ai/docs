@@ -1,0 +1,22 @@
+---
+title: "facebook_rate_limited"
+description: "Facebook throttled the request."
+---
+
+Facebook throttled the request.
+
+## When it happens
+
+The Graph API returned a rate-limit error code (4 / 17 / 32 / 613) — app-, user-, or page-level throttling. Returned as the Facebook variant’s `outcome.error`.
+
+## How to resolve
+
+Wait and republish later; spread Facebook publishes out. Transient — the same request can succeed once the limit resets.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `facebook_rate_limited` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

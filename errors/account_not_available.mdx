@@ -1,0 +1,22 @@
+---
+title: "account_not_available"
+description: "The chosen account is not selectable on this connection."
+---
+
+The chosen account is not selectable on this connection.
+
+## When it happens
+
+During connection account-selection (`POST /connections/{id}/select`), the requested account id is not among the accounts discoverable on that connection (e.g. the user lacks access, or it was never offered).
+
+## How to resolve
+
+Re-list the discoverable accounts for the connection and pick one from that set. If the expected account is missing, the user may need to grant access or reconnect with broader permissions.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `account_not_available` |
+| Channel | Transport — HTTP 422 problem response |
+| Retryable | No — the request must change before it can succeed. |

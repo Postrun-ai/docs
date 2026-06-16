@@ -1,0 +1,22 @@
+---
+title: "idempotency_key_reused"
+description: "This Idempotency-Key was reused with a different payload."
+---
+
+This Idempotency-Key was reused with a different payload.
+
+## When it happens
+
+An `Idempotency-Key` already seen on a prior request was sent again with a different request body. The middleware refuses to let one key stand for two distinct operations.
+
+## How to resolve
+
+Use a fresh key for a new operation, or resend the EXACT original payload to replay the first request’s result. Never reuse a key across different bodies.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `idempotency_key_reused` |
+| Channel | Transport — HTTP 422 problem response |
+| Retryable | No — the request must change before it can succeed. |

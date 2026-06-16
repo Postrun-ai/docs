@@ -1,0 +1,22 @@
+---
+title: "document_too_large"
+description: "The document exceeds the platform’s byte limit."
+---
+
+The document exceeds the platform’s byte limit.
+
+## When it happens
+
+On `POST /media`, the document is larger than the target platform’s documented cap (e.g. LinkedIn’s 100 MB). Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Reduce the file size (compress, split, or remove embedded media) below the cap and re-upload. Show your user: "This document is too large for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `document_too_large` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

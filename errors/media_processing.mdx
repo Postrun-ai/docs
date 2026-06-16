@@ -1,0 +1,22 @@
+---
+title: "media_processing"
+description: "The media asset is still being processed."
+---
+
+The media asset is still being processed.
+
+## When it happens
+
+A `PATCH /media/{id}` tried to change the target extension while the asset is still processing its renditions.
+
+## How to resolve
+
+Poll the asset (`GET /media/{id}`) until `status` is `ready`, then retry the update. Retryable once processing finishes.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_processing` |
+| Channel | Transport — HTTP 409 problem response |
+| Retryable | Yes — the same request may succeed if retried. |

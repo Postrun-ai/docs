@@ -1,0 +1,22 @@
+---
+title: "video_dimensions_unsupported"
+description: "A video side is below the platform’s minimum pixel dimension."
+---
+
+A video side is below the platform’s minimum pixel dimension.
+
+## When it happens
+
+On `POST /media`, the shorter side of the video is below the target platform’s minimum pixel floor (e.g. X’s 32px). Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Re-export the video at higher resolution so both sides meet the floor, and re-upload. Show your user: "This video’s resolution is too low for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_dimensions_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

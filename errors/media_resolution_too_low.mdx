@@ -1,0 +1,22 @@
+---
+title: "media_resolution_too_low"
+description: "The image is smaller than the platform’s minimum dimensions."
+---
+
+The image is smaller than the platform’s minimum dimensions.
+
+## When it happens
+
+On `POST /media`, an image is narrower or shorter than a target platform’s minimum width/height. Postrun never upscales, so this is a hard reject. Returned per-platform.
+
+## How to resolve
+
+Supply a higher-resolution original (at least the `allowed` minimum) and re-upload. Show your user: "This image is too small for <platform> — please use a larger one."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_resolution_too_low` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

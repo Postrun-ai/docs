@@ -1,0 +1,22 @@
+---
+title: "document_format_unsupported"
+description: "The document format is not accepted by the platform."
+---
+
+The document format is not accepted by the platform.
+
+## When it happens
+
+On `POST /media`, a document’s format is not in the target platform’s accepted set (PDF/DOC/DOCX/PPT/PPTX), or the platform accepts no documents at all. Today document posts are a LinkedIn capability. Returned per-platform.
+
+## How to resolve
+
+Convert the document to an accepted format (typically PDF) and re-upload, or drop a platform that takes no documents. Show your user: "This document format isn’t supported."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `document_format_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

@@ -1,0 +1,22 @@
+---
+title: "linkedin_duplicate_content"
+description: "LinkedIn rejected the post as a duplicate share."
+---
+
+LinkedIn rejected the post as a duplicate share.
+
+## When it happens
+
+LinkedIn returned a 422 whose message indicates the share duplicates an existing one. Returned as the LinkedIn variant’s `outcome.error`.
+
+## How to resolve
+
+Edit the commentary/content so it is not a duplicate and republish. Show your user: "This looks like a duplicate of an existing post." Retrying as-is will fail again.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_duplicate_content` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

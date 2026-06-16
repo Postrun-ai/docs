@@ -1,0 +1,22 @@
+---
+title: "validation_failed"
+description: "The request body or parameters failed schema validation."
+---
+
+The request body or parameters failed schema validation.
+
+## When it happens
+
+Input did not satisfy the endpoint’s Zod contract (wrong type, missing required field, out-of-range value). Raised by oRPC as a `BAD_REQUEST` and surfaced at 422 with a per-field `errors[]` array.
+
+## How to resolve
+
+Read the `errors[]` array — each item names the offending `field` (dot-path) and a `detail`. Fix the field(s) and resend. This is a client bug; the same request will keep failing until the input changes.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `validation_failed` |
+| Channel | Transport — HTTP 422 problem response |
+| Retryable | No — the request must change before it can succeed. |

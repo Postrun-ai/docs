@@ -1,0 +1,22 @@
+---
+title: "facebook_reel_processing"
+description: "The Facebook reel is still processing."
+---
+
+The Facebook reel is still processing.
+
+## When it happens
+
+The Facebook reel was still `in_progress` when the adapter’s poll budget ran out. Returned as the Facebook variant’s `outcome.error`. Transient.
+
+## How to resolve
+
+Republish after a short wait — reel processing usually finishes shortly. Retryable.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `facebook_reel_processing` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

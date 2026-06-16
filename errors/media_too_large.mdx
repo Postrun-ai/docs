@@ -1,0 +1,22 @@
+---
+title: "media_too_large"
+description: "The media exceeds the target platform’s byte limit."
+---
+
+The media exceeds the target platform’s byte limit.
+
+## When it happens
+
+On `POST /media`, the asset (a GIF, or a processed image rendition) is larger than a target platform’s documented hard byte cap. Returned per-platform in `media.per_platform[<platform>].errors[]`.
+
+## How to resolve
+
+Re-export at a smaller file size (lower quality/resolution) and re-upload, or drop the platform that rejected it. `allowed`/`got` on the error state the cap and the actual size. Show your user: "This file is too large for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_too_large` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

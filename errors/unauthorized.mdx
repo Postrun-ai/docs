@@ -1,0 +1,22 @@
+---
+title: "unauthorized"
+description: "The request carried no valid Postrun credential."
+---
+
+The request carried no valid Postrun credential.
+
+## When it happens
+
+The `Authorization` header is missing, malformed, or carries an API key / frontend token that does not resolve (revoked, expired, or never valid). Enforced globally on every endpoint by the auth middleware in `base.ts`.
+
+## How to resolve
+
+Send `Authorization: Bearer pr_…` with a live secret key, or a non-expired frontend token minted from one. If you mint browser tokens, refresh the token before it expires. Show your user: "Your session has expired — please sign in again."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `unauthorized` |
+| Channel | Transport — HTTP 401 problem response |
+| Retryable | No — the request must change before it can succeed. |

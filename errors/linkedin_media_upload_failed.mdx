@@ -1,0 +1,22 @@
+---
+title: "linkedin_media_upload_failed"
+description: "Uploading media to LinkedIn failed."
+---
+
+Uploading media to LinkedIn failed.
+
+## When it happens
+
+A LinkedIn image/document upload step (register or byte PUT) failed. Returned as the LinkedIn variant’s `outcome.error`.
+
+## How to resolve
+
+Retry the publish; if it persists, re-check and re-upload the asset. The forwarded message gives the specific cause. Transient upload failures can clear on retry.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_media_upload_failed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

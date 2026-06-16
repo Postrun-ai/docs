@@ -1,0 +1,22 @@
+---
+title: "document_too_many_pages"
+description: "The document has more pages than the platform allows."
+---
+
+The document has more pages than the platform allows.
+
+## When it happens
+
+On `POST /media`, the document’s page count exceeds the target platform’s cap (e.g. LinkedIn’s 300 pages). Skipped for formats whose page count is unreadable, so it never false-rejects. Returned per-platform.
+
+## How to resolve
+
+Split the document or remove pages to fit under the limit (`allowed` states it) and re-upload. Show your user: "This document has too many pages for <platform>."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `document_too_many_pages` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

@@ -1,0 +1,22 @@
+---
+title: "media_unsupported"
+description: "A referenced asset has no usable rendition for the platform."
+---
+
+A referenced asset has no usable rendition for the platform.
+
+## When it happens
+
+A publish variant references a `ready` asset that has no usable per-platform rendition for the target platform (the platform was not targeted on the asset, or its rendition carries a blocking error). The asset’s specific rendition error is forwarded when present. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+On the media asset, target the platform you are publishing to and resolve any per-platform errors it reports, then resubmit. If a specific code (e.g. `media_aspect_ratio_unsupported`) is forwarded, fix that.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

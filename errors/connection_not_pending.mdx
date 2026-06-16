@@ -1,0 +1,22 @@
+---
+title: "connection_not_pending"
+description: "This connection already has an account selected."
+---
+
+This connection already has an account selected.
+
+## When it happens
+
+Account-selection was called on a connection that is no longer pending — an account was already chosen for it.
+
+## How to resolve
+
+Treat the connection as already configured; no second selection is needed. If you must change the account, start a fresh connection. This will not succeed on retry as-is.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `connection_not_pending` |
+| Channel | Transport — HTTP 409 problem response |
+| Retryable | No — the request must change before it can succeed. |

@@ -1,0 +1,22 @@
+---
+title: "content_conflict"
+description: "The variant declares mutually-exclusive content shapes."
+---
+
+The variant declares mutually-exclusive content shapes.
+
+## When it happens
+
+A publish variant combines shapes that cannot coexist — e.g. an X post with more than one of media/poll/quote/card; a LinkedIn post with both article and poll, or a content sub-object that contradicts its `content_kind`; a Facebook link on a non-text post. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Keep only one content shape per the platform’s rules and remove the conflicting field(s), then resubmit. The error path points at the offending field.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `content_conflict` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

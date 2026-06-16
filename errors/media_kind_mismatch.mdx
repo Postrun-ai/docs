@@ -1,0 +1,22 @@
+---
+title: "media_kind_mismatch"
+description: "The asset kind does not fit the post type’s placement."
+---
+
+The asset kind does not fit the post type’s placement.
+
+## When it happens
+
+A publish variant references an asset whose kind (image/video/gif/document) is wrong for the `post_type`’s slot — e.g. a reel/video post pointed at an image, or an image post pointed at a video. Surfaced in the `not_publishable` `errors[]`.
+
+## How to resolve
+
+Reference an asset of the kind the placement needs (`allowed`/`got` state which), or change `post_type` to match the media. This will not pass until they align.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_kind_mismatch` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

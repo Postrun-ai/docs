@@ -1,0 +1,22 @@
+---
+title: "media_unprobeable"
+description: "The uploaded original could not be decoded."
+---
+
+The uploaded original could not be decoded.
+
+## When it happens
+
+After upload, probing the asset failed — the image/video/document is corrupt, truncated, or in a format the probe cannot read (e.g. a video with no video track, a PDF whose page count is unreadable). Surfaced as the asset-wide `MediaResource.error` with `status: failed`.
+
+## How to resolve
+
+Re-export the original from its source in a supported format and upload a fresh asset. Show your user: "We couldn’t read that file — please re-export it and upload again." Re-uploading the same broken bytes will fail identically.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_unprobeable` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

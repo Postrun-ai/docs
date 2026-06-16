@@ -1,0 +1,22 @@
+---
+title: "video_container_unsupported"
+description: "The video container format is not accepted by the platform."
+---
+
+The video container format is not accepted by the platform.
+
+## When it happens
+
+On `POST /media`, the probed video’s container (e.g. MKV, AVI) is not in the target platform’s accepted set. Returned per-platform with `allowed`/`got`.
+
+## How to resolve
+
+Remux/re-encode into an accepted container (typically MP4) and re-upload. Show your user: "This video format isn’t supported — please upload an MP4."
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `video_container_unsupported` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

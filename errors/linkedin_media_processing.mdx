@@ -1,0 +1,22 @@
+---
+title: "linkedin_media_processing"
+description: "LinkedIn media was still processing after the retry budget."
+---
+
+LinkedIn media was still processing after the retry budget.
+
+## When it happens
+
+A referenced LinkedIn media asset (`MEDIA_ASSET_*` / a processing/waiting state) had not finished processing after the adapter’s retries were exhausted. Returned as the LinkedIn variant’s `outcome.error`. Transient.
+
+## How to resolve
+
+Republish after a short wait — LinkedIn media processing usually completes shortly. Retryable.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `linkedin_media_processing` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | Yes — the same request may succeed if retried. |

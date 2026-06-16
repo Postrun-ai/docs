@@ -1,0 +1,22 @@
+---
+title: "publishing_unavailable"
+description: "No publish adapter is wired for this platform yet."
+---
+
+No publish adapter is wired for this platform yet.
+
+## When it happens
+
+A publish variant targets a platform whose adapter has not been enabled. Returned as the variant’s `outcome.error` by the dispatch stub (platforms ship one at a time).
+
+## How to resolve
+
+Do not retry yet — publishing for this platform is not live. Remove the variant or wait for the platform to launch (watch the changelog).
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `publishing_unavailable` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |
