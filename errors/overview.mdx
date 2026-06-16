@@ -43,6 +43,8 @@ There are two channels, same vocabulary:
 | [`media_aspect_ratio_unsupported`](/errors/media_aspect_ratio_unsupported) | — | No | The image aspect ratio is outside the platform’s accepted band. |
 | [`media_resolution_too_low`](/errors/media_resolution_too_low) | — | No | The image is smaller than the platform’s minimum dimensions. |
 | [`media_gif_unsupported`](/errors/media_gif_unsupported) | — | No | The target platform does not accept GIF uploads. |
+| [`media_format_recompressed`](/errors/media_format_recompressed) | — | No | The platform may re-encode this format (non-blocking advisory). |
+| [`media_resolution_downscaled`](/errors/media_resolution_downscaled) | — | No | The platform may downscale beyond its max width (non-blocking advisory). |
 | [`video_container_unsupported`](/errors/video_container_unsupported) | — | No | The video container format is not accepted by the platform. |
 | [`video_codec_unsupported`](/errors/video_codec_unsupported) | — | No | The video’s video codec is not accepted by the platform. |
 | [`video_audio_codec_unsupported`](/errors/video_audio_codec_unsupported) | — | No | The video’s audio codec is not accepted by the platform. |

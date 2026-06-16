@@ -1,0 +1,22 @@
+---
+title: "media_resolution_downscaled"
+description: "The platform may downscale beyond its max width (non-blocking advisory)."
+---
+
+The platform may downscale beyond its max width (non-blocking advisory).
+
+## When it happens
+
+A non-blocking finding surfaced in a per-platform entry’s `warnings` — the original is wider than the platform’s max width, so it (or our normal-mode delivery) may downscale it. On the `raw` path we publish the original as-is and surface this so you know the platform may shrink it.
+
+## How to resolve
+
+No action required — informational. Upload at or below the platform’s max width to avoid any downscale.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_resolution_downscaled` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |

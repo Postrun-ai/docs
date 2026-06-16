@@ -1,0 +1,22 @@
+---
+title: "media_format_recompressed"
+description: "The platform may re-encode this format (non-blocking advisory)."
+---
+
+The platform may re-encode this format (non-blocking advisory).
+
+## When it happens
+
+A non-blocking finding surfaced in a per-platform entry’s `warnings` — the rendition will publish, but the platform (or our normal-mode delivery) may re-encode/recompress the original format. On the `raw` path we publish the original as-is and surface this so you know the platform may transcode it.
+
+## How to resolve
+
+No action required — informational. If exact bytes matter, upload in the platform’s native delivery format.
+
+## Reference
+
+| Field | Value |
+| --- | --- |
+| Code | `media_format_recompressed` |
+| Channel | Domain verdict — returned inside a 200 response |
+| Retryable | No — the request must change before it can succeed. |
