@@ -1,0 +1,161 @@
+---
+title: "Idempotency"
+description: "Retry write requests safely, with no risk of the same action happening twice."
+---
+
+Networks fail. A request times out, a connection drops, your job runner restarts
+mid-call — and you're left not knowing whether the write went through. Retrying
+blindly risks doing it twice: a double post, a duplicated campaign, a budget
+changed twice.
+
+Idempotency removes the guess. You attach a unique key to a write, and Postrun
+guarantees that key runs **at most once**. Retry as many times as you need —
+you'll get the original result back, not a second action.
+
+## How it works
+
+Send an `Idempotency-Key` header on any write request:
+
+```bash
+curl https://api.postrun.ai/v1/posts \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Idempotency-Key: 1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" \
+  -H "Content-Type: application/json" \
+  -d '{ "...": "..." }'
+```
+
+The first request with a given key executes normally, and Postrun records its
+outcome. Any later request with the **same key and the same payload** returns
+that recorded outcome — the original response, byte for byte — without running
+the action again.
+
+Idempotency is **opt-in per request**. Omit the header and the endpoint behaves
+exactly as it would otherwise. Send it whenever a retry is possible — which, over
+an unreliable network, is every write worth protecting.
+
+<Note>
+  Reads (`GET`) are already safe to repeat and don't need a key. Idempotency
+  applies to write requests; each write endpoint notes support in its
+  [API reference](/api-reference).
+</Note>
+
+## The key
+
+You generate the key. It's any unique, opaque string of **1–255 characters** —
+a version-4 UUID is the right default:
+
+```ts
+import { randomUUID } from "node:crypto";
+
+const idempotencyKey = randomUUID();
+```
+
+One key represents one logical operation. Generate it **once**, before the first
+attempt, and reuse that same value for every retry of that operation. The
+durable pattern is to persist the key alongside whatever you're creating, so a
+process that crashes and restarts retries with the same key rather than minting a
+new one.
+
+Keys are scoped to your account and retained for **about 24 hours**. After that
+the key is forgotten; reusing it later starts a fresh operation.
+
+## What a retry returns
+
+How a repeated key resolves depends entirely on what happened the first time:
+
+| Your retry | What you get back |
+| --- | --- |
+| Same key, same payload, first request reached a **final result** — a success, or an error Postrun deliberately returned (e.g. validation, conflict) | That exact result, replayed. The action does not run again. |
+| Same key, first request failed with an **unexpected error**, where it's unclear whether the action took effect | The key isn't pinned to that failure — a retry with the same key runs the operation (see below). |
+| Same key while the first request is **still running** | `409` [`idempotency_request_in_progress`](/errors/idempotency_request_in_progress). Wait and retry. |
+| Same key, **different** payload | `422` [`idempotency_key_reused`](/errors/idempotency_key_reused). |
+| Empty key, or longer than 255 characters | `400` [`idempotency_key_invalid`](/errors/idempotency_key_invalid). |
+
+A final outcome — a success, or an error Postrun deliberately returned — is
+replayed on every retry, exactly as it was. Field order in a JSON body doesn't
+affect the match: re-serializing the same request still counts as the same
+request.
+
+## When an attempt fails
+
+Retrying a failed write is the entire point of an idempotency key — and with
+one, retrying is always the right move:
+
+- If the first attempt reached a **final result**, that result is replayed: a
+  success returns the same success, a deliberate rejection returns the same
+  error. The action never happens twice.
+- If the first attempt failed with an **unexpected error** — where it's genuinely
+  unclear whether your action took effect — the key isn't locked to that failure.
+  Retrying with the same key runs the operation so it can resolve into a real
+  success or a real, final error, rather than leaving you stuck on a momentary
+  blip.
+
+So whatever the failure, **retry with the same key and exponential backoff.** You
+won't create a duplicate of a write that already succeeded, and you won't get
+permanently stuck behind a transient fault.
+
+<Warning>
+  Always retry a failed write — including `409`
+  [`idempotency_request_in_progress`](/errors/idempotency_request_in_progress) —
+  with the **same** key and backoff. Never mint a new key to "get past" a
+  failure: a new key is a new operation, and that's exactly how duplicates
+  happen.
+</Warning>
+
+## Reusing a key with a different request
+
+A key is bound to the exact request that first used it. Send the same key with a
+different payload and Postrun rejects it with `422`
+[`idempotency_key_reused`](/errors/idempotency_key_reused) rather than guessing
+which request you meant. This catches a common bug — a key accidentally shared
+across two different operations — before it does damage.
+
+The rule that follows: **one key, one operation.** Don't recycle a key for a new
+action, and don't change the body on a retry.
+
+## Concurrency
+
+If two requests carrying the same key arrive at once, exactly one executes; the
+others receive `409`
+[`idempotency_request_in_progress`](/errors/idempotency_request_in_progress)
+while the first is in flight. There's no window where the same key runs twice in
+parallel. Treat the `409` as "the first attempt is still working" — wait briefly,
+then retry the same key.
+
+## Best practices
+
+<Steps>
+  <Step title="One key per logical operation">
+    Generate a fresh UUID for each distinct action. Never share a key across
+    different operations.
+  </Step>
+  <Step title="Persist the key before you send it">
+    Store the key with the record you're creating. If your process restarts
+    mid-flight, retry with the saved key — that's what makes the retry safe.
+  </Step>
+  <Step title="Retry 5xx and 409 with the same key">
+    Use exponential backoff, and keep the key identical across attempts. A new
+    key on a retry defeats the purpose.
+  </Step>
+  <Step title="Keep keys opaque">
+    A random UUID is ideal. Don't encode meaningful or sensitive data into the
+    key — it's an identifier, not a payload.
+  </Step>
+</Steps>
+
+## Related errors
+
+<Columns cols={2}>
+  <Card title="idempotency_request_in_progress" href="/errors/idempotency_request_in_progress">
+    The first request with this key is still running. Wait and retry.
+  </Card>
+  <Card title="idempotency_key_reused" href="/errors/idempotency_key_reused">
+    This key was already used for a different payload.
+  </Card>
+  <Card title="idempotency_key_invalid" href="/errors/idempotency_key_invalid">
+    The key was empty or longer than 255 characters.
+  </Card>
+  <Card title="All error codes" href="/errors/overview">
+    The full closed set of codes you branch on.
+  </Card>
+</Columns>

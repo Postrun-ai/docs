@@ -28,7 +28,8 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart"
+              "quickstart",
+              "idempotency"
             ]
           }
         ]
