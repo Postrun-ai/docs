@@ -23,17 +23,31 @@ Create a `pr_` key in the [dashboard](https://app.postrun.ai). It has full acces
 to your account, so treat it like a password: keep it server-side, store it in an
 environment variable, and never ship it to a browser or commit it.
 
-```bash
+<CodeGroup>
+```bash cURL
 curl https://api.postrun.ai/v1/profiles \
   -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
 ```
+
+```ts @postrun/js
+import { createPostrunServer } from "@postrun/js/server";
+import { profilesList } from "@postrun/js";
+
+const postrun = createPostrunServer({
+  secretKey: process.env.POSTRUN_SECRET_KEY!,
+});
+
+const { data } = await profilesList({ client: postrun.client });
+```
+</CodeGroup>
 
 ## Frontend tokens
 
 A frontend token is a signed, short-lived credential scoped to specific profiles
 and scopes. Mint it from your backend, then send it to the browser.
 
-```bash
+<CodeGroup>
+```bash cURL
 curl https://api.postrun.ai/v1/tokens \
   -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
   -H "Content-Type: application/json" \
@@ -43,6 +57,21 @@ curl https://api.postrun.ai/v1/tokens \
     "ttl_seconds": 900
   }'
 ```
+
+```ts @postrun/js
+import { createPostrunServer } from "@postrun/js/server";
+
+const postrun = createPostrunServer({
+  secretKey: process.env.POSTRUN_SECRET_KEY!,
+});
+
+const { token, expires_at } = await postrun.tokens.mint({
+  profile_scope: { type: "ids", values: ["prof_01h455vb4pex5vsknk084sn02q"] },
+  scopes: ["posts:read", "posts:write", "media:write"],
+  ttl_seconds: 900,
+});
+```
+</CodeGroup>
 
 ```json
 {
@@ -56,12 +85,21 @@ A short lifetime is the revocation model: there's no revocation store, so mint
 narrowly and re-mint as needed. The response returns the resolved `expires_at`,
 and the browser uses the token as its bearer:
 
-```ts
-import { createPostrunClient } from "@postrun/js";
+<CodeGroup>
+```ts @postrun/js
+import { createPostrunClient, postsList } from "@postrun/js";
 
-const client = createPostrunClient({ getToken });
-const { data } = await client.posts.list();
+// getToken fetches the token your backend minted.
+const postrun = createPostrunClient({ getToken });
+
+const { data } = await postsList({ client: postrun, query: { limit: 20 } });
 ```
+
+```bash cURL
+curl https://api.postrun.ai/v1/posts \
+  -H "Authorization: Bearer $POSTRUN_FRONTEND_TOKEN"
+```
+</CodeGroup>
 
 ### Choosing profiles
 

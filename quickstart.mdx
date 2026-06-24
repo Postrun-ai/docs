@@ -3,9 +3,10 @@ title: "Quickstart"
 description: "From zero to your first authenticated request."
 ---
 
-Postrun is a REST API at `https://api.postrun.ai/v1`. Every request carries a
-bearer credential. This page gets you a working call, then hands the browser a
-scoped token so your frontend can talk to Postrun directly.
+Postrun is a REST API at `https://api.postrun.ai/v1`, with a first-class,
+fully-typed SDK ([`@postrun/js`](https://www.npmjs.com/package/@postrun/js)) —
+every example below shows both. This page gets you a working call, then hands the
+browser a scoped token so your frontend can talk to Postrun directly.
 
 ## Authentication
 
@@ -28,10 +29,23 @@ model:
     List the profiles under your account. A profile is a brand or client you
     publish and run ads for.
 
-    ```bash
+    <CodeGroup>
+    ```bash cURL
     curl https://api.postrun.ai/v1/profiles \
       -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
     ```
+
+    ```ts @postrun/js
+    import { createPostrunServer } from "@postrun/js/server";
+    import { profilesList } from "@postrun/js";
+
+    const postrun = createPostrunServer({
+      secretKey: process.env.POSTRUN_SECRET_KEY!,
+    });
+
+    const { data } = await profilesList({ client: postrun.client });
+    ```
+    </CodeGroup>
 
     Every response is a typed envelope. A list looks like:
 
@@ -57,7 +71,8 @@ model:
     From your backend, exchange the secret key for a scoped token and send it to
     the browser. Scope it to exactly what that session needs.
 
-    ```bash
+    <CodeGroup>
+    ```bash cURL
     curl https://api.postrun.ai/v1/tokens \
       -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
       -H "Content-Type: application/json" \
@@ -66,26 +81,50 @@ model:
         "scopes": ["posts:read", "posts:write", "media:write"]
       }'
     ```
+
+    ```ts @postrun/js
+    import { createPostrunServer } from "@postrun/js/server";
+
+    const postrun = createPostrunServer({
+      secretKey: process.env.POSTRUN_SECRET_KEY!,
+    });
+
+    const { token } = await postrun.tokens.mint({
+      profile_scope: { type: "ids", values: ["prof_01h455vb4pex5vsknk084sn02q"] },
+      scopes: ["posts:read", "posts:write", "media:write"],
+    });
+    ```
+    </CodeGroup>
   </Step>
   <Step title="Call directly from the frontend">
     The browser uses the token as its bearer — no proxy of your own. The same
     API, the same envelope, narrowed to the token's scopes and profiles.
 
-    ```ts
-    import { createPostrunClient } from "@postrun/js";
+    <CodeGroup>
+    ```ts @postrun/js
+    import { createPostrunClient, postsList } from "@postrun/js";
 
-    const client = createPostrunClient({ getToken });
-    const { data } = await client.profiles.list();
+    // getToken fetches the token your backend minted above.
+    const postrun = createPostrunClient({ getToken });
+
+    const { data } = await postsList({ client: postrun, query: { limit: 20 } });
     ```
+
+    ```bash cURL
+    curl https://api.postrun.ai/v1/posts \
+      -H "Authorization: Bearer $POSTRUN_FRONTEND_TOKEN"
+    ```
+    </CodeGroup>
   </Step>
 </Steps>
 
 ## Writes are safe to retry
 
-Every write accepts an `Idempotency-Key` and a dry-run, so a network blip never
-double-posts or double-spends:
+Every write accepts an `Idempotency-Key` and a [dry-run](/idempotency), so a
+network blip never double-posts or double-spends:
 
-```bash
+<CodeGroup>
+```bash cURL
 curl https://api.postrun.ai/v1/posts \
   -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
   -H "Idempotency-Key: $(uuidgen)" \
@@ -93,11 +132,29 @@ curl https://api.postrun.ai/v1/posts \
   -d '{ "dry_run": true, "...": "..." }'
 ```
 
+```ts @postrun/js
+import { randomUUID } from "node:crypto";
+import { postsCreate } from "@postrun/js";
+
+await postsCreate({
+  client: postrun.client,
+  headers: { "Idempotency-Key": randomUUID() },
+  body: { dry_run: true, /* ... */ },
+});
+```
+</CodeGroup>
+
 ## Next steps
 
 <Columns cols={2}>
+  <Card title="Authentication" href="/authentication">
+    Secret keys, scoped tokens, and the scopes that gate them.
+  </Card>
   <Card title="API reference" href="/api-reference">
-    Browse every endpoint live, with language-specific examples.
+    Browse every endpoint live, with cURL and SDK examples.
+  </Card>
+  <Card title="Idempotency" href="/idempotency">
+    Retry any write safely, with no risk of doing it twice.
   </Card>
   <Card title="Error codes" href="/errors/overview">
     The closed set of typed codes, and how to resolve each one.
