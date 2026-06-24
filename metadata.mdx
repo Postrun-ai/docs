@@ -3,17 +3,45 @@ title: "Metadata & external IDs"
 description: "Map your own identifiers onto Postrun resources, and attach queryable context — no database of your own."
 ---
 
-Postrun is the system of record for your social and ads domain, so you don't run
-a parallel database to track it. Two fields make that work: `external_id` maps
-your identifiers onto Postrun resources, and `metadata` attaches your own context
-that you can read back and filter on. Both are available on **profiles, posts,
-and media**.
+Postrun is the **system of record** for your social and ads domain. Store your
+data with us and read it back through one API — you don't run a parallel
+database, write sync jobs, or stand up backend routes that just wrap ours.
+
+Two fields make that work: `external_id` maps your own identifiers onto Postrun
+resources, and `metadata` attaches your own context that you read back and filter
+on. Both are available on **profiles, posts, and media**.
+
+## Why store it on Postrun
+
+For the social and ads domain, Postrun replaces a whole slice of your backend:
+
+- **No database to run.** Postrun is the source of truth for profiles, posts,
+  schedules, and media — no schema to design, no migrations, no replica to keep
+  alive.
+- **No wrapper backend.** Your frontend calls Postrun directly with a scoped
+  token. You're not proxying our API through routes of your own just to add
+  storage.
+- **No drift.** One source of truth means your copy and ours can never fall out
+  of sync — the "stale data" failure mode of a hand-rolled relay simply can't
+  happen.
+- **Your IDs, no join table.** `external_id` keys every resource by your own
+  identifier, so you resolve "my client" straight to a Postrun resource with
+  nothing to maintain on your side.
+- **Query without a search service.** Filter by `metadata` to find records — no
+  search layer of your own to build or operate.
+- **Fast, everywhere.** The API runs on a global edge network and media is served
+  from a CDN, so reads stay low-latency wherever your users are.
+- **Durable and secure by default.** Encrypted in transit (TLS 1.2+) and at rest,
+  on managed, backed-up, SOC 2 / ISO 27001 infrastructure. Reliability is our job,
+  not your ops burden.
+
+The rest of this page is the two fields that make it work.
 
 ## external_id
 
 Set `external_id` to your own canonical id for a resource — your id for a client,
-a campaign, a draft. It's **unique per account** and indexed, so you can resolve
-your identifier straight to a Postrun resource without keeping a join table:
+a campaign, a draft. It's **unique per account**, so you resolve your identifier
+straight to a Postrun resource, instantly, with no join table on your side:
 
 <CodeGroup>
 ```bash cURL
