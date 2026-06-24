@@ -1,47 +1,107 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "From zero to your first authenticated request."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+Postrun is a REST API at `https://api.postrun.ai/v1`. Every request carries a
+bearer credential. This page gets you a working call, then hands the browser a
+scoped token so your frontend can talk to Postrun directly.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+## Authentication
 
-## Prerequisites
+There are two kinds of credential, and the difference is the whole security
+model:
 
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+- **Secret API key** (`pr_…`) — full account access. Use it only from your
+  **backend**; never ship it to a browser.
+- **Frontend token** — a short-lived, profile-scoped JWT your backend mints from
+  a secret key and hands to the browser. It grants only the scopes and profiles
+  you mint into it. Money and structural writes are secret-key only and can
+  never be reached with a browser token.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Get a secret key">
+    Create a `pr_` key in the [dashboard](https://app.postrun.ai). Keep it on
+    your server — set it as an environment variable, never commit it.
+  </Step>
+  <Step title="Make your first request">
+    List the profiles under your account. A profile is a brand or client you
+    publish and run ads for.
 
     ```bash
-    npm install your-package
+    curl https://api.postrun.ai/v1/profiles \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
+    ```
+
+    Every response is a typed envelope. A list looks like:
+
+    ```json
+    {
+      "object": "list",
+      "data": [
+        {
+          "id": "prof_01h455vb4pex5vsknk084sn02q",
+          "name": "Acme Co.",
+          "external_id": "client_acme",
+          "metadata": { "plan": "pro" },
+          "created_at": "2026-06-16T14:32:08Z"
+        }
+      ],
+      "total": 1,
+      "limit": 20,
+      "has_more": false
+    }
     ```
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+  <Step title="Mint a frontend token">
+    From your backend, exchange the secret key for a scoped token and send it to
+    the browser. Scope it to exactly what that session needs.
 
     ```bash
-    your-cli init
+    curl https://api.postrun.ai/v1/tokens \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "profiles": ["prof_01h455vb4pex5vsknk084sn02q"],
+        "scopes": ["posts:read", "posts:write", "media:write"]
+      }'
     ```
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Call directly from the frontend">
+    The browser uses the token as its bearer — no proxy of your own. The same
+    API, the same envelope, narrowed to the token's scopes and profiles.
 
-    ```bash
-    your-cli start
+    ```ts
+    import { createPostrunClient } from "@postrun/js";
+
+    const client = createPostrunClient({ getToken });
+    const { data } = await client.profiles.list();
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Writes are safe to retry
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+Every write accepts an `Idempotency-Key` and a dry-run, so a network blip never
+double-posts or double-spends:
+
+```bash
+curl https://api.postrun.ai/v1/posts \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{ "dry_run": true, "...": "..." }'
+```
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="API reference" href="/api-reference">
+    Browse every endpoint live, with language-specific examples.
+  </Card>
+  <Card title="Error codes" href="/errors/overview">
+    The closed set of typed codes, and how to resolve each one.
+  </Card>
+</Columns>
+
+Need a hand? Email [hello@postrun.ai](mailto:hello@postrun.ai).

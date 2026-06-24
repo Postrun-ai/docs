@@ -4,8 +4,11 @@
   "name": "Postrun",
   "colors": {
     "primary": "#1942F5",
-    "light": "#3B5BFF",
-    "dark": "#1230C4"
+    "light": "#5B79FF",
+    "dark": "#1942F5"
+  },
+  "appearance": {
+    "default": "light"
   },
   "fonts": {
     "heading": {
