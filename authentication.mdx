@@ -1,0 +1,112 @@
+---
+title: "Authentication"
+description: "Two credentials — a secret key for your backend, scoped tokens for the browser."
+---
+
+Every request carries `Authorization: Bearer <credential>`. There are two kinds,
+and the difference is the whole point: Postrun is built to be called **directly
+from your frontend**, with no proxy backend of your own.
+
+| Credential | Where it lives | Grants |
+| --- | --- | --- |
+| **Secret key** (`pr_…`) | Your backend, only | Full account access |
+| **Frontend token** | The browser | Exactly the profiles and scopes you mint into it |
+
+Your backend mints a short-lived token from the secret key and hands it to the
+browser. The browser then talks to Postrun directly — same API, narrowed to what
+the token allows. You never stand up a proxy, and the secret key never leaves
+your server.
+
+## Secret keys
+
+Create a `pr_` key in the [dashboard](https://app.postrun.ai). It has full access
+to your account, so treat it like a password: keep it server-side, store it in an
+environment variable, and never ship it to a browser or commit it.
+
+```bash
+curl https://api.postrun.ai/v1/profiles \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
+```
+
+## Frontend tokens
+
+A frontend token is a signed, short-lived credential scoped to specific profiles
+and scopes. Mint it from your backend, then send it to the browser.
+
+```bash
+curl https://api.postrun.ai/v1/tokens \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
+    "scopes": ["posts:read", "posts:write", "media:write"],
+    "ttl_seconds": 900
+  }'
+```
+
+```json
+{
+  "token": "eyJhbGciOi…",
+  "expires_at": "2026-06-24T16:00:00Z"
+}
+```
+
+`ttl_seconds` is optional — between 60 and 1800, defaulting to 900 (15 minutes).
+A short lifetime is the revocation model: there's no revocation store, so mint
+narrowly and re-mint as needed. The response returns the resolved `expires_at`,
+and the browser uses the token as its bearer:
+
+```ts
+import { createPostrunClient } from "@postrun/js";
+
+const client = createPostrunClient({ getToken });
+const { data } = await client.posts.list();
+```
+
+### Choosing profiles
+
+`profile_scope` decides which profiles a token may act on. Pick whichever fits
+how you store the mapping:
+
+| Selector | Use it when |
+| --- | --- |
+| `{ "type": "ids", "values": [...] }` | You have Postrun profile ids. |
+| `{ "type": "external_id", "values": [...] }` | You key profiles by [your own id](/metadata). Resolved per request, so it also covers profiles created after the token was minted. |
+| `{ "type": "all" }` | The token may act on every profile in the account. |
+
+## Scopes
+
+Scopes are coarse — one read and one write per resource. A `:write` scope also
+grants the matching `:read`, so you don't list both.
+
+| Resource | Read | Write |
+| --- | --- | --- |
+| Profiles | `profiles:read` | `profiles:write` |
+| Connections | `connections:read` | `connections:write` |
+| Posts | `posts:read` | `posts:write` |
+| Media | `media:read` | `media:write` |
+| Ads | `ads:read` | `ads:write` |
+
+Mint the narrowest set a session needs. A token can never exceed the secret key
+that created it.
+
+## What a browser token can never do
+
+Some writes are **secret-key only** — they don't accept a frontend token at all,
+no matter its scopes. Money and structural writes live here: anything that moves
+ad budget or spend, for one, can only be called from your backend. So a leaked or
+over-scoped browser token still can't touch them — like a Stripe publishable key
+that can tokenize a card but can't issue a refund.
+
+## Tenancy
+
+A token is bound to its profiles. Ask it for a resource under a different
+profile and Postrun returns `404`
+[`not_found`](/errors/not_found) — the same answer as a resource that doesn't
+exist, so a token can't probe what it can't reach.
+
+<Note>
+  Whether an endpoint accepts a frontend token is stated in its
+  [API reference](/api-reference) under *Authorizations*. If it lists only the
+  secret key, a browser token can't call it.
+</Note>

@@ -1,0 +1,38 @@
+---
+title: "Rate limits"
+description: "Per-account limits, split by reads and writes, with headers on every response."
+---
+
+Rate limits are **per account** — shared across every secret key and frontend
+token you hold. Minting more tokens doesn't buy more capacity; the budget belongs
+to the account, so your limit is predictable no matter how many credentials are
+in play.
+
+Limits apply on a sliding one-minute window, split by what the request does:
+
+| Bucket | Limit | What counts |
+| --- | --- | --- |
+| **Reads** | 1,000 / min | `GET`, plus read-only `POST` endpoints like `/gaql` and `/google/{connection_id}/insights` |
+| **Writes** | 100 / min | Mutating `POST`, `PUT`, `PATCH`, `DELETE` |
+
+## Headers
+
+Every response tells you where you stand, so you can pace requests instead of
+guessing:
+
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit` | The bucket's ceiling. |
+| `X-RateLimit-Remaining` | Requests left in the current window. |
+| `X-RateLimit-Reset` | When the window resets (unix seconds). |
+
+## When you exceed a limit
+
+You get `429` [`rate_limited`](/errors/rate_limited) with a `Retry-After` header
+(seconds). Wait that long, then retry.
+
+<Note>
+  Pair retries with [idempotency](/idempotency): send the same `Idempotency-Key`
+  when you retry a write, and a `429` followed by a retry can never double the
+  action.
+</Note>

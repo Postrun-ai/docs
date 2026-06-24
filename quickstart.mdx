@@ -62,7 +62,7 @@ model:
       -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
       -H "Content-Type: application/json" \
       -d '{
-        "profiles": ["prof_01h455vb4pex5vsknk084sn02q"],
+        "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
         "scopes": ["posts:read", "posts:write", "media:write"]
       }'
     ```

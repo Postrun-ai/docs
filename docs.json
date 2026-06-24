@@ -25,11 +25,19 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
               "index",
-              "quickstart",
-              "idempotency"
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core concepts",
+            "pages": [
+              "authentication",
+              "idempotency",
+              "rate-limits",
+              "metadata"
             ]
           }
         ]
