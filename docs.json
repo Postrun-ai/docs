@@ -3,9 +3,17 @@
   "theme": "mint",
   "name": "Postrun",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#1942F5",
+    "light": "#3B5BFF",
+    "dark": "#1230C4"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Space Grotesk"
+    },
+    "body": {
+      "family": "Geist"
+    }
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -24,7 +32,7 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "/api-reference/openapi.json"
+        "openapi": "https://api.postrun.ai/v1/openapi.json"
       },
       {
         "tab": "Errors",
