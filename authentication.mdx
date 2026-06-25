@@ -24,11 +24,6 @@ to your account, so treat it like a password: keep it server-side, store it in a
 environment variable, and never ship it to a browser or commit it.
 
 <CodeGroup>
-```bash cURL
-curl https://api.postrun.ai/v1/profiles \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
-```
-
 ```ts @postrun/js
 import { createPostrunServer } from "@postrun/js/server";
 import { profilesList } from "@postrun/js";
@@ -39,6 +34,11 @@ const postrun = createPostrunServer({
 
 const { data } = await profilesList({ client: postrun.client });
 ```
+
+```bash cURL
+curl https://api.postrun.ai/v1/profiles \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
+```
 </CodeGroup>
 
 ## Frontend tokens
@@ -47,17 +47,6 @@ A frontend token is a signed, short-lived credential scoped to specific profiles
 and scopes. Mint it from your backend, then send it to the browser.
 
 <CodeGroup>
-```bash cURL
-curl https://api.postrun.ai/v1/tokens \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
-    "scopes": ["posts:read", "posts:write", "media:write"],
-    "ttl_seconds": 900
-  }'
-```
-
 ```ts @postrun/js
 import { createPostrunServer } from "@postrun/js/server";
 
@@ -70,6 +59,17 @@ const { token, expires_at } = await postrun.tokens.mint({
   scopes: ["posts:read", "posts:write", "media:write"],
   ttl_seconds: 900,
 });
+```
+
+```bash cURL
+curl https://api.postrun.ai/v1/tokens \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
+    "scopes": ["posts:read", "posts:write", "media:write"],
+    "ttl_seconds": 900
+  }'
 ```
 </CodeGroup>
 

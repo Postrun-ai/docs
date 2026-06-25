@@ -44,11 +44,6 @@ a campaign, a draft. It's **unique per account**, so you resolve your identifier
 straight to a Postrun resource, instantly, with no join table on your side:
 
 <CodeGroup>
-```bash cURL
-curl "https://api.postrun.ai/v1/profiles?external_id=client_acme" \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
-```
-
 ```ts @postrun/js
 import { profilesList } from "@postrun/js";
 
@@ -56,6 +51,11 @@ const { data } = await profilesList({
   client: postrun.client,
   query: { external_id: "client_acme" },
 });
+```
+
+```bash cURL
+curl "https://api.postrun.ai/v1/profiles?external_id=client_acme" \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
 ```
 </CodeGroup>
 
@@ -98,12 +98,6 @@ are **exact**, multiple keys are **ANDed**, and types must match (so `3` matches
 the number `3`, not the string `"3"`):
 
 <CodeGroup>
-```bash cURL
-# ?metadata={"campaign":"summer-2026","priority":3}
-curl "https://api.postrun.ai/v1/posts?metadata=%7B%22campaign%22%3A%22summer-2026%22%2C%22priority%22%3A3%7D" \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
-```
-
 ```ts @postrun/js
 import { postsList } from "@postrun/js";
 
@@ -112,6 +106,12 @@ const { data } = await postsList({
   client: postrun.client,
   query: { metadata: { campaign: "summer-2026", priority: 3 } },
 });
+```
+
+```bash cURL
+# ?metadata={"campaign":"summer-2026","priority":3}
+curl "https://api.postrun.ai/v1/posts?metadata=%7B%22campaign%22%3A%22summer-2026%22%2C%22priority%22%3A3%7D" \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
 ```
 </CodeGroup>
 

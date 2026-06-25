@@ -30,11 +30,6 @@ model:
     publish and run ads for.
 
     <CodeGroup>
-    ```bash cURL
-    curl https://api.postrun.ai/v1/profiles \
-      -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
-    ```
-
     ```ts @postrun/js
     import { createPostrunServer } from "@postrun/js/server";
     import { profilesList } from "@postrun/js";
@@ -44,6 +39,11 @@ model:
     });
 
     const { data } = await profilesList({ client: postrun.client });
+    ```
+
+    ```bash cURL
+    curl https://api.postrun.ai/v1/profiles \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
     ```
     </CodeGroup>
 
@@ -72,16 +72,6 @@ model:
     the browser. Scope it to exactly what that session needs.
 
     <CodeGroup>
-    ```bash cURL
-    curl https://api.postrun.ai/v1/tokens \
-      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
-        "scopes": ["posts:read", "posts:write", "media:write"]
-      }'
-    ```
-
     ```ts @postrun/js
     import { createPostrunServer } from "@postrun/js/server";
 
@@ -93,6 +83,16 @@ model:
       profile_scope: { type: "ids", values: ["prof_01h455vb4pex5vsknk084sn02q"] },
       scopes: ["posts:read", "posts:write", "media:write"],
     });
+    ```
+
+    ```bash cURL
+    curl https://api.postrun.ai/v1/tokens \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
+        "scopes": ["posts:read", "posts:write", "media:write"]
+      }'
     ```
     </CodeGroup>
   </Step>
@@ -124,14 +124,6 @@ Every write accepts an `Idempotency-Key` and a [dry-run](/idempotency), so a
 network blip never double-posts or double-spends:
 
 <CodeGroup>
-```bash cURL
-curl https://api.postrun.ai/v1/posts \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
-  -H "Idempotency-Key: $(uuidgen)" \
-  -H "Content-Type: application/json" \
-  -d '{ "dry_run": true, "...": "..." }'
-```
-
 ```ts @postrun/js
 import { randomUUID } from "node:crypto";
 import { postsCreate } from "@postrun/js";
@@ -141,6 +133,14 @@ await postsCreate({
   headers: { "Idempotency-Key": randomUUID() },
   body: { dry_run: true, /* ... */ },
 });
+```
+
+```bash cURL
+curl https://api.postrun.ai/v1/posts \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{ "dry_run": true, "...": "..." }'
 ```
 </CodeGroup>
 

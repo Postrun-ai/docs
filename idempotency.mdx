@@ -17,14 +17,6 @@ you'll get the original result back, not a second action.
 Send an `Idempotency-Key` header on any write request:
 
 <CodeGroup>
-```bash cURL
-curl https://api.postrun.ai/v1/posts \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
-  -H "Idempotency-Key: 1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" \
-  -H "Content-Type: application/json" \
-  -d '{ "...": "..." }'
-```
-
 ```ts @postrun/js
 import { postsCreate } from "@postrun/js";
 
@@ -33,6 +25,14 @@ await postsCreate({
   headers: { "Idempotency-Key": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" },
   body: { /* ... */ },
 });
+```
+
+```bash cURL
+curl https://api.postrun.ai/v1/posts \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Idempotency-Key: 1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" \
+  -H "Content-Type: application/json" \
+  -d '{ "...": "..." }'
 ```
 </CodeGroup>
 
