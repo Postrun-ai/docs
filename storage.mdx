@@ -3,39 +3,37 @@ title: "Storage"
 description: "Store your social and ads data on Postrun and query it back — no database of your own."
 ---
 
-Postrun is the **system of record** for your social and ads domain. Store your
-data with us and read it back through one API — you don't run a parallel
-database, write sync jobs, or stand up backend routes that just wrap ours.
+Postrun is the **system of record** for your social and ads domain. Your
+profiles, posts, schedules, and media live with us, and you read them back
+through one API — so you don't run a parallel database, write sync jobs, or stand
+up backend routes that exist only to wrap ours.
 
-Two fields make that work: `external_id` maps your own identifiers onto Postrun
-resources, and `metadata` attaches your own context that you read back and filter
-on. Both are available on **profiles, posts, and media**.
+Two fields make it yours to organize: `external_id` maps your own identifiers
+onto Postrun resources, and `metadata` attaches your own context that you read
+back and filter on. Both work on **profiles, posts, and media**.
 
 ## Why store it on Postrun
 
 For the social and ads domain, Postrun replaces a whole slice of your backend:
 
-- **No database to run.** Postrun is the source of truth for profiles, posts,
+- **No database to run.** We're the source of truth for profiles, posts,
   schedules, and media — no schema to design, no migrations, no replica to keep
-  alive.
+  in sync.
 - **No wrapper backend.** Your frontend calls Postrun directly with a scoped
-  token. You're not proxying our API through routes of your own just to add
-  storage.
-- **No drift.** One source of truth means your copy and ours can never fall out
-  of sync — the "stale data" failure mode of a hand-rolled relay simply can't
-  happen.
+  token — no API routes of your own that exist only to proxy ours.
+- **Authorization, built in.** That [scoped token](/authentication) can touch
+  _only_ the profiles and scopes you mint into it, enforced on every request. So
+  "which of my customers can see which data" is the token itself — not
+  access-control code you write and keep correct.
 - **Your IDs, no join table.** `external_id` keys every resource by your own
   identifier, so you resolve "my client" straight to a Postrun resource with
-  nothing to maintain on your side.
+  nothing to map on your side.
 - **Query without a search service.** Filter by `metadata` to find records — no
-  search layer of your own to build or operate.
+  search layer of your own to build or run.
 - **Fast, everywhere.** The API runs on a global edge network and media is served
   from a CDN, so reads stay low-latency wherever your users are.
-- **Durable and secure by default.** Encrypted in transit (TLS 1.2+) and at rest,
-  on managed, backed-up infrastructure. Reliability is our job, not your ops
-  burden.
-
-The rest of this page is the two fields that make it work.
+- **Durable and secure.** Encrypted in transit (TLS 1.2+) and at rest, on
+  managed, backed-up infrastructure. Reliability is our job, not your ops burden.
 
 ## external_id
 
