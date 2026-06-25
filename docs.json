@@ -59,7 +59,8 @@
             "pages": [
               "react/get-started",
               "react/fetching-and-mutations",
-              "react/posts"
+              "react/posts",
+              "react/media"
             ]
           }
         ]

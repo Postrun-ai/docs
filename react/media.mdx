@@ -1,0 +1,121 @@
+---
+title: "Media"
+description: "Upload a file and get back a platform-ready asset — the whole pipeline behind one hook."
+---
+
+Media on Postrun isn't a dumb file store. You upload raw bytes; Postrun detects
+the type, validates the file against each platform, and renders a platform-ready
+version. `useMediaUpload` runs that whole journey behind one hook — create the
+asset, upload the bytes (resumable), and poll until processing settles — and
+hands you assets ready to attach to a post.
+
+## Upload a file
+
+`useMediaUpload` takes one file or many and tracks each one's live state:
+
+```tsx
+import { useMediaUpload } from "@postrun/react";
+
+function Uploader({ profileId }) {
+  const { add, items, isUploading } = useMediaUpload();
+
+  return (
+    <div>
+      <input
+        type="file"
+        multiple
+        disabled={isUploading}
+        onChange={(e) => add(e.target.files, { profileId })}
+      />
+
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            {item.file.name} — {item.status}
+            {item.status === "uploading" && (
+              <progress value={item.progress} max={1} />
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+You don't declare the file type — Postrun detects `kind` and `content_type` from
+the bytes. Uploads run through one shared gate (3 at a time by default), so you
+can hand `add` a whole `FileList` and let it pace itself.
+
+## Track progress
+
+Each file is an `item` with its own live state:
+
+| Field | What it is |
+| --- | --- |
+| `status` | `uploading` → `processing` → `ready` (or `failed`) |
+| `progress` | `0`–`1` byte-upload bar, while `status` is `uploading` |
+| `media` | The asset once it exists — `media.progress.{stage,percent}` is the live server-side processing bar |
+| `error` | Set if the upload failed |
+
+`isUploading` is true while any item is still uploading or processing — wire it to
+a disabled state. `remove(item.id)` drops one file (aborting it if in flight);
+`reset()` clears everything.
+
+## Attach to a post
+
+`ready` is the settled assets, in order — what you hand to a post. For an
+imperative flow, `add` also resolves once each file settles:
+
+```tsx
+const [asset] = await add(file, { profileId });
+
+if (asset.status === "ready") {
+  await create({
+    content: { media: [{ id: asset.id, kind: asset.kind }] },
+    channels: { instagram: { settings: { media_type: "IMAGE" } } },
+    publish: "now",
+  });
+}
+```
+
+(`create` comes from [`useCreatePost`](/react/posts).)
+
+## Render for the platforms you need
+
+Pass `targets` to validate and render a version per platform up front:
+
+```tsx
+await add(file, { profileId, targets: ["instagram", "x"] });
+```
+
+Targets are `x`, `linkedin`, `facebook_page`, `instagram`, `tiktok`, and the ad
+target `google_ads`. The asset's `per_platform` then carries each target's
+status, URL, and any warnings. Omit `targets` to add them later with
+`useUpdateMedia`.
+
+## Upload options
+
+`add(files, options)` takes:
+
+| Option | What it does |
+| --- | --- |
+| `profileId` | **Required** — the profile that owns the asset |
+| `targets` | Platforms to validate and render for |
+| `raw` | Store the file as-is, with no processing |
+| `altText` | Accessibility text |
+| `externalId` | Your own id for the asset |
+| `metadata` | Custom key/value context |
+
+Set how many files upload at once on the hook: `useMediaUpload({ concurrency: 5 })`
+(default 3).
+
+## Browse and manage
+
+- **`useMedia(id)`** — fetch one asset; it polls while the asset is still
+  `uploading` or `processing` and stops once it's `ready` or `failed`.
+- **`useMediaList(query)`** / **`useMediaInfinite(filters)`** — list assets, filter
+  by `profile_id`, `status`, `kind`, your own `external_id`, or `metadata`.
+- **`useUpdateMedia()`** — edit alt text, metadata, or external id, or extend
+  `targets`.
+- **`useDeleteMedia()`** — delete an asset and its rendered versions.
