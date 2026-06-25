@@ -19,6 +19,12 @@
     }
   },
   "favicon": "/favicon.svg",
+  "redirects": [
+    {
+      "source": "/metadata",
+      "destination": "/storage"
+    }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -34,10 +40,10 @@
           {
             "group": "Core concepts",
             "pages": [
+              "storage",
               "authentication",
               "idempotency",
-              "rate-limits",
-              "metadata"
+              "rate-limits"
             ]
           }
         ]
