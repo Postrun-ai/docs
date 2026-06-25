@@ -1,51 +1,49 @@
 ---
 title: "Authentication"
-description: "A secret key for your backend, scoped tokens for the browser — authorization you mint, not code you write."
+description: "A secret key for your backend, scoped tokens for the browser, with authorization built into every token."
 ---
 
 To let a browser talk to a third-party API safely, you normally stand up a
 backend: it holds the secret, proxies every call, and on each request decides
-whether _this_ user may touch _that_ data. That backend is pure plumbing — and
-it's exactly what Postrun removes.
+whether _this_ user may touch _that_ data. That backend is plumbing you build and
+maintain. With Postrun, you don't need it.
 
-Postrun has two credentials, and every request carries one as
+There are two credentials, and every request carries one as
 `Authorization: Bearer <credential>`:
 
 | Credential | Lives on | Grants |
 | --- | --- | --- |
 | **Secret key** (`pr_…`) | Your **backend**, only | Full access to your whole account |
-| **Scoped token** | The **browser** | Only the profiles and scopes you mint into it |
+| **Scoped token** | The **browser** | Only the profiles and scopes you grant it |
 
-The pattern is the whole product: your backend mints a short-lived **scoped
-token** from the secret key and hands it to the browser, which then calls Postrun
-**directly**. No proxy, and the token _is_ the authorization.
+Your backend mints a short-lived **scoped token** from the secret key and hands it
+to the browser. The browser then calls Postrun **directly** — no proxy in between.
 
 <Note>
   Every request answers two questions. **Authentication** — who is calling? (the
   bearer credential.) **Authorization** — what may they do? (for a token, the
   scopes and profiles baked into it.) Postrun enforces both on every request, so
-  authorization isn't something you build — it's something you mint.
+  there are no permission checks left for you to write.
 </Note>
 
 ## Scoped tokens — the recommended path
 
 For anything a user touches — a dashboard, a composer, a mobile app — mint a
-scoped token and let the browser call Postrun directly. Here's why that's the
-recommendation, not just an option:
+scoped token and let the browser call Postrun directly. What this gives you:
 
-- **No backend dance.** The browser lists posts, reads ad results, uploads media,
-  even publishes — straight to Postrun. You're not writing routes that forward
-  calls and re-check permissions; there's nothing in the middle to build or run.
-- **Authorization is the token.** A token is locked to specific **profiles**
-  (whose data) and **scopes** (which actions). Postrun checks both on every
-  request, so "which of my customers can see what" is decided when you mint —
-  never access-control code you maintain.
-- **Secure by construction.** The secret key never reaches the browser. The token
-  is short-lived _and_ scoped, and money or structural writes simply can't be
-  reached with one (more below). A leaked token expires on its own and could only
-  ever do the little you scoped it to.
-- **Fast.** One hop to Postrun's edge — no proxy round-trip through a backend of
-  your own.
+- **No proxy backend.** The browser lists posts, reads ad results, uploads media,
+  and publishes — straight to Postrun. You don't write routes that forward calls
+  and re-check permissions.
+- **The token carries its own permissions.** A token is locked to specific
+  **profiles** (whose data) and **scopes** (which actions), and Postrun checks
+  both on every request. You decide what a token can reach at mint time, not in
+  access-control code you maintain.
+- **Safe by default.** The secret key never reaches the browser. A token is
+  short-lived and scoped, and can't perform money or structural writes (more
+  below). A leaked token expires on schedule and can only do what you scoped it
+  to.
+- **One network hop.** The browser reaches Postrun directly, with no proxy
+  round-trip through your backend.
 
 ### Mint a token
 
@@ -106,15 +104,15 @@ on:
 | Ads | `ads:read` | `ads:write` |
 
 Mint the narrowest set a session needs. Ask a token for a profile it wasn't
-scoped to and you get `404` [`not_found`](/errors/not_found), not `403` — it
-can't even tell what it can't reach.
+scoped to and you get `404` [`not_found`](/errors/not_found), not `403` — so a
+token can't discover profiles outside its scope.
 
 ### Lifetime
 
 `ttl_seconds` sets how long the token lives — between 60 and 1800, defaulting to
-900 (15 minutes). A short lifetime _is_ the revocation model: there's no
-revocation list to manage, so mint narrowly and re-mint as the session needs. The
-response hands back the resolved `expires_at`.
+900 (15 minutes). Tokens expire instead of being revoked: there's no revocation
+list to manage, so mint narrowly and re-mint as the session needs. The response
+returns the resolved `expires_at`.
 
 ### Use it in the browser
 
@@ -140,7 +138,7 @@ curl https://api.postrun.ai/v1/posts \
 <Note>
   Building a UI? The [React SDK](https://www.npmjs.com/package/@postrun/react)
   takes `getToken` once in a provider and gives you hooks that fetch, cache, and
-  refresh for you — you never touch the token again.
+  refresh for you — so you don't manage the token yourself.
 </Note>
 
 ## Secret keys
@@ -149,23 +147,23 @@ Create a `pr_` key in the [dashboard](https://app.postrun.ai). It has **full
 access to your whole account**, so treat it like a password: keep it server-side,
 store it in an environment variable, and never ship it to a browser or commit it.
 
-A secret key is for your **backend**, and ideally for just two jobs:
+A secret key belongs on your **backend**, and ideally does just two things:
 
 1. **Mint scoped tokens** — the flow above, for anything user-facing.
 2. **Money and structural writes** — operations a browser token can't reach (next
    section), called from your own server.
 
 For everything else a user-facing flow needs, mint a token instead of reaching
-for the secret key. It keeps the powerful credential off the browser and your
-blast radius small.
+for the secret key. This keeps the secret key off the browser and limits what a
+leaked token can do.
 
 ## What only a secret key can do
 
 Some writes are **secret-key only** — they don't accept a scoped token at all, no
-matter its scopes. **Money and structural writes** live here: anything that moves
-ad budget or spend, for one, can only be called from your backend. So a leaked or
-over-scoped browser token still can't touch them — like a Stripe publishable key
-that can tokenize a card but can't issue a refund.
+matter its scopes. **Money and structural writes** live here: anything that
+changes ad budget or spend, for example, can only be called from your backend. So
+a leaked or over-scoped browser token still can't touch them — like a Stripe
+publishable key that can tokenize a card but can't issue a refund.
 
 Whether an endpoint accepts a token is stated in its
 [API reference](/api-reference) under _Authorizations_. If it lists only the
