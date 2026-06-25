@@ -75,7 +75,7 @@ use both below — see [Authentication](/authentication) for the full model.
     });
 
     const { token } = await postrun.tokens.mint({
-      profile_scope: { type: "ids", values: ["prof_01h455vb4pex5vsknk084sn02q"] },
+      profile_scope: { type: "profile_ids", values: ["prof_01h455vb4pex5vsknk084sn02q"] },
       scopes: ["posts:read", "posts:write", "media:write"],
     });
     ```
@@ -85,7 +85,7 @@ use both below — see [Authentication](/authentication) for the full model.
       -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
       -H "Content-Type: application/json" \
       -d '{
-        "profile_scope": { "type": "ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
+        "profile_scope": { "type": "profile_ids", "values": ["prof_01h455vb4pex5vsknk084sn02q"] },
         "scopes": ["posts:read", "posts:write", "media:write"]
       }'
     ```
