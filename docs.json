@@ -45,6 +45,12 @@
               "idempotency",
               "rate-limits"
             ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "react"
+            ]
           }
         ]
       },

@@ -1,0 +1,217 @@
+---
+title: "React"
+description: "Hooks for Postrun, built on TanStack Query — wrap your app once, then read, write, and stream data with caching handled for you."
+---
+
+`@postrun/react` is a provider and a set of hooks built on
+[TanStack Query](https://tanstack.com/query). Wrap your app once with a token,
+then call hooks that fetch, cache, and revalidate for you — no `fetch` to write,
+no `QueryClient` to wire up, and every call typed from the API.
+
+## Install
+
+```bash
+npm install @postrun/react
+```
+
+Requires React 18.2 or 19. TanStack Query comes bundled — you don't install or
+configure it.
+
+## Set up the provider
+
+Mount `<PostrunProvider>` once, near the root of your app. Give it a `getToken`
+that returns a [scoped token](/authentication) your backend minted — the secret
+key never reaches the browser.
+
+```tsx
+import { PostrunProvider } from "@postrun/react";
+
+export function App({ children }) {
+  return (
+    <PostrunProvider
+      getToken={() =>
+        fetch("/api/postrun-token")
+          .then((r) => r.json())
+          .then((t) => t.token)
+      }
+    >
+      {children}
+    </PostrunProvider>
+  );
+}
+```
+
+<Note>
+  The provider creates its own private `QueryClient`. You don't add a
+  `QueryClientProvider`, and it stays isolated from any TanStack Query setup your
+  app already runs. To share one (for devtools or custom defaults), pass
+  `queryClient`; to point at another environment, pass `baseUrl`.
+</Note>
+
+## How the hooks work
+
+Every hook reads the provider's client and shared cache, and follows TanStack
+Query's patterns:
+
+- **Reads** return a query result — `data`, `isLoading`, `error`, `refetch`.
+  Identical reads are cached and deduped across your app.
+- **Lists** come two ways: a single-page `useX(query)`, and a load-more
+  `useXInfinite(filters)` that returns
+  `{ items, loadMore, hasMore, isLoading, isLoadingMore, total }`.
+- **Writes** give you a call to invoke plus `isPending` and `error`, and refresh
+  the affected lists on success — no manual refetch.
+
+The exact fields are fully typed, so your editor shows them inline. The examples
+below are representative — the same patterns apply to every resource.
+
+### Read a list
+
+```tsx
+import { usePostsInfinite } from "@postrun/react";
+
+function Posts({ profileId }) {
+  const { items, loadMore, hasMore, isLoading } = usePostsInfinite({
+    profile_id: profileId,
+  });
+
+  if (isLoading) return <Spinner />;
+
+  return (
+    <>
+      {items.map((post) => (
+        <PostRow key={post.id} post={post} />
+      ))}
+      {hasMore && <button onClick={loadMore}>Load more</button>}
+    </>
+  );
+}
+```
+
+### Write data
+
+A write returns a call to invoke and its pending state. On success, the relevant
+lists refresh themselves — you don't refetch by hand.
+
+```tsx
+import { useCreatePost } from "@postrun/react";
+
+function Publish({ profileId }) {
+  const { create, isPending } = useCreatePost(profileId);
+
+  return (
+    <button disabled={isPending} onClick={() => create({ /* compose input */ })}>
+      {isPending ? "Publishing…" : "Publish"}
+    </button>
+  );
+}
+```
+
+### Live updates
+
+Hooks that track a publishing post poll while it's in flight and stop the moment
+it settles, so a scheduled post transitions in your UI with no polling code of
+your own.
+
+```tsx
+import { usePost } from "@postrun/react";
+
+function PostStatus({ id }) {
+  const { data: post } = usePost(id);
+  return <StatusBadge status={post?.status} />;
+}
+```
+
+### Upload media
+
+`useMediaUpload` runs the whole pipeline — signed upload, byte transfer, and
+polling each asset until it's platform-ready — and exposes live state for your UI.
+
+```tsx
+import { useMediaUpload } from "@postrun/react";
+
+function Uploader({ profileId }) {
+  const { add, items, isUploading } = useMediaUpload();
+
+  return (
+    <input
+      type="file"
+      multiple
+      disabled={isUploading}
+      onChange={(e) => add(e.target.files, { profileId })}
+    />
+  );
+}
+```
+
+## Full coverage: the query layer
+
+Hooks cover the core domain — profiles, connections, media, and posts. For any
+other operation, including Google Ads, the generated TanStack `*Options` and
+`*Mutation` ship for **every** endpoint. `usePostrunQuery` and
+`usePostrunMutation` inject the provider's client and cache, so auth and caching
+work the same way:
+
+```tsx
+import { usePostrunQuery, googleListCampaignsOptions } from "@postrun/react";
+
+function Campaigns({ connectionId }) {
+  const { data } = usePostrunQuery((client) =>
+    googleListCampaignsOptions({ client, path: { connection_id: connectionId } }),
+  );
+  // …render campaigns
+}
+```
+
+That's full API coverage on the same caching layer, even where there's no
+hand-written hook.
+
+## Components
+
+The library ships a small set of headless, typed components for the surfaces that
+are tedious to build by hand. They're unstyled where it matters, so they fit your
+design.
+
+### Connect an account
+
+`<Connect>` runs the OAuth flow in a popup from **your own button** — no redirect,
+no second click. For multi-account platforms (Meta Ads, Facebook Pages) it hands
+you the discoverable accounts to render your own picker. It's a render-prop, so
+you draw every pixel:
+
+```tsx
+import { Connect } from "@postrun/react";
+
+function ConnectX({ profileId, onConnected }) {
+  return (
+    <Connect profileId={profileId} platform="x" onConnected={onConnected}>
+      {({ state, start }) => (
+        // `start` must run inside the click so the popup stays in the gesture.
+        <button onClick={start} disabled={state.phase !== "idle"}>
+          {state.phase === "active" ? "Connected" : "Connect X"}
+        </button>
+      )}
+    </Connect>
+  );
+}
+```
+
+Prefer wiring it yourself? `useConnect({ profileId, platform, onConnected })`
+returns the same machine that `<Connect>` renders.
+
+### Post previews
+
+Render a post the way each platform will, from a read variant — useful for a
+composer preview or an approval screen:
+
+- `XPostPreview`, `LinkedInPostPreview`, `InstagramPostPreview`, `ReelPreview`,
+  `TikTokPostPreview`
+
+Each takes its typed variant and connection and is themeable; props are exported
+alongside the component. For TikTok's required publishing UX there's also a
+`TikTokPublishPanel` (privacy, interaction toggles, commercial disclosure).
+
+<Note>
+  Composite UI — a full composer or a calendar grid — is deliberately **not**
+  shipped. That's your product and your taste; build it from the hooks and
+  components above.
+</Note>
