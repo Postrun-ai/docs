@@ -83,13 +83,15 @@ const [asset] = await add(file, { profileId });
 if (asset.status === "ready") {
   await create({
     content: { media: [{ id: asset.id, kind: asset.kind }] },
-    channels: { instagram: { settings: { media_type: "IMAGE" } } },
+    channels: { instagram: { settings: {} } },
     publish: "now",
   });
 }
 ```
 
-(`create` comes from [`useCreatePost`](/react/posts).)
+(`create` comes from [`useCreatePost`](/react/posts).) Platform settings stay
+optional — Instagram's `media_type`, for instance, defaults to `IMAGE` for a
+single image.
 
 ## Render for the platforms you need
 
