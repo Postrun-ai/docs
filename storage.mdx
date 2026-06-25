@@ -20,26 +20,27 @@ their own data, with no database, no sync, and no backend of yours in between.
 
 ## Why store it on Postrun
 
-For the social and ads domain, Postrun replaces a whole slice of your backend:
+For the social and ads domain, Postrun handles storage and access control you'd
+otherwise build yourself:
 
 - **No database to run.** We're the source of truth for profiles, posts,
   schedules, and media — no schema to design, no migrations, no replica to keep
   in sync.
 - **No wrapper backend.** Your frontend calls Postrun directly with a scoped
   token — no API routes of your own that exist only to proxy ours.
-- **Authorization, built in.** That [scoped token](/authentication) can touch
-  _only_ the profiles and scopes you mint into it, enforced on every request. So
-  "which of my customers can see which data" is the token itself — not
-  access-control code you write and keep correct.
+- **Authorization, built in.** A [scoped token](/authentication) can touch _only_
+  the profiles and scopes you mint into it, enforced on every request. So which
+  customer sees which data is decided by the token, not by access-control code you
+  write and maintain.
 - **Your IDs, no join table.** `external_id` keys every resource by your own
   identifier, so you resolve "my client" straight to a Postrun resource with
   nothing to map on your side.
 - **Query without a search service.** Filter by `metadata` to find records — no
   search layer of your own to build or run.
-- **Fast, everywhere.** The API runs on a global edge network and media is served
-  from a CDN, so reads stay low-latency wherever your users are.
+- **Low-latency reads.** The API runs on a global edge network and media is
+  served from a CDN, so reads stay fast wherever your users are.
 - **Durable and secure.** Encrypted in transit (TLS 1.2+) and at rest, on
-  managed, backed-up infrastructure. Reliability is our job, not your ops burden.
+  managed, backed-up infrastructure.
 
 ## Map with your own IDs
 
