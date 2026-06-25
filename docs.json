@@ -27,6 +27,10 @@
     {
       "source": "/react",
       "destination": "/react/get-started"
+    },
+    {
+      "source": "/react/reading-and-writing",
+      "destination": "/react/fetching-and-mutations"
     }
   ],
   "navigation": {
@@ -54,7 +58,7 @@
             "group": "React SDK",
             "pages": [
               "react/get-started",
-              "react/reading-and-writing"
+              "react/fetching-and-mutations"
             ]
           }
         ]
