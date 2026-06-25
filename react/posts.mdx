@@ -1,0 +1,143 @@
+---
+title: "Posts"
+description: "Compose to one platform or many in a single call, publish or schedule, and read the per-platform outcome."
+---
+
+A post is `content` (a body and optional media) sent to one or more `channels` —
+each channel carrying its platform's native settings. The hooks resolve the
+profile's connections and assemble the per-platform variants for you, so you
+never pass a `connection_id` or build a variant by hand.
+
+## Compose and publish
+
+`useCreatePost(profileId)` gives you `create` plus the live publish state. Pass
+`content`, the `channels` to post to, and when to `publish`:
+
+```tsx
+import { useState } from "react";
+import { useCreatePost } from "@postrun/react";
+
+function Composer({ profileId }) {
+  const [body, setBody] = useState("");
+  const { create, isPending, isPublished, failedVariants, error } =
+    useCreatePost(profileId);
+
+  async function publish() {
+    try {
+      await create({
+        content: { body },
+        channels: { x: { settings: {} } },
+        publish: "now",
+      });
+      setBody("");
+    } catch {
+      // A transport error (network / 4xx) — surfaced via `error` below.
+    }
+  }
+
+  return (
+    <div>
+      <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+      <button onClick={publish} disabled={isPending || !body}>
+        {isPending ? "Publishing…" : "Publish"}
+      </button>
+
+      {isPublished && <p>Published.</p>}
+      {failedVariants.map((variant) => (
+        <p key={variant.platform} role="alert">
+          {variant.platform} failed: {variant.error?.message}
+        </p>
+      ))}
+      {error && <p role="alert">{error.message}</p>}
+    </div>
+  );
+}
+```
+
+`connectedChannels` (also returned) lists the platforms this profile can reach,
+so you can disable channels the user hasn't connected.
+
+## Read the publish outcome
+
+This is the part to get right. On `publish: "now"`, a `201` does **not** mean
+every platform published — one can fail while another succeeds. So `create`
+**never throws** on a platform failure (a throw would discard the platforms that
+*did* post); it resolves with the full post, and you branch on the derived state:
+
+| Field | Meaning |
+| --- | --- |
+| `isPublished` | `true` **only** when every channel published. `partially_published` and `failed` are not success. |
+| `failedVariants` | The channels that failed, each with its `error` (`{ code, message }`); `[]` when none. |
+| `status` | The rollup: `published` · `partially_published` · `failed` · `scheduled` · `draft`. |
+
+Branch on `isPublished`, never on the promise resolving. A transport error
+(network or `4xx`) is the one case `create` rejects — that surfaces via `error`.
+
+## Post to many platforms
+
+Add a channel per platform. Each `settings` is that platform's **native**,
+fully-typed config — an Instagram setting on an X channel is a compile error:
+
+```tsx
+await create({
+  content: { body: "We're hiring." },
+  channels: {
+    x: { settings: {} },
+    linkedin: { settings: { visibility: "PUBLIC", content_kind: "text" } },
+  },
+  publish: "now",
+});
+```
+
+Shared `content` applies to every channel; a channel can override `body` or
+`media` for itself. No normalization — you send each platform exactly what it
+supports.
+
+## Schedule or save a draft
+
+`publish` is `"now"`, `"schedule"`, or `"draft"`. For a scheduled post, add
+`scheduleAt` (ISO-8601):
+
+```tsx
+await create({
+  content: { body: "Out Friday." },
+  channels: { x: { settings: {} } },
+  publish: "schedule",
+  scheduleAt: "2026-07-01T15:00:00Z",
+});
+```
+
+## Validate before publishing
+
+`useValidatePost(profileId)` runs the same checks as publishing without sending
+anything — ideal for a "ready to post?" state on a composer:
+
+```tsx
+const { validate, publishable, issues } = useValidatePost(profileId);
+
+await validate({ content: { body }, channels: { x: { settings: {} } } });
+// `publishable` is true/false; `issues` lists what's wrong, per field.
+```
+
+## Track status live
+
+`usePost(id)` returns the post and **polls while it's publishing**, stopping the
+moment it settles — so a scheduled post transitions in your UI on its own (see
+[Fetching & mutations](/react/fetching-and-mutations#live-updates)):
+
+```tsx
+const { data: post } = usePost(id);
+return <StatusBadge status={post?.status} />;
+```
+
+## List and calendar
+
+`usePostsInfinite(filters)` is a load-more list; `useCalendar(filters)` returns
+posts across a date range and polls while any of them is publishing. Both take
+typed filters like `profile_id`.
+
+## Edit and delete
+
+`useUpdatePost(postId)` applies a light edit — `{ schedule_at }`, `{ tags }` — or
+a rebuilt body for content changes. `useDeletePost()` removes a post. Both
+refresh the affected lists on success.
