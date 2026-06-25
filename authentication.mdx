@@ -11,13 +11,18 @@ maintain. With Postrun, you don't need it.
 There are two credentials, and every request carries one as
 `Authorization: Bearer <credential>`:
 
-| Credential | Lives on | Grants |
+| Credential | Access | Where it can run |
 | --- | --- | --- |
-| **Secret key** (`pr_…`) | Your **backend**, only | Full access to your whole account |
-| **Scoped token** | The **browser** | Only the profiles and scopes you grant it |
+| **Secret key** (`pr_…`) | Your whole account | Backend only — never the browser |
+| **Scoped token** | Only the profiles and scopes you grant it | Anywhere — browser or backend |
 
 Your backend mints a short-lived **scoped token** from the secret key and hands it
 to the browser. The browser then calls Postrun **directly** — no proxy in between.
+
+A scoped token isn't browser-only — it works anywhere, and because it's limited
+and short-lived, it's the safer choice for server-side calls too. Reach for the
+secret key only to mint tokens and to make money or structural writes, which a
+token can't do.
 
 <Note>
   Every request answers two questions. **Authentication** — who is calling? (the
@@ -28,8 +33,10 @@ to the browser. The browser then calls Postrun **directly** — no proxy in betw
 
 ## Scoped tokens — the recommended path
 
-For anything a user touches — a dashboard, a composer, a mobile app — mint a
-scoped token and let the browser call Postrun directly. What this gives you:
+A scoped token grants the least privilege that does the job, so it's the
+credential to reach for by default. It's the only one that can run in a browser —
+so any user-facing app (a dashboard, a composer, a mobile app) must use one — and
+it's the safer choice on the server too. What this gives you:
 
 - **No proxy backend.** The browser lists posts, reads ad results, uploads media,
   and publishes — straight to Postrun. You don't write routes that forward calls
@@ -153,9 +160,9 @@ A secret key belongs on your **backend**, and ideally does just two things:
 2. **Money and structural writes** — operations a browser token can't reach (next
    section), called from your own server.
 
-For everything else a user-facing flow needs, mint a token instead of reaching
-for the secret key. This keeps the secret key off the browser and limits what a
-leaked token can do.
+For everything else — including server-side calls that don't need full account
+access — prefer a scoped token. It keeps the secret key in fewer places and
+limits what a leaked credential can do.
 
 ## What only a secret key can do
 
@@ -173,7 +180,8 @@ secret key, a browser token can't call it.
 
 | You're building… | Use |
 | --- | --- |
-| A user-facing UI (dashboard, composer, app) | A **scoped token**, minted per session |
-| A server-side integration or script | The **secret key** |
-| A money write (ad budget, spend) | The **secret key**, from your backend |
-| Token minting | The **secret key**, from your backend |
+| A user-facing UI (dashboard, composer, app) | A **scoped token** — required; the secret key can't run in a browser |
+| A server-side call that needs only some profiles or actions | A **scoped token** — least privilege, safer if leaked |
+| A server-side integration that needs full account access | The **secret key** |
+| A money or structural write (ad budget, spend) | The **secret key**, from your backend |
+| Minting tokens | The **secret key**, from your backend |
