@@ -23,6 +23,10 @@
     {
       "source": "/metadata",
       "destination": "/storage"
+    },
+    {
+      "source": "/react",
+      "destination": "/react/get-started"
     }
   ],
   "navigation": {
@@ -47,9 +51,9 @@
             ]
           },
           {
-            "group": "SDKs",
+            "group": "React SDK",
             "pages": [
-              "react"
+              "react/get-started"
             ]
           }
         ]

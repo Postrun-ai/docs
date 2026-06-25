@@ -1,0 +1,94 @@
+---
+title: "Get started"
+description: "Install @postrun/react, wrap your app with a token, and make your first call."
+---
+
+`@postrun/react` is a provider and a set of hooks built on
+[TanStack Query](https://tanstack.com/query). Wrap your app once with a token,
+then call hooks that fetch, cache, and revalidate for you — no `fetch` to write,
+no `QueryClient` to wire up, and every call typed from the API.
+
+## Install
+
+```bash
+npm install @postrun/react
+```
+
+Requires React 18.2 or 19. TanStack Query comes bundled — you don't install or
+configure it.
+
+## Get a token
+
+The provider authenticates with a **scoped token**, never your secret key. Your
+backend mints a short-lived token from a `pr_` secret key and exposes it at an
+endpoint your frontend can call — the secret never reaches the browser. See
+[Authentication](/authentication) for the full model and the mint call.
+
+Because a token is short-lived (15 minutes by default), `getToken` should fetch a
+fresh one whenever the provider asks:
+
+```ts
+async function getToken() {
+  const res = await fetch("/api/postrun-token");
+  const { token } = await res.json();
+  return token;
+}
+```
+
+## Wrap your app
+
+Mount `<PostrunProvider>` once, near the root, and hand it `getToken`:
+
+```tsx
+import { PostrunProvider } from "@postrun/react";
+
+export function Providers({ children }) {
+  return <PostrunProvider getToken={getToken}>{children}</PostrunProvider>;
+}
+```
+
+<Note>
+  The provider creates its own private `QueryClient`. You don't add a
+  `QueryClientProvider`, and it stays isolated from any TanStack Query setup your
+  app already runs. To share one (for devtools or custom defaults), pass
+  `queryClient`; to point at another environment, pass `baseUrl`.
+</Note>
+
+## Make your first call
+
+Drop a hook into any component under the provider. This one lists the account's
+profiles:
+
+```tsx
+import { useProfilesInfinite } from "@postrun/react";
+
+function Profiles() {
+  const { items, isLoading } = useProfilesInfinite();
+
+  if (isLoading) return <p>Loading…</p>;
+
+  return (
+    <ul>
+      {items.map((profile) => (
+        <li key={profile.id}>{profile.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+If your profiles render, you're set up — the provider fetched a token, called the
+API, and cached the result. Every other hook works the same way.
+
+## What's next
+
+The rest of this section goes deep on each area:
+
+- **Reading & writing** — the hook model, caching, pagination, and live updates.
+- **Posts, media, and profiles** — the resource hooks, in depth.
+- **Connecting accounts** — the embedded one-click OAuth flow.
+- **Previews** — render a post the way each platform will.
+
+<Card title="Authentication" href="/authentication">
+  How tokens are minted and scoped — the model the provider builds on.
+</Card>
