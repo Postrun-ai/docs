@@ -3,11 +3,22 @@ title: "Media"
 description: "Upload a file and get back a platform-ready asset — the whole pipeline behind one hook."
 ---
 
-Media on Postrun isn't a dumb file store. You upload raw bytes; Postrun detects
-the type, validates the file against each platform, and renders a platform-ready
-version. `useMediaUpload` runs that whole journey behind one hook — create the
-asset, upload the bytes (resumable), and poll until processing settles — and
-hands you assets ready to attach to a post.
+Postrun Media is not S3 with a nicer label. It's a full pipeline — upload,
+validation, encoding, and per-platform rendering — so you build the upload UX and
+Postrun handles the hard part: making your media valid and compliant with every
+platform's requirements.
+
+Hand it a raw file. Postrun detects the type, checks it against each platform's
+rules — size, dimensions, aspect ratio, duration, codec, container — and
+transcodes or re-renders it into a version that platform accepts. When a file
+doesn't fit, you don't get a cryptic failure; you get a typed, actionable result
+that says which platform and why, so you and your user know exactly what to fix.
+
+The upload itself is a resilient multipart upload, out of the box — chunked,
+parallelized, retried per part, and resumable, so a dropped connection picks up
+where it left off instead of starting over. `useMediaUpload` runs the whole
+journey behind one hook — create the asset, upload the bytes, and poll until
+processing settles — then hands you assets ready to attach to a post.
 
 ## Upload a file
 
@@ -43,9 +54,8 @@ function Uploader({ profileId }) {
 }
 ```
 
-You don't declare the file type — Postrun detects `kind` and `content_type` from
-the bytes. Uploads run through one shared gate (3 at a time by default), so you
-can hand `add` a whole `FileList` and let it pace itself.
+File types are detected automatically — just hand `add` your files. Pass a single
+file or a whole list; the hook paces the uploads for you.
 
 ## Track progress
 
@@ -91,8 +101,24 @@ await add(file, { profileId, targets: ["instagram", "x"] });
 
 Targets are `x`, `linkedin`, `facebook_page`, `instagram`, `tiktok`, and the ad
 target `google_ads`. The asset's `per_platform` then carries each target's
-status, URL, and any warnings. Omit `targets` to add them later with
-`useUpdateMedia`.
+status, URL, and any warnings.
+
+### Add a platform later
+
+You don't have to choose every platform up front. Extend an existing asset's
+targets with `useUpdateMedia` — a `PATCH /v1/media/{id}` under the hood:
+
+```tsx
+const update = useUpdateMedia();
+
+// Also render this asset for TikTok now.
+update.mutate({ id: assetId, targets: ["tiktok"] });
+```
+
+Postrun renders the new platform from the asset's **stored source** — no
+re-upload — and leaves the platforms it already rendered untouched. `per_platform`
+gains an entry for the new target once it settles; re-read with `useMedia(id)` to
+watch it process.
 
 ## Upload options
 
