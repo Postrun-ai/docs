@@ -1,0 +1,130 @@
+---
+title: "Reading & writing"
+description: "How the hooks fetch, cache, paginate, stream, and mutate — the model every @postrun/react hook follows."
+---
+
+Every hook is built on TanStack Query and shares the provider's client and cache.
+Learn the model once here; it applies to every resource.
+
+## Reads
+
+A read hook returns a TanStack query result — `data` plus the request state:
+
+```tsx
+import { useProfile } from "@postrun/react";
+
+function ProfileName({ id }) {
+  const { data: profile, isLoading, error } = useProfile(id);
+
+  if (isLoading) return <Skeleton />;
+  if (error) return <p role="alert">{error.message}</p>;
+  return <h1>{profile.name}</h1>;
+}
+```
+
+`data` is the typed resource; `isLoading`, `error`, and `refetch` come with it.
+Identical reads share one cache entry — call `useProfile(id)` in ten components
+and the browser makes a single request. Results stay fresh for 30 seconds, then
+revalidate in the background the next time they're used.
+
+## Lists & pagination
+
+Lists come two ways. `useX(query)` returns one page — the list envelope, with
+`data`, `total`, and `has_more`. For "load more", `useXInfinite(filters)` owns the
+paging and hands you a flat, growing list:
+
+```tsx
+import { usePostsInfinite } from "@postrun/react";
+
+function Feed({ profileId }) {
+  const { items, loadMore, hasMore, isLoadingMore } = usePostsInfinite({
+    profile_id: profileId,
+  });
+
+  return (
+    <>
+      {items.map((post) => (
+        <PostRow key={post.id} post={post} />
+      ))}
+      {hasMore && (
+        <button onClick={loadMore} disabled={isLoadingMore}>
+          {isLoadingMore ? "Loading…" : "Load more"}
+        </button>
+      )}
+    </>
+  );
+}
+```
+
+The infinite hooks return `{ items, total, loadMore, hasMore, isLoading, isLoadingMore }`.
+Filters are typed per resource; the hook owns `limit` and `offset`.
+
+## Live updates
+
+A post you just scheduled or published keeps changing state on Postrun's side.
+The post and calendar hooks poll while that's happening and stop the moment it
+settles — with no polling code of your own:
+
+```tsx
+import { usePost } from "@postrun/react";
+
+function PublishStatus({ id }) {
+  const { data: post } = usePost(id);
+  return <StatusBadge status={post?.status} />;
+}
+```
+
+`usePost` refetches every 2 seconds while a post is `scheduled` or `publishing`,
+then stops at a terminal status; `useCalendar` does the same across a date range.
+Pass `{ live: false }` for a one-shot read.
+
+## Writes
+
+A write hook returns a TanStack mutation and refreshes the caches it affects on
+success — your lists and detail views update without a manual refetch:
+
+```tsx
+import { useCreateProfile } from "@postrun/react";
+
+function NewProfile() {
+  const create = useCreateProfile();
+
+  return (
+    <button
+      disabled={create.isPending}
+      onClick={() => create.mutate({ name: "Acme Inc." })}
+    >
+      {create.isPending ? "Creating…" : "New profile"}
+    </button>
+  );
+}
+```
+
+You get `mutate`, `mutateAsync`, `isPending`, and `error`. On success the profile
+lists refetch themselves.
+
+<Note>
+  Two hooks return a purpose-built shape instead of a raw mutation, because the
+  flow is more than one call: **post creation** — a `201` can be a _partial_
+  publish, so you read the outcome rather than assume success — and **media
+  upload**, a multi-step pipeline. Their pages cover them.
+</Note>
+
+## Full coverage: the query layer
+
+The hooks cover the core domain. For any other operation — Google Ads, say — the
+generated TanStack `*Options` and `*Mutation` ship for every endpoint, and
+`usePostrunQuery` / `usePostrunMutation` inject the provider's client and cache:
+
+```tsx
+import { usePostrunQuery, googleListCampaignsOptions } from "@postrun/react";
+
+function Campaigns({ connectionId }) {
+  const { data } = usePostrunQuery((client) =>
+    googleListCampaignsOptions({ client, path: { connection_id: connectionId } }),
+  );
+  // …render campaigns
+}
+```
+
+Same cache, same auth — full API coverage even where there's no hand-written hook.

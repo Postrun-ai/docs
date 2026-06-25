@@ -53,7 +53,8 @@
           {
             "group": "React SDK",
             "pages": [
-              "react/get-started"
+              "react/get-started",
+              "react/reading-and-writing"
             ]
           }
         ]
