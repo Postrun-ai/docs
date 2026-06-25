@@ -12,6 +12,12 @@ Two fields make it yours to organize: `external_id` maps your own identifiers
 onto Postrun resources, and `metadata` attaches your own context that you read
 back and filter on. Both work on **profiles, posts, and media**.
 
+**Concretely:** say you're building a tool for 200 agencies. Key each agency to a
+profile with its own `external_id`, then mint each browser session a
+[token](/authentication) scoped to just that profile. Their dashboard now lists
+posts, uploads media, and reads ad results straight from Postrun — seeing only
+their own data, with no database, no sync, and no backend of yours in between.
+
 ## Why store it on Postrun
 
 For the social and ads domain, Postrun replaces a whole slice of your backend:
@@ -35,7 +41,7 @@ For the social and ads domain, Postrun replaces a whole slice of your backend:
 - **Durable and secure.** Encrypted in transit (TLS 1.2+) and at rest, on
   managed, backed-up infrastructure. Reliability is our job, not your ops burden.
 
-## external_id
+## Map with your own IDs
 
 Set `external_id` to your own canonical id for a resource — your id for a client,
 a campaign, a draft. It's **unique per account**, so you resolve your identifier
@@ -62,7 +68,7 @@ Because it's unique, reusing a value that's already taken returns `409`
 backend resolve "my client" to a profile when [minting a
 token](/authentication#choosing-profiles), with no lookup of your own.
 
-## metadata
+## Attach your own context
 
 `metadata` is a flat set of key/value pairs you own. Postrun stores it, returns
 it on every read, and lets you filter by it — descriptive context, not a place to
@@ -89,7 +95,7 @@ Values are scalars, and the shape is capped to stay cleanly queryable:
 | String values | ≤ 500 characters |
 | Total size | ≤ 16 KiB (serialized JSON) |
 
-## Filtering by metadata
+## Filter by your context
 
 List endpoints accept a `metadata` filter — a URL-encoded JSON object. Matches
 are **exact**, multiple keys are **ANDed**, and types must match (so `3` matches
