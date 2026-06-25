@@ -5,8 +5,7 @@ description: "Per-account limits, split by reads and writes, with headers on eve
 
 Rate limits are **per account** — shared across every secret key and frontend
 token you hold. Minting more tokens doesn't buy more capacity; the budget belongs
-to the account, so your limit is predictable no matter how many credentials are
-in play.
+to the account, so your limit is predictable however many credentials you mint.
 
 Limits apply on a sliding one-minute window, split by what the request does:
 
@@ -17,22 +16,33 @@ Limits apply on a sliding one-minute window, split by what the request does:
 
 ## Headers
 
-Every response tells you where you stand, so you can pace requests instead of
-guessing:
+Every response carries your current budget, so you can pace requests against the
+headers instead of waiting for a `429`:
 
 | Header | Meaning |
 | --- | --- |
 | `X-RateLimit-Limit` | The bucket's ceiling. |
 | `X-RateLimit-Remaining` | Requests left in the current window. |
-| `X-RateLimit-Reset` | When the window resets (unix seconds). |
+| `X-RateLimit-Reset` | Unix-seconds timestamp when the window resets and `Remaining` refills. |
 
 ## When you exceed a limit
 
 You get `429` [`rate_limited`](/errors/rate_limited) with a `Retry-After` header
-(seconds). Wait that long, then retry.
+(seconds). Wait that long, then retry — and on a write, send the same
+`Idempotency-Key` so the retry can't double the action:
 
-<Note>
-  Pair retries with [idempotency](/idempotency): send the same `Idempotency-Key`
-  when you retry a write, and a `429` followed by a retry can never double the
-  action.
-</Note>
+```ts retry on 429
+// Retry a request when rate-limited, honoring Retry-After.
+async function send(request: () => Promise<Response>, maxRetries = 5) {
+  for (let attempt = 0; ; attempt++) {
+    const res = await request();
+    if (res.status !== 429 || attempt >= maxRetries) return res;
+    const retryAfter = Number(res.headers.get("Retry-After")) || 1;
+    await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+  }
+}
+```
+
+Reuse one `Idempotency-Key` across the retries of a single write (see
+[idempotency](/idempotency)) so a `429` followed by a retry can never double the
+action.

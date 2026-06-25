@@ -3,15 +3,18 @@ title: "Postrun"
 description: "The posting + ads API for apps and AI agents."
 ---
 
-Postrun is one API for publishing to social platforms and running ads across
-Meta and Google. Namespaced, native payloads — no lowest-common-denominator
-normalization — wrapped in a single envelope: one auth model, typed errors,
-idempotency, dry-run, audit logs, and webhooks that behave the same on every
-platform.
+Postrun is one API to publish to social platforms — X, LinkedIn, Instagram,
+Facebook Pages, and TikTok — and run ads on Meta and Google. Built for apps and
+AI agents.
+
+You send each platform its native payload (no lowest-common-denominator
+normalization), wrapped in one consistent contract: one auth model, typed errors,
+idempotency, dry-run, audit logs, and webhooks that behave the same everywhere.
+Integrate one platform and the rest work the same way.
 
 It's built to be called **directly from your frontend**. Your backend mints a
 short-lived, scoped token from a secret key; the browser calls Postrun with it.
-No proxy, no database of your own for the social and ads domain — Postrun is the
+No proxy, no database of your own for the social and ads domain — Postrun is your
 system of record.
 
 <Columns cols={2}>
@@ -19,13 +22,14 @@ system of record.
     Make your first authenticated request in a few minutes.
   </Card>
   <Card title="Authentication" href="/authentication">
-    Secret API keys for your backend, scoped tokens for the browser.
+    Secret keys for your backend, scoped tokens for the browser.
+  </Card>
+  <Card title="Storage" href="/storage">
+    Use Postrun as your system of record — store and query the social and ads
+    domain with no database of your own.
   </Card>
   <Card title="API reference" href="/api-reference">
     Every endpoint, live against `api.postrun.ai`, with copy-paste examples.
-  </Card>
-  <Card title="Error codes" href="/errors/overview">
-    The closed set of typed codes you branch on — never the message.
   </Card>
 </Columns>
 
@@ -36,8 +40,8 @@ system of record.
   renditions).
 - **Run ads** on Meta and Google — read insights and make guarded writes
   (pause, budget, duplicate) behind idempotency, dry-run, and an audit log.
-- **Store the domain** — profiles, connections, drafts, schedules, and media
-  live on Postrun, queryable by your own `external_id` and `metadata`.
+- **Store your data** — profiles, connections, drafts, schedules, and media live
+  on Postrun, queryable by your own `external_id` and `metadata`.
 
 ## The envelope
 

@@ -3,22 +3,15 @@ title: "Quickstart"
 description: "From zero to your first authenticated request."
 ---
 
-Postrun is a REST API at `https://api.postrun.ai/v1`, with a first-class,
-fully-typed SDK ([`@postrun/js`](https://www.npmjs.com/package/@postrun/js)) —
-every example below shows both. This page gets you a working call, then hands the
-browser a scoped token so your frontend can talk to Postrun directly.
+Postrun is a REST API at `https://api.postrun.ai/v1` with a typed SDK,
+[`@postrun/js`](https://www.npmjs.com/package/@postrun/js). Every example below
+shows both. By the end you'll have made an authenticated request and minted a
+scoped token your frontend can call Postrun with directly.
 
-## Authentication
-
-There are two kinds of credential, and the difference is the whole security
-model:
-
-- **Secret API key** (`pr_…`) — full account access. Use it only from your
-  **backend**; never ship it to a browser.
-- **Frontend token** — a short-lived, profile-scoped JWT your backend mints from
-  a secret key and hands to the browser. It grants only the scopes and profiles
-  you mint into it. Money and structural writes are secret-key only and can
-  never be reached with a browser token.
+Two credentials do the work here: a **secret API key** (`pr_…`) with full account
+access, used on your backend only; and a **scoped token**, short-lived and
+limited to the profiles and scopes you grant it, safe to hand the browser. You'll
+use both below — see [Authentication](/authentication) for the full model.
 
 <Steps>
   <Step title="Get a secret key">
@@ -69,7 +62,9 @@ model:
   </Step>
   <Step title="Mint a frontend token">
     From your backend, exchange the secret key for a scoped token and send it to
-    the browser. Scope it to exactly what that session needs.
+    the browser. Scope it to exactly what that session needs. It's short-lived —
+    15 minutes by default; set [`ttl_seconds`](/authentication#lifetime) to
+    change it.
 
     <CodeGroup>
     ```ts @postrun/js
@@ -97,14 +92,15 @@ model:
     </CodeGroup>
   </Step>
   <Step title="Call directly from the frontend">
-    The browser uses the token as its bearer — no proxy of your own. The same
-    API, the same envelope, narrowed to the token's scopes and profiles.
+    The browser sends the token as its bearer and calls Postrun directly — no
+    proxy of your own. It's the same API and the same envelope, narrowed to the
+    token's scopes and profiles.
 
     <CodeGroup>
     ```ts @postrun/js
     import { createPostrunClient, postsList } from "@postrun/js";
 
-    // getToken fetches the token your backend minted above.
+    // Browser — getToken fetches the token your backend minted above.
     const postrun = createPostrunClient({ getToken });
 
     const { data } = await postsList({ client: postrun, query: { limit: 20 } });
@@ -161,4 +157,4 @@ curl https://api.postrun.ai/v1/posts \
   </Card>
 </Columns>
 
-Need a hand? Email [hello@postrun.ai](mailto:hello@postrun.ai).
+Questions? Email [hello@postrun.ai](mailto:hello@postrun.ai).

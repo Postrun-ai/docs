@@ -8,8 +8,8 @@ mid-call — and you're left not knowing whether the write went through. Retryin
 blindly risks doing it twice: a double post, a duplicated campaign, a budget
 changed twice.
 
-Idempotency removes the guess. You attach a unique key to a write, and Postrun
-guarantees that key runs **at most once**. Retry as many times as you need —
+An idempotency key removes that uncertainty. You attach a unique key to a write,
+and Postrun runs that key **at most once**. Retry as many times as you need —
 you'll get the original result back, not a second action.
 
 ## How it works
@@ -68,8 +68,8 @@ durable pattern is to persist the key alongside whatever you're creating, so a
 process that crashes and restarts retries with the same key rather than minting a
 new one.
 
-Keys are scoped to your account and retained for **about 24 hours**. After that
-the key is forgotten; reusing it later starts a fresh operation.
+Keys are scoped to your account and retained for **24 hours** from first use,
+then expire — reusing one after that starts a fresh operation.
 
 ## What a retry returns
 
@@ -83,28 +83,15 @@ How a repeated key resolves depends entirely on what happened the first time:
 | Same key, **different** payload | `422` [`idempotency_key_reused`](/errors/idempotency_key_reused). |
 | Empty key, or longer than 255 characters | `400` [`idempotency_key_invalid`](/errors/idempotency_key_invalid). |
 
-A final outcome — a success, or an error Postrun deliberately returned — is
-replayed on every retry, exactly as it was. Field order in a JSON body doesn't
-affect the match: re-serializing the same request still counts as the same
-request.
-
 ## When an attempt fails
 
-Retrying a failed write is the entire point of an idempotency key — and with
-one, retrying is always the right move:
-
-- If the first attempt reached a **final result**, that result is replayed: a
-  success returns the same success, a deliberate rejection returns the same
-  error. The action never happens twice.
-- If the first attempt failed with an **unexpected error** — where it's genuinely
-  unclear whether your action took effect — the key isn't locked to that failure.
-  Retrying with the same key runs the operation so it can resolve into a real
-  success or a real, final error, rather than leaving you stuck on a momentary
-  blip.
-
-So whatever the failure, **retry with the same key and exponential backoff.** You
-won't create a duplicate of a write that already succeeded, and you won't get
-permanently stuck behind a transient fault.
+Whatever the failure, retry with the **same key** and exponential backoff. If the
+first attempt already reached a final result, you get that result back — a success
+stays one success, a deliberate rejection stays the same error, and the action
+never runs twice. If it failed with an unexpected error where the outcome is
+unclear, the same key runs the operation again so it can resolve into a real
+success or a real, final error. Either way, you can't create a duplicate, and you
+can't get stuck behind a transient fault.
 
 <Warning>
   Always retry a failed write — including `409`
@@ -116,10 +103,11 @@ permanently stuck behind a transient fault.
 
 ## Reusing a key with a different request
 
-A key is bound to the exact request that first used it. Send the same key with a
-different payload and Postrun rejects it with `422`
-[`idempotency_key_reused`](/errors/idempotency_key_reused) rather than guessing
-which request you meant. This catches a common bug — a key accidentally shared
+A key is bound to the exact request that first used it. Field order in a JSON body
+doesn't matter — re-serializing the same request still counts as the same request
+— but a different payload does: send the same key with one and Postrun rejects it
+with `422` [`idempotency_key_reused`](/errors/idempotency_key_reused) rather than
+guessing which request you meant. This catches a common bug — a key accidentally shared
 across two different operations — before it does damage.
 
 The rule that follows: **one key, one operation.** Don't recycle a key for a new
