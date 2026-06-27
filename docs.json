@@ -54,7 +54,8 @@
             "icon": "image",
             "pages": [
               "media",
-              "media/uploading"
+              "media/uploading",
+              "media/reading-the-result"
             ]
           },
           {

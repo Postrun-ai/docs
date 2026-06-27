@@ -1,0 +1,123 @@
+---
+title: "Reading the result"
+description: "Once an asset is ready, its per_platform map holds a typed verdict for every target — the rendition URL, plus why anything didn't fit."
+---
+
+When an asset is `ready`, it carries a result for each platform you targeted. That
+result lives in **`per_platform`** — one entry per target — and tells you the
+rendition to use and, when a platform couldn't accept the file, exactly why.
+
+You already have the asset: the upload returns it, [`waitForMedia`](/media/uploading#wait-until-its-ready)
+resolves with it, and `useMedia(id)` / `GET /v1/media/{id}` fetch it. It's the same
+object everywhere.
+
+## The per-platform map
+
+Each entry has the rendition `url` (use it when you post to that platform), its
+`width` / `height` / `bytes`, and two lists of findings — `warnings` and `errors`:
+
+```json
+{
+  "id": "med_9f2a",
+  "status": "ready",
+  "per_platform": {
+    "x": {
+      "status": "ready",
+      "url": "https://media.postrun.ai/med_9f2a/x.mp4",
+      "width": 1280,
+      "height": 720,
+      "bytes": 4185000,
+      "warnings": [
+        {
+          "code": "media_format_recompressed",
+          "display_error": "This video was re-encoded to meet X's requirements.",
+          "message": "Re-encoded HEVC to H.264 for X."
+        }
+      ],
+      "errors": []
+    },
+    "instagram": {
+      "status": "failed",
+      "url": null,
+      "warnings": [],
+      "errors": [
+        {
+          "code": "media_aspect_ratio_unsupported",
+          "display_error": "This image's aspect ratio isn't supported on Instagram.",
+          "message": "Aspect ratio 3:1 is outside the allowed range.",
+          "allowed": ["4:5 – 1.91:1"],
+          "got": "3:1"
+        }
+      ]
+    }
+  }
+}
+```
+
+## Read it
+
+Pick each platform's `url` when it's `ready`, and surface a finding when it isn't:
+
+<CodeGroup>
+```tsx @postrun/react icon="react"
+import { useMedia } from "@postrun/react";
+
+function XRendition({ id }) {
+  const { data: media } = useMedia(id); // auto-refetches while processing
+
+  const x = media?.per_platform.x;
+  if (!x) return <p>Loading…</p>;
+  if (x.status === "failed") return <p>{x.errors[0]?.display_error}</p>;
+  if (x.status !== "ready" || !x.url) return <p>Processing…</p>;
+
+  return <video src={x.url} controls />;
+}
+```
+
+```ts @postrun/js icon="square-js"
+import { waitForMedia } from "@postrun/js";
+
+const asset = await waitForMedia(media.id, { client: postrun.client });
+
+const x = asset.per_platform.x;
+if (x?.status === "ready" && x.url) {
+  // use x.url when you post to X
+} else if (x?.status === "failed") {
+  // branch on the typed code; show the user x.errors[0].display_error
+  console.log(x.errors[0]?.code, x.errors[0]?.display_error);
+}
+```
+</CodeGroup>
+
+## errors, warnings, and the asset-wide error
+
+There are three places a problem can surface — keep them distinct:
+
+- **`per_platform[target].errors`** — **blocking** for that target. The file can't be
+  published there (wrong aspect ratio, unsupported codec, too large). The entry's
+  `status` is `failed` and its `url` is `null`.
+- **`per_platform[target].warnings`** — **non-blocking**. Postrun adjusted the file to
+  fit (re-encoded, recompressed, downscaled); the rendition is still `ready` and
+  usable. Advisory — surface it if you want, but you don't have to act on it.
+- **`error`** (top level, asset-wide) — the **original itself** is unusable (corrupt
+  or an unsupported format), so no platform can succeed. It's `null` otherwise.
+
+A publish gate keys on `status` + `errors`, never on `warnings`.
+
+## Every finding is typed
+
+`warnings`, `errors`, and the asset-wide `error` are all the same shape — the same
+three-audience model used across the API:
+
+| Field | Use it for |
+| --- | --- |
+| `code` | Branch on it — a stable, typed value documented in [Errors](/errors/overview). |
+| `display_error` | A short, friendly line you can show your user as-is. |
+| `message` | Developer-grade detail for logs. Not for end users. |
+| `allowed` / `got` | The accepted range and what the file actually was, on size/format findings. |
+
+## Attach it to a post
+
+A `ready` asset is ready to publish: reference its `id` on a post's media, and the
+publish uses the matching `per_platform` rendition for each channel. See
+[Posts](/react/posts).
