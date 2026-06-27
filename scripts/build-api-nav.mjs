@@ -13,23 +13,25 @@ import { readFileSync } from 'node:fs';
 
 const SPEC_URL = 'https://api.postrun.ai/v1/openapi.json';
 
-// tag → group label + Font Awesome icon (brands for platforms) + order.
+// tag → group label + Font Awesome icon (brands for platforms) + order + section.
 // `sub: true` marks the tag whose endpoints are split into resource sub-groups.
 // Platform groups use official self-hosted brand SVGs (logos/*.svg); the rest use
-// Font Awesome names. Tokens is FIRST — minting a frontend token is step zero.
+// Font Awesome names. `section` routes the group to the Social and/or Ads tab —
+// `core` (auth/profiles/connections/webhooks/logs) appears in BOTH so each tab is
+// self-contained for its pricing tier. Tokens is FIRST — minting a token is step zero.
 const TAGS = {
-  Tokens: { label: 'Tokens', icon: 'key', order: 0 },
-  Profiles: { label: 'Profiles', icon: 'user', order: 1 },
-  Connections: { label: 'Connections', icon: 'plug', order: 2 },
-  Posts: { label: 'Posts', icon: 'paper-plane', order: 3 },
-  Media: { label: 'Media', icon: 'image', order: 4 },
-  'Google Ads': { label: 'Google Ads', icon: '/logos/google-ads.svg', order: 5, sub: true },
-  Meta: { label: 'Meta Ads', icon: '/logos/meta.svg', order: 6 },
+  Tokens: { label: 'Tokens', icon: 'key', order: 0, section: 'core' },
+  Profiles: { label: 'Profiles', icon: 'user', order: 1, section: 'core' },
+  Connections: { label: 'Connections', icon: 'plug', order: 2, section: 'core' },
+  Posts: { label: 'Posts', icon: 'paper-plane', order: 3, section: 'social' },
+  Media: { label: 'Media', icon: 'image', order: 4, section: 'social' },
+  TikTok: { label: 'TikTok', icon: '/logos/tiktok.svg', order: 5, section: 'social' },
+  'Google Ads': { label: 'Google Ads', icon: '/logos/google-ads.svg', order: 6, sub: true, section: 'ads' },
+  Meta: { label: 'Meta Ads', icon: '/logos/meta.svg', order: 7, section: 'ads' },
   // TikTok Ads ships on a later deploy; mapped now so it auto-appears once live.
-  'TikTok Ads': { label: 'TikTok Ads', icon: '/logos/tiktok.svg', order: 7 },
-  TikTok: { label: 'TikTok', icon: '/logos/tiktok.svg', order: 8 },
-  Webhooks: { label: 'Webhooks', icon: 'bell', order: 9 },
-  Logs: { label: 'Logs', icon: 'list-check', order: 10 },
+  'TikTok Ads': { label: 'TikTok Ads', icon: '/logos/tiktok.svg', order: 8, section: 'ads' },
+  Webhooks: { label: 'Webhooks', icon: 'bell', order: 9, section: 'core' },
+  Logs: { label: 'Logs', icon: 'list-check', order: 10, section: 'core' },
 };
 
 // Google Ads resource sub-groups, in display order. Each predicate runs on the
@@ -98,6 +100,16 @@ function buildGoogleAds(ops) {
   return { group: 'Google Ads', icon: 'google', pages };
 }
 
+function buildGroup(cfg, ops) {
+  return cfg.sub
+    ? { ...buildGoogleAds(ops), group: cfg.label, icon: cfg.icon }
+    : { group: cfg.label, icon: cfg.icon, pages: sortOps(ops).map(ref) };
+}
+
+// Two tabs: Social and Ads. Each operation lives in EXACTLY ONE tab — Mintlify
+// conflicts when the same operation appears under two tabs. The shared `core`
+// groups (auth/profiles/connections/webhooks/logs) live in the Social tab (the
+// foundational API); the Ads tab is purely the ad platforms.
 function build(spec) {
   const ops = operations(spec);
   const byTag = new Map();
@@ -106,23 +118,25 @@ function build(spec) {
     byTag.get(op.tag).push(op);
   }
 
-  const groups = [];
+  const built = []; // { section, group } in display order
   const orderedTags = Object.entries(TAGS).sort((a, b) => a[1].order - b[1].order);
   for (const [tag, cfg] of orderedTags) {
     const tagOps = byTag.get(tag);
     if (!tagOps?.length) continue;
-    groups.push(
-      cfg.sub
-        ? { ...buildGoogleAds(tagOps), group: cfg.label, icon: cfg.icon }
-        : { group: cfg.label, icon: cfg.icon, pages: sortOps(tagOps).map(ref) },
-    );
+    built.push({ section: cfg.section, group: buildGroup(cfg, tagOps) });
   }
 
   // Surface any tag we didn't map, so a new domain never silently vanishes.
   const unmapped = [...byTag.keys()].filter((t) => !TAGS[t]);
   if (unmapped.length) console.error('UNMAPPED TAGS (add to TAGS):', unmapped);
 
-  return { tab: 'API Reference', icon: 'square-terminal', openapi: SPEC_URL, groups };
+  const groupsFor = (sections) =>
+    built.filter((b) => sections.includes(b.section)).map((b) => b.group);
+
+  return [
+    { tab: 'Social API', icon: 'share-nodes', openapi: SPEC_URL, groups: groupsFor(['core', 'social']) },
+    { tab: 'Ads API', icon: 'bullhorn', openapi: SPEC_URL, groups: groupsFor(['ads']) },
+  ];
 }
 
 const spec = await loadSpec();

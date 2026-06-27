@@ -82,8 +82,8 @@
         ]
       },
       {
-        "tab": "API Reference",
-        "icon": "square-terminal",
+        "tab": "Social API",
+        "icon": "share-nodes",
         "openapi": "https://api.postrun.ai/v1/openapi.json",
         "groups": [
           {
@@ -143,6 +143,42 @@
               "POST /media/{id}/multipart/sign"
             ]
           },
+          {
+            "group": "TikTok",
+            "icon": "/logos/tiktok.svg",
+            "pages": [
+              "GET /connections/{id}/tiktok/creator-info"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "bell",
+            "pages": [
+              "GET /webhooks/endpoints",
+              "POST /webhooks/endpoints",
+              "GET /webhooks/endpoints/{id}",
+              "PATCH /webhooks/endpoints/{id}",
+              "DELETE /webhooks/endpoints/{id}",
+              "GET /webhooks/event-types",
+              "POST /webhooks/ping",
+              "POST /webhooks/portal"
+            ]
+          },
+          {
+            "group": "Logs",
+            "icon": "list-check",
+            "pages": [
+              "GET /logs",
+              "GET /logs/{id}"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Ads API",
+        "icon": "bullhorn",
+        "openapi": "https://api.postrun.ai/v1/openapi.json",
+        "groups": [
           {
             "group": "Google Ads",
             "icon": "/logos/google-ads.svg",
@@ -269,35 +305,6 @@
               "GET /meta/{connection_id}/campaigns",
               "GET /meta/{connection_id}/campaigns/{campaign_id}",
               "GET /meta/{connection_id}/insights"
-            ]
-          },
-          {
-            "group": "TikTok",
-            "icon": "/logos/tiktok.svg",
-            "pages": [
-              "GET /connections/{id}/tiktok/creator-info"
-            ]
-          },
-          {
-            "group": "Webhooks",
-            "icon": "bell",
-            "pages": [
-              "GET /webhooks/endpoints",
-              "POST /webhooks/endpoints",
-              "GET /webhooks/endpoints/{id}",
-              "PATCH /webhooks/endpoints/{id}",
-              "DELETE /webhooks/endpoints/{id}",
-              "GET /webhooks/event-types",
-              "POST /webhooks/ping",
-              "POST /webhooks/portal"
-            ]
-          },
-          {
-            "group": "Logs",
-            "icon": "list-check",
-            "pages": [
-              "GET /logs",
-              "GET /logs/{id}"
             ]
           }
         ]
