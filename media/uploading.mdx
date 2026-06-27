@@ -89,17 +89,26 @@ const { data: media } = await mediaCreate({
 
 Processing runs asynchronously. The React hook tracks it for you — each item moves
 `uploading → processing → ready` (or `failed`), and `progress` drives a bar. Outside
-React, poll the asset until it settles:
+React, `await` the asset with `waitForMedia` — no poll loop to write:
 
 ```ts @postrun/js icon="square-js"
-import { mediaGet } from "@postrun/js";
+import { waitForMedia } from "@postrun/js";
 
-let asset = media;
-while (asset.status === "uploading" || asset.status === "processing") {
-  await new Promise((r) => setTimeout(r, 1500));
-  asset = (await mediaGet({ client: postrun.client, path: { id: media.id } })).data;
-}
+const asset = await waitForMedia(media.id, { client: postrun.client });
 // asset.status is "ready" (or "failed"); asset.per_platform holds the renditions
+```
+
+`waitForMedia` polls until the asset settles. A `failed` asset resolves too — read
+its `per_platform` errors; only a timeout or an aborted `signal` rejects. Pass
+`onPoll` to surface `progress.percent`, or `timeout` / `signal` to bound the wait:
+
+```ts @postrun/js icon="square-js"
+const asset = await waitForMedia(media.id, {
+  client: postrun.client,
+  onPoll: (m) => console.log(m.progress.percent),
+  timeout: 5 * 60_000,
+  signal: controller.signal,
+});
 ```
 
 When it's `ready`, each target's rendition is in `per_platform` — its URL,
