@@ -1,6 +1,6 @@
 ---
 title: "Validating posts"
-description: "Check that a post will publish cleanly — before you publish it. No side effects; call it as often as you like."
+description: "Check that a post will publish cleanly — before you publish it, with no side effects."
 ---
 
 Validation answers one question: **will this post publish cleanly?** — without
@@ -12,14 +12,17 @@ platform's limit, the media is the right format and shape, the required fields
 are there. You get back a clear yes-or-no and a list of anything to fix. Nothing
 is stored, and nothing is sent to any social platform.
 
-It's a read — no side effects, safe to call on every keystroke in a composer. You
-get **5,000 validation requests per minute** on a dedicated bucket (see
-[rate limits](/rate-limits)), separate from your normal read budget.
+It's a read with no side effects, so it's well suited to checking a post while a
+user composes it. You have **5,000 validation requests per minute** on a
+dedicated bucket (see [rate limits](/rate-limits)), separate from your normal read
+budget — debounce on input (for example, validate a short moment after the user
+stops typing) rather than firing a request on every keystroke.
 
 ## When to use it
 
-- **Live feedback while composing** — validate as the user types to show "Too
-  long for X" or "This image is the wrong shape" before they hit publish.
+- **Live feedback while composing** — validate as a user builds the post
+  (debounced) to show "Too long for X" or "This image is the wrong shape" before
+  they hit publish.
 - **Before publishing or scheduling from an agent or batch job** — confirm a
   generated post is sound before you commit to it.
 - **Anywhere you'd rather catch a problem early** than handle a failed publish.
@@ -58,7 +61,6 @@ const { data } = await postsValidate({
         connection_id: "conn_x7k2",
         body: "Launching today 🚀",
         media: [{ media_id: "med_9f2a" }],
-        settings: {},
       },
     ],
   },
@@ -82,8 +84,7 @@ curl https://api.postrun.ai/v1/posts/validate \
         "platform": "x",
         "connection_id": "conn_x7k2",
         "body": "Launching today 🚀",
-        "media": [{ "media_id": "med_9f2a" }],
-        "settings": {}
+        "media": [{ "media_id": "med_9f2a" }]
       }
     ]
   }'
