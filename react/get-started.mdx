@@ -79,8 +79,9 @@ Your backend mints the scoped token from a `pr_` secret key and exposes it at an
 endpoint your frontend can call. See [Authentication](/authentication) for the
 full model and the mint call.
 
-Give the provider a `getToken` function that returns a valid token, fetching a
-fresh one whenever it's asked:
+Give the provider a `getToken` that fetches a token from your backend. The
+provider caches it and refreshes on a `401`, so this is just a fetch — no caching
+or expiry logic of your own:
 
 ```ts
 async function getToken() {

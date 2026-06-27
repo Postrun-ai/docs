@@ -52,17 +52,12 @@ curl https://api.postrun.ai/v1/tokens \
 ```
 </CodeGroup>
 
-**Step 2 — the browser fetches a token from your route.** `getToken` runs on first mount and again whenever a request returns `401`, so cache the token in memory and only re-mint when it's close to expiring:
+**Step 2 — the browser fetches a token from your route.** Give the SDK a `getToken` that fetches one from the route above. The SDK caches it and refreshes for you, so this stays a one-liner — no expiry tracking, no in-memory cache:
 
 ```ts
-let cached: { token: string; exp: number } | null = null;
-
 async function getToken(): Promise<string> {
-  if (cached && cached.exp - Date.now() > 30_000) return cached.token;
-
   const res = await fetch("/api/token");
-  const { token, expires_at } = await res.json();
-  cached = { token, exp: new Date(expires_at).getTime() };
+  const { token } = await res.json();
   return token;
 }
 ```
@@ -92,9 +87,14 @@ export default function App() {
 </CodeGroup>
 
 <Note>
-  The React provider re-calls `getToken` automatically when a token expires or a
-  request returns `401` — your caching `getToken` re-mints only when needed. See the
-  [React SDK](/react/get-started) for the full provider setup and hooks.
+  Both `@postrun/js` and `@postrun/react` (`3.2.0`+) manage the token for you:
+  `getToken` is called once and its result reused for every request, and when a
+  request returns `401` the SDK fetches a fresh token and retries — so you never
+  cache the token or track its expiry. See the [React SDK](/react/get-started) for
+  the full provider setup and hooks.
+
+  **Not using the SDK?** If you call the API with raw `fetch` (or from another
+  language), handle it yourself: on a `401`, mint a new token and retry the request.
 </Note>
 
 ## Token parameters
@@ -133,7 +133,7 @@ These are the errors a request made **with a token** can return:
 
 | Status | Code | Meaning |
 | --- | --- | --- |
-| `401` | [`unauthorized`](/errors/unauthorized) | Token is expired or invalid. Re-mint and retry — the React provider does this for you. |
+| `401` | [`unauthorized`](/errors/unauthorized) | Token is expired or invalid. Re-mint and retry — the SDK does this for you. |
 | `403` | [`forbidden`](/errors/forbidden) | Token lacks the required scope. Mint with the right scopes. |
 | `404` | [`not_found`](/errors/not_found) | Profile is outside the token's `profile_scope` — the token can't confirm it exists. |
 
