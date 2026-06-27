@@ -3,10 +3,23 @@ title: "Connections"
 description: "A connection links a profile to a platform account — an X handle, a Facebook Page, a Google Ads account — that it can post or advertise through."
 ---
 
-A profile can have several connections, one per platform account. Postrun holds the
-OAuth grant and refreshes it — you never store or rotate platform tokens.
+A profile can have several connections — including more than one on the same network.
+Postrun holds the OAuth grant and refreshes it — you never store or rotate platform
+tokens.
 
 These examples assume the React SDK is set up — see [Getting started with React](/react/get-started).
+
+## One account per connection
+
+Each connection is bound to **exactly one** account. But on some networks, a single
+login reaches **several** accounts — a Facebook login manages every Page you admin, a
+Google login reaches every ad account you can access. When you connect, you pick which
+one this connection is for — one at a time.
+
+To connect a second account on the same network — another Facebook Page, say — run the
+connect flow again and pick the other one. That's a separate connection on the same
+profile. The picker that handles this is covered in
+[Connecting an account](/connections/connecting#the-account-selector).
 
 ## Status
 
