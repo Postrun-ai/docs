@@ -5,6 +5,25 @@ description: "Upload a file once; Postrun renders a ready rendition per platform
 
 Upload a file (or import via `source_url`), name your `targets`, and Postrun produces a ready rendition for each — transcoding only as needed and validating against each platform's current limits. A file that can't fit a platform surfaces a typed error in `per_platform[target].errors` before you publish; Postrun adjusts the technical envelope (format, codec, size) but never crops or trims your content.
 
+<CodeGroup>
+```tsx @postrun/react icon="react"
+import { useMediaUpload } from "@postrun/react";
+
+function Uploader({ profileId }) {
+  const { add } = useMediaUpload();
+
+  async function upload(file: File) {
+    const [asset] = await add(file, { profileId, targets: ["x", "instagram"] });
+
+    const x = asset.per_platform.x;
+    // x.status   → "ready" or "failed"
+    // x.url      → the rendition URL (null when failed)
+    // x.errors   → blocking findings (e.g. aspect ratio out of range)
+    // x.warnings → non-blocking adjustments (e.g. re-encoded to H.264)
+  }
+}
+```
+
 ```ts @postrun/js icon="square-js"
 import { mediaCreate, waitForMedia } from "@postrun/js";
 
@@ -16,11 +35,12 @@ const { data: media } = await mediaCreate({
 const asset = await waitForMedia(media.id, { client: postrun.client });
 
 const x = asset.per_platform.x;
-// x.status    → "ready" or "failed"
-// x.url       → the rendition URL (null when failed)
-// x.errors    → blocking findings (e.g. aspect ratio out of range)
-// x.warnings  → non-blocking adjustments (e.g. re-encoded to H.264)
+// x.status   → "ready" or "failed"
+// x.url      → the rendition URL (null when failed)
+// x.errors   → blocking findings (e.g. aspect ratio out of range)
+// x.warnings → non-blocking adjustments (e.g. re-encoded to H.264)
 ```
+</CodeGroup>
 
 <CardGroup cols={3}>
   <Card title="Uploading" href="/media/uploading">
