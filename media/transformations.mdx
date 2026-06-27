@@ -1,0 +1,50 @@
+---
+title: "Transformations"
+description: "What Postrun adjusts in your file so each platform accepts it — and what it deliberately leaves untouched."
+---
+
+When you upload a file, Postrun prepares a version that each target platform will
+accept, doing the least work needed. You don't run ffmpeg or an image pipeline, and
+you don't have to know any platform's rules. Here's what that means for images and
+video.
+
+## Images
+
+Postrun delivers a version that fits each target:
+
+- **Resizes** down to the platform's dimension limit, keeping the aspect ratio.
+- **Converts** to the format the platform expects — JPEG for the social platforms,
+  PNG where transparency needs to be preserved.
+- **Recompresses** to stay under the platform's file-size cap.
+- **Rasterizes** formats the platforms can't accept at all (AVIF, TIFF, SVG) into a
+  standard one.
+
+## Video
+
+Postrun makes the file playable everywhere while avoiding needless re-encoding:
+
+- **Re-encodes the codec only when a target requires it** — for example, an iPhone
+  HEVC clip becomes H.264 for X, which only accepts H.264. If every target already
+  accepts the source codec, Postrun **re-wraps the file without re-encoding** — fast,
+  and with no quality loss.
+- **Optimizes it for instant playback**, so platforms don't stall while loading.
+- **Normalizes the technical details** a codec needs (such as even dimensions and
+  frame-rate bounds).
+
+GIFs and documents pass through unchanged — there's nothing to convert; Postrun only
+validates them.
+
+## What Postrun never changes
+
+Postrun adjusts the technical envelope — format, codec, size — **never your
+content**. It doesn't crop, trim, or restage your media. If a clip is longer than a
+platform allows, or an image's aspect ratio falls outside a platform's range,
+Postrun doesn't silently cut it — it reports the problem so you can decide what to
+do (see [Media Response](/media/media-response)).
+
+## Knowing what was adjusted
+
+Every change Postrun makes is reported in the asset's per-platform **`warnings`** —
+for example, that a video was re-encoded, or an image recompressed to fit. The
+rendition is ready to use; the warning is just there if you want to know what
+happened.

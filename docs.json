@@ -54,6 +54,7 @@
             "icon": "image",
             "pages": [
               "media",
+              "media/transformations",
               "media/uploading",
               "media/media-response"
             ]
