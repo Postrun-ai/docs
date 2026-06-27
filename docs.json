@@ -50,9 +50,16 @@
             ]
           },
           {
-            "group": "Core concepts",
+            "group": "Media",
+            "icon": "image",
             "pages": [
               "media",
+              "media/uploading"
+            ]
+          },
+          {
+            "group": "Core concepts",
+            "pages": [
               "storage",
               "authentication",
               "validating-posts",

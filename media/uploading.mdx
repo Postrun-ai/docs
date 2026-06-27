@@ -1,0 +1,124 @@
+---
+title: "Uploading media"
+description: "Get a file into Postrun — by URL or resumable direct upload — and target it at the platforms you'll publish to."
+---
+
+Adding media is three steps: create an asset, get its bytes in, and let Postrun
+process it into per-platform renditions in the background. There are two ways to
+supply the bytes — a URL import, or a resumable direct upload.
+
+<Note>
+  On React, the [SDK](/react/media) does all of this for you — `useMediaUpload`
+  takes a `File` and handles the upload, chunking, and processing. This page
+  documents the underlying REST flow for any language or a server backend.
+</Note>
+
+## Targets
+
+`targets` lists the platforms you intend to publish to. Postrun validates and
+renders a per-target rendition for each. Targets are the post platforms (`x`,
+`instagram`, `tiktok`, `linkedin`, `facebook_page`) and the ad target
+`google_ads`.
+
+You can omit `targets` at creation and add them later with a `PATCH /v1/media/{id}` —
+Postrun renders the new target on demand.
+
+## Import from a URL
+
+The simplest path: pass a public `https` `source_url` and Postrun fetches,
+validates, transforms, and stores the file server-side. One request, no upload to
+manage.
+
+```bash cURL
+curl https://api.postrun.ai/v1/media \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": "prof_3b9d6bcd",
+    "source_url": "https://example.com/launch.mp4",
+    "targets": ["x", "instagram", "tiktok"]
+  }'
+```
+
+The response is the media asset with `upload: null`. The bytes are fetched and
+processed in the background — [poll until it's ready](#wait-for-processing).
+
+## Direct upload (resumable)
+
+For bytes you already hold — a browser file input, or a buffer on your server.
+Create the asset without a `source_url`, and Postrun returns an `upload` session to
+push the bytes to.
+
+<Steps>
+  <Step title="Create the asset">
+    ```bash cURL
+    curl https://api.postrun.ai/v1/media \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "profile_id": "prof_3b9d6bcd", "targets": ["x", "instagram"] }'
+    ```
+
+    The response includes the asset `id` and an `upload` session:
+
+    ```json
+    {
+      "id": "med_9f2a",
+      "object": "media",
+      "status": "uploading",
+      "upload": {
+        "upload_id": "2~abc123",
+        "key": "uploads/med_9f2a",
+        "part_size": 8388608,
+        "expires_at": "2026-06-27T12:00:00Z"
+      }
+    }
+    ```
+  </Step>
+  <Step title="Upload the file in parts">
+    Split the file into `part_size`-byte chunks. For each part, get a presigned URL,
+    then `PUT` the chunk's bytes to it and keep the `ETag` the response returns.
+
+    ```bash cURL
+    # 1. Sign part 1
+    curl https://api.postrun.ai/v1/media/med_9f2a/multipart/sign \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "part_number": 1 }'
+    # → { "url": "https://…presigned…" }
+
+    # 2. PUT the chunk's bytes to that URL; read the ETag response header
+    curl -X PUT "https://…presigned…" --data-binary @chunk-1.bin -i
+    ```
+
+    No `Content-Type` is needed — Postrun detects the type from the bytes.
+  </Step>
+  <Step title="Complete the upload">
+    Send every part you uploaded, as `{ part_number, etag }`:
+
+    ```bash cURL
+    curl https://api.postrun.ai/v1/media/med_9f2a/multipart/complete \
+      -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "parts": [{ "part_number": 1, "etag": "\"abc…\"" }] }'
+    ```
+
+    Processing starts. [Poll until it's ready](#wait-for-processing).
+  </Step>
+</Steps>
+
+If a connection drops mid-upload, `GET /v1/media/{id}/multipart/parts` returns the
+parts already stored — upload only the ones missing, then complete. The upload
+session is valid until its `expires_at`.
+
+## Wait for processing
+
+Both paths process asynchronously. Poll `GET /v1/media/{id}` until `status` is
+`ready` (or `failed`); `progress.percent` tracks it in between.
+
+```bash cURL
+curl https://api.postrun.ai/v1/media/med_9f2a \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY"
+```
+
+When `status` is `ready`, each target's rendition is in `per_platform` — its URL,
+dimensions, and any per-platform findings. Reading that result is covered next.
