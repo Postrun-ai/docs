@@ -77,6 +77,13 @@
         "openapi": "https://api.postrun.ai/v1/openapi.json",
         "groups": [
           {
+            "group": "Tokens",
+            "icon": "key",
+            "pages": [
+              "POST /tokens"
+            ]
+          },
+          {
             "group": "Profiles",
             "icon": "user",
             "pages": [
@@ -128,7 +135,7 @@
           },
           {
             "group": "Google Ads",
-            "icon": "google",
+            "icon": "/logos/google-ads.svg",
             "pages": [
               {
                 "group": "Campaigns",
@@ -242,7 +249,7 @@
           },
           {
             "group": "Meta Ads",
-            "icon": "meta",
+            "icon": "/logos/meta.svg",
             "pages": [
               "GET /meta/{connection_id}/account",
               "GET /meta/{connection_id}/ads",
@@ -256,7 +263,7 @@
           },
           {
             "group": "TikTok",
-            "icon": "tiktok",
+            "icon": "/logos/tiktok.svg",
             "pages": [
               "GET /connections/{id}/tiktok/creator-info"
             ]
@@ -281,13 +288,6 @@
             "pages": [
               "GET /logs",
               "GET /logs/{id}"
-            ]
-          },
-          {
-            "group": "Tokens",
-            "icon": "key",
-            "pages": [
-              "POST /tokens"
             ]
           }
         ]

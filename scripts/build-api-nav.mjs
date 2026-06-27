@@ -15,19 +15,21 @@ const SPEC_URL = 'https://api.postrun.ai/v1/openapi.json';
 
 // tag → group label + Font Awesome icon (brands for platforms) + order.
 // `sub: true` marks the tag whose endpoints are split into resource sub-groups.
+// Platform groups use official self-hosted brand SVGs (logos/*.svg); the rest use
+// Font Awesome names. Tokens is FIRST — minting a frontend token is step zero.
 const TAGS = {
+  Tokens: { label: 'Tokens', icon: 'key', order: 0 },
   Profiles: { label: 'Profiles', icon: 'user', order: 1 },
   Connections: { label: 'Connections', icon: 'plug', order: 2 },
   Posts: { label: 'Posts', icon: 'paper-plane', order: 3 },
   Media: { label: 'Media', icon: 'image', order: 4 },
-  'Google Ads': { label: 'Google Ads', icon: 'google', order: 5, sub: true },
-  Meta: { label: 'Meta Ads', icon: 'meta', order: 6 },
+  'Google Ads': { label: 'Google Ads', icon: '/logos/google-ads.svg', order: 5, sub: true },
+  Meta: { label: 'Meta Ads', icon: '/logos/meta.svg', order: 6 },
   // TikTok Ads ships on a later deploy; mapped now so it auto-appears once live.
-  'TikTok Ads': { label: 'TikTok Ads', icon: 'tiktok', order: 7 },
-  TikTok: { label: 'TikTok', icon: 'tiktok', order: 8 },
+  'TikTok Ads': { label: 'TikTok Ads', icon: '/logos/tiktok.svg', order: 7 },
+  TikTok: { label: 'TikTok', icon: '/logos/tiktok.svg', order: 8 },
   Webhooks: { label: 'Webhooks', icon: 'bell', order: 9 },
   Logs: { label: 'Logs', icon: 'list-check', order: 10 },
-  Tokens: { label: 'Tokens', icon: 'key', order: 11 },
 };
 
 // Google Ads resource sub-groups, in display order. Each predicate runs on the
