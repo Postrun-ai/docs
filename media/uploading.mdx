@@ -3,9 +3,7 @@ title: "Uploading media"
 description: "Hand the SDK a file; it uploads it resumably and Postrun processes it into a platform-ready rendition for each target."
 ---
 
-You don't manage the upload yourself. The SDK takes a file, uploads it as a
-**resumable multipart upload**, and Postrun processes it into a per-platform
-rendition in the background — you get back an asset you can attach to a post.
+Set up `PostrunProvider` and `postrun.client` first — see [React SDK → Get started](/react/get-started). `profileId` is the ID of the profile you're uploading for.
 
 ## Upload a file
 
@@ -26,50 +24,48 @@ function Uploader({ profileId }) {
       }
     />
   );
-  // each entry in `items` carries { file, status, progress, media }
+  // each entry in `items` carries { file, status, progress (0–1), media }
 }
 ```
 
 ```ts @postrun/js icon="square-js"
 import { mediaCreate, uploadFile } from "@postrun/js";
 
-// 1. Create the asset (and get its upload session)
+// 1. Create the asset and receive the upload session
 const { data: media } = await mediaCreate({
   client: postrun.client,
   body: { profile_id: "prof_3b9d6bcd", targets: ["x", "instagram"] },
 });
 
-// 2. Upload the file — resumable multipart, handled for you
+// 2. Upload the bytes — resumable multipart, handled for you
 if (media.upload) {
   await uploadFile(file, {
     client: postrun.client,
     mediaId: media.id,
     session: media.upload,
-    onProgress: (fraction) => console.log(Math.round(fraction * 100)),
+    onProgress: (fraction) => console.log(Math.round(fraction * 100)), // 0–1
   });
 }
 ```
 </CodeGroup>
 
-The file type is detected from the bytes — you never declare it. Chunking, parallel
-parts, retries, and resuming after a dropped connection all happen inside the SDK.
-The React hook also paces multiple files for you and exposes each one's live state —
-see [React SDK → Media](/react/media) for progress, previews, and managing assets.
+The file type is detected from the bytes — you never declare it. Chunking, parallel parts, retries, and resuming after a dropped connection all happen inside the SDK. The React hook queues concurrent uploads so they don't saturate the connection, and exposes each file's live state — see [React SDK → Media](/react/media) for progress, previews, and managing assets.
 
 ## Targets
 
-`targets` lists the platforms you intend to publish to; Postrun validates and
-renders a rendition for each. Targets are the post platforms (`x`, `instagram`,
-`tiktok`, `linkedin`, `facebook_page`) and the ad target `google_ads`.
+`targets` lists the platforms you intend to publish to. Postrun validates and renders a rendition for each.
 
-You can always add more supported platforms later by
-[updating the asset](/api-reference/media/update-media) — Postrun renders each new
-target on demand.
+Valid targets: `x`, `linkedin`, `facebook_page`, `instagram`, `tiktok`, `google_ads` (image only).
+
+<Note>
+  **Size limits:** videos up to 4 GB; images, GIFs, and documents up to 1 GB. A file over the limit settles `failed` with [`media_too_large`](/errors/media_too_large) or [`video_too_large`](/errors/video_too_large).
+</Note>
+
+You can add more targets later by [updating the asset](/api-reference/media/update-media) — Postrun renders each new target on demand.
 
 ## Import from a URL
 
-If the bytes already live at a public `https` URL, skip the upload entirely: pass a
-`source_url` and Postrun fetches, validates, transforms, and stores them.
+If the bytes already live at a public `https` URL, skip the upload: pass `source_url` and Postrun fetches, validates, transforms, and stores them.
 
 ```ts @postrun/js icon="square-js"
 import { mediaCreate } from "@postrun/js";
@@ -82,34 +78,40 @@ const { data: media } = await mediaCreate({
     targets: ["x", "instagram", "tiktok"],
   },
 });
-// nothing to upload — the bytes are fetched and processed in the background
+// nothing to upload — bytes are fetched and processed in the background
 ```
+
+If the URL can't be fetched, the asset settles `failed` with the top-level `error` set to `media_fetch_failed`.
 
 ## Wait until it's ready
 
-Processing runs asynchronously. The React hook tracks it for you — each item moves
-`uploading → processing → ready` (or `failed`), and `progress` drives a bar. Outside
-React, `await` the asset with `waitForMedia` — no poll loop to write:
+Processing runs asynchronously. The asset's processing state is in `progress`: `{ stage: "queued" | "analyzing" | "transcoding" | "done", percent: 0–100 }`. This is separate from the byte-upload progress — `item.progress` in the React hook and `onProgress` in `uploadFile` are both a 0–1 fraction of bytes sent.
+
+The React hook tracks both for you. Outside React, `await` the asset with `waitForMedia`:
 
 ```ts @postrun/js icon="square-js"
 import { waitForMedia } from "@postrun/js";
 
 const asset = await waitForMedia(media.id, { client: postrun.client });
-// asset.status is "ready" (or "failed"); asset.per_platform holds the renditions
+// asset.status is "ready" or "failed"
+// asset.per_platform holds the per-target renditions
 ```
 
-`waitForMedia` polls until the asset settles. A `failed` asset resolves too — read
-its `per_platform` errors; only a timeout or an aborted `signal` rejects. Pass
-`onPoll` to surface `progress.percent`, or `timeout` / `signal` to bound the wait:
+`waitForMedia` polls until the asset **settles** (`status` is `ready` or `failed`). It resolves on `failed` — a failure is a typed verdict to read, not an exception. A `source_url` that can't be fetched, and a file that can't be processed, both settle as `failed`. Only a timeout or an aborted `signal` causes `waitForMedia` to reject.
+
+Pass `onPoll` to surface processing progress, or `timeout` / `signal` to bound the wait:
 
 ```ts @postrun/js icon="square-js"
 const asset = await waitForMedia(media.id, {
   client: postrun.client,
-  onPoll: (m) => console.log(m.progress.percent),
+  onPoll: (m) => console.log(m.progress.percent), // 0–100
   timeout: 5 * 60_000,
   signal: controller.signal,
 });
 ```
 
-When it's `ready`, each target's rendition is in `per_platform` — its URL,
-dimensions, and any per-platform findings. Reading that result is covered next.
+When it's `ready`, each target's rendition is in `per_platform`. See [Media Response](/media/media-response).
+
+## Attach it to a post
+
+The asset's `id` goes into a post variant's `media` as `{ media_id: asset.id }`. See [React SDK → Posts](/react/posts).

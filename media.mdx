@@ -1,66 +1,35 @@
 ---
 title: "Media"
-description: "Each platform accepts media in a different shape. This is what that involves, and how Postrun produces a ready rendition per target from one upload."
+description: "Upload a file once; Postrun renders a ready rendition per platform and returns a typed verdict for each."
 ---
 
-Posting media is harder than it looks. Each platform accepts a different set of
-formats, codecs, sizes, durations, and aspect ratios for video and images, and
-most violations only surface when a publish fails — asynchronously, as a
-platform-specific error code.
+Upload a file (or import via `source_url`), name your `targets`, and Postrun produces a ready rendition for each — transcoding only as needed and validating against each platform's current limits. A file that can't fit a platform surfaces a typed error in `per_platform[target].errors` before you publish; Postrun adjusts the technical envelope (format, codec, size) but never crops or trims your content.
 
-## Per-platform requirements differ
+```ts @postrun/js icon="square-js"
+import { mediaCreate, waitForMedia } from "@postrun/js";
 
-No two platforms draw the line in the same place. Each constrains a different axis:
+const { data: media } = await mediaCreate({
+  client: postrun.client,
+  body: { profile_id: "prof_3b9d6bcd", targets: ["x", "instagram"] },
+});
 
-- **X** accepts a single video codec, and has the shortest length limit.
-- **Instagram** rejects a feed image whose aspect ratio is too tall or too wide —
-  an API error, not a crop.
-- **Facebook** reels accept vertical-to-landscape video only; a square clip is
-  rejected.
-- **LinkedIn** accepts a single container format.
-- **TikTok** caps video length per account, and returns that limit at publish time.
+const asset = await waitForMedia(media.id, { client: postrun.client });
 
-A single file has to meet every target's rules at once, and the rules conflict. A
-video within LinkedIn's length limit can exceed X's. A square video valid on X and
-Instagram is rejected by Facebook. A file size that's fine on LinkedIn is over
-Instagram's cap.
+const x = asset.per_platform.x;
+// x.status    → "ready" or "failed"
+// x.url       → the rendition URL (null when failed)
+// x.errors    → blocking findings (e.g. aspect ratio out of range)
+// x.warnings  → non-blocking adjustments (e.g. re-encoded to H.264)
+```
 
-## Codecs and transcoding
-
-The codec is set by the source file, not chosen. Phones record HEVC (H.265) by
-default. Most platforms accept it; X accepts only H.264. Publishing an HEVC file to
-X requires re-encoding it first, which means running ffmpeg server-side.
-Re-encoding every file is wasteful — it's slow and lossy, and most files don't need
-it — so the pipeline has to re-encode selectively and otherwise remux (re-wrap) the
-file without touching the stream.
-
-## Image formats and limits
-
-Each platform sets its own image size and dimension limits. Some formats can't be
-sent at all: AVIF, TIFF, and SVG aren't accepted by the platforms' image pipelines,
-so they have to be converted to JPEG or PNG first — and to the correct one, since
-flattening a transparent PNG to JPEG fills the transparency with black.
-
-## Uploads
-
-A multi-gigabyte video sent in a single request fails on any network interruption
-and restarts from zero. Reliable uploads require chunking the file into parts,
-uploading them in parallel, retrying failed parts, and resuming after a dropped
-connection.
-
-## Validation runs at publish time
-
-Most of these checks run when the post is published, often asynchronously, and
-return as platform-specific error codes. A file that violates a rule fails in
-production rather than at upload time. The limits also change over time, so code
-that was correct can begin failing without a change on your side.
-
-## How Postrun handles it
-
-Postrun's media pipeline takes one upload and produces a ready rendition per
-target: re-encoding only when a target requires it, validating against each
-platform's current limits, and handling resumable uploads and format conversion.
-When a file can't meet a platform's requirements, the response carries a typed
-reason before publish, rather than an opaque failure after.
-
-The rest of this section covers how to use it.
+<CardGroup cols={3}>
+  <Card title="Uploading" href="/media/uploading">
+    File upload, `source_url` import, and waiting for processing.
+  </Card>
+  <Card title="Transformations" href="/media/transformations">
+    What Postrun adjusts — and what it deliberately leaves untouched.
+  </Card>
+  <Card title="Media Response" href="/media/media-response">
+    Reading the per-platform renditions and typed errors.
+  </Card>
+</CardGroup>

@@ -3,23 +3,17 @@ title: "Media Response"
 description: "Once an asset is ready, the media response holds a typed verdict for every target — the rendition URL, plus why anything didn't fit."
 ---
 
-When an asset is `ready`, it carries a result for each platform you targeted. That
-result lives in **`per_platform`** — one entry per target — and tells you the
-rendition to use and, when a platform couldn't accept the file, exactly why.
-
-You already have the asset: the upload returns it, [`waitForMedia`](/media/uploading#wait-until-its-ready)
-resolves with it, and `useMedia(id)` / `GET /v1/media/{id}` fetch it. It's the same
-object everywhere.
+The asset shape is identical from `mediaCreate`, `waitForMedia`, `useMedia`, or `GET /v1/media/{id}`. When it **settles** (`status` is `ready` or `failed`), it carries a typed result for each platform you targeted in **`per_platform`** — one entry per target.
 
 ## The per-platform map
 
-Each entry has the rendition `url` (use it when you post to that platform), its
-`width` / `height` / `bytes`, and two lists of findings — `warnings` and `errors`:
+Each entry has the rendition `url` (use it when you post to that platform), its `width` / `height` / `bytes`, and two lists of findings — `warnings` and `errors`:
 
 ```json
 {
   "id": "med_9f2a",
   "status": "ready",
+  "progress": { "stage": "done", "percent": 100 },
   "per_platform": {
     "x": {
       "status": "ready",
@@ -54,9 +48,35 @@ Each entry has the rendition `url` (use it when you post to that platform), its
 }
 ```
 
-## Read it
+`asset.status: "ready"` means processing finished — it does **not** mean every platform succeeded. An asset can be `ready` while one or more `per_platform` entries are `failed` (the original processed fine, but a platform rejected it). Always check each `per_platform[target].status` before using its `url`. While `status` is `processing`, each entry exists but its `url` is `null` and `errors` / `warnings` are empty — read them only once the asset has settled.
 
-Pick each platform's `url` when it's `ready`, and surface a finding when it isn't:
+A top-level failure (corrupt file, unrecognized format, or unreachable `source_url`) sets `status` to `failed` at the asset level with the top-level `error` populated. `per_platform` is empty — no platform entry exists when the original couldn't be processed at all:
+
+```json
+{
+  "id": "med_7c1b",
+  "status": "failed",
+  "progress": { "stage": "done", "percent": 100 },
+  "error": {
+    "code": "media_fetch_failed",
+    "display_error": "The URL couldn't be fetched.",
+    "message": "GET https://example.com/launch.mp4 returned 403."
+  },
+  "per_platform": {}
+}
+```
+
+## Problems surface in three places
+
+- **`per_platform[target].errors`** — **blocking** for that target. The file can't be published there (wrong aspect ratio, unsupported codec, too large). The entry's `status` is `failed` and its `url` is `null`.
+- **`per_platform[target].warnings`** — **non-blocking**. Postrun adjusted the file to fit (re-encoded, recompressed, downscaled); the rendition is still `ready` and usable. Log it or show it in a developer UI; it needs no user action.
+- **`error`** (top level, asset-wide) — the **original itself** is unusable (corrupt file, unrecognized format, or unreachable `source_url`). No platform can succeed. It's `null` otherwise.
+
+<Note>
+  Gate your publish on `per_platform[target].status === "ready"` and `errors.length === 0`. Never key on `warnings`.
+</Note>
+
+## Read it
 
 <CodeGroup>
 ```tsx @postrun/react icon="react"
@@ -89,25 +109,28 @@ if (x?.status === "ready" && x.url) {
 ```
 </CodeGroup>
 
-## errors, warnings, and the asset-wide error
+## Common error codes
 
-There are three places a problem can surface — keep them distinct:
+| Code | Kind | Notes |
+| --- | --- | --- |
+| [`media_too_large`](/errors/media_too_large) | error | File exceeds 1 GB (non-video). |
+| [`video_too_large`](/errors/video_too_large) | error | Video exceeds 4 GB. |
+| [`media_aspect_ratio_unsupported`](/errors/media_aspect_ratio_unsupported) | error | Image aspect ratio outside the platform's allowed range. |
+| [`video_aspect_unsupported`](/errors/video_aspect_unsupported) | error | Video aspect ratio outside the platform's allowed range. |
+| [`video_codec_unsupported`](/errors/video_codec_unsupported) | error | Source codec can't be re-encoded for this target. |
+| [`video_duration_exceeds_max`](/errors/video_duration_exceeds_max) | error | Clip is longer than the platform (or account) allows. |
+| `video_duration_too_short` | error | Clip is shorter than the platform's minimum. |
+| [`media_resolution_too_low`](/errors/media_resolution_too_low) | error | Dimensions are below the platform's minimum. |
+| `video_too_small` | error | Video dimensions are below the platform's minimum. |
+| `media_format_unsupported` | error | File format can't be converted to anything the platform accepts. |
+| `media_unsupported` | error | File kind not supported for this target (e.g. a video sent to an image-only target). |
+| `media_fetch_failed` | error | `source_url` couldn't be fetched; asset settles as a top-level failure. |
+| [`media_format_recompressed`](/errors/media_format_recompressed) | warning | File was re-encoded or recompressed to fit. Rendition is still ready. |
+| `media_resolution_downscaled` | warning | Image was resized down to the platform's dimension limit. Rendition is still ready. |
 
-- **`per_platform[target].errors`** — **blocking** for that target. The file can't be
-  published there (wrong aspect ratio, unsupported codec, too large). The entry's
-  `status` is `failed` and its `url` is `null`.
-- **`per_platform[target].warnings`** — **non-blocking**. Postrun adjusted the file to
-  fit (re-encoded, recompressed, downscaled); the rendition is still `ready` and
-  usable. Advisory — surface it if you want, but you don't have to act on it.
-- **`error`** (top level, asset-wide) — the **original itself** is unusable (corrupt
-  or an unsupported format), so no platform can succeed. It's `null` otherwise.
+## Error fields
 
-A publish gate keys on `status` + `errors`, never on `warnings`.
-
-## Every finding is typed
-
-`warnings`, `errors`, and the asset-wide `error` are all the same shape — the same
-three-audience model used across the API:
+`warnings`, `errors`, and the asset-wide `error` share the same shape:
 
 | Field | Use it for |
 | --- | --- |
@@ -118,6 +141,4 @@ three-audience model used across the API:
 
 ## Attach it to a post
 
-A `ready` asset is ready to publish: reference its `id` on a post's media, and the
-publish uses the matching `per_platform` rendition for each channel. See
-[Posts](/react/posts).
+Reference the asset's `id` in a post variant's `media` as `{ media_id: asset.id }` — the publish path picks the matching `per_platform` rendition for each channel automatically. See [Posts](/react/posts).
