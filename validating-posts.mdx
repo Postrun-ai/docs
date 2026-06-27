@@ -12,11 +12,14 @@ platform's limit, the media is the right format and shape, the required fields
 are there. You get back a clear yes-or-no and a list of anything to fix. Nothing
 is stored, and nothing is sent to any social platform.
 
-It's a read with no side effects, so it's well suited to checking a post while a
-user composes it. You have **5,000 validation requests per minute** on a
-dedicated bucket (see [rate limits](/rate-limits)), separate from your normal read
-budget — debounce on input (for example, validate a short moment after the user
-stops typing) rather than firing a request on every keystroke.
+**Scope required: `posts:read`.** Because it has no side effects, you can call
+this endpoint directly from the browser with a [frontend token](/authentication) —
+no backend route needed.
+
+It's a 5,000-request-per-minute dedicated bucket (see [rate limits](/rate-limits)),
+separate from your normal read budget — debounce on input (for example, validate a
+short moment after the user stops typing) rather than firing a request on every
+keystroke.
 
 ## When to use it
 
@@ -27,24 +30,6 @@ stops typing) rather than firing a request on every keystroke.
   generated post is sound before you commit to it.
 - **Anywhere you'd rather catch a problem early** than handle a failed publish.
 
-## The journey
-
-<Steps>
-  <Step title="Send your post to validate">
-    Send the post exactly as you would to publish it — the same `profile_id` and
-    `variants` — but to the `/posts/validate` endpoint.
-  </Step>
-  <Step title="Read the verdict">
-    You get back `publishable` (a simple yes/no) and `issues` — every problem
-    found, all at once, each pointing at the field to fix.
-  </Step>
-  <Step title="Fix and re-validate, or publish">
-    If `publishable` is `false`, show the issues to your user (or fix them
-    automatically), then validate again. Once it's `true`, publish with
-    confidence.
-  </Step>
-</Steps>
-
 ## Validate a post
 
 <CodeGroup>
@@ -52,7 +37,7 @@ stops typing) rather than firing a request on every keystroke.
 import { postsValidate } from "@postrun/js";
 
 const { data } = await postsValidate({
-  client: postrun.client,
+  client: postrun,
   body: {
     profile_id: "prof_3b9d6bcd",
     variants: [
@@ -74,8 +59,9 @@ if (!data.publishable) {
 ```
 
 ```bash cURL
+# Works with a frontend token ($POSTRUN_TOKEN) or a secret key.
 curl https://api.postrun.ai/v1/posts/validate \
-  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Authorization: Bearer $POSTRUN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "profile_id": "prof_3b9d6bcd",
@@ -90,6 +76,15 @@ curl https://api.postrun.ai/v1/posts/validate \
   }'
 ```
 </CodeGroup>
+
+## When you get a 422 instead of a verdict
+
+The request body is strict — unknown fields return `422`
+[`validation_failed`](/errors/validation_failed) rather than a verdict. The same
+`422` applies if the post is structurally malformed: an unknown platform, or a
+connection or media that isn't yours. Handle this the same way as any other
+endpoint error — it's distinct from the validation `issues[]` inside a successful
+verdict response.
 
 ## Reading the response
 
@@ -138,8 +133,6 @@ Each issue is built to drop straight into your UI:
 
 ## What gets checked
 
-Validation covers everything that decides whether a post is publishable.
-
 ### Caption length
 
 Each platform's caption limit is enforced. X is account-aware — a standard
@@ -166,7 +159,7 @@ Every attached image, video, GIF, or document is checked: that it's a supported
 format, the right shape and size for the platform, and finished processing. If an
 asset can't be published you get the specific reason — wrong aspect ratio,
 unsupported codec, too large, still processing, and so on — the same media checks
-the [media API](/storage) runs on upload. The number and type of media also has
+the [media API](/media) runs on upload. The number and type of media also has
 to match the post (for example, a carousel's item count, or a video where the
 platform expects an image).
 
@@ -190,13 +183,6 @@ TikTok posts carry extra publishing options, so validation checks those too:
 
 Plus each platform's structural rules: required fields present, the post type
 matching its media, and no conflicting options set together.
-
-### When you get a 422 instead of a verdict
-
-If the post you send is structurally malformed — an unknown platform, or a
-connection or media that isn't yours — you get a `422`
-[error](/errors/validation_failed) instead of a verdict, the same as any other
-endpoint.
 
 ## Validation isn't a publish guarantee
 

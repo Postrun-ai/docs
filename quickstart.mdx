@@ -31,7 +31,7 @@ use both below — see [Authentication](/authentication) for the full model.
       secretKey: process.env.POSTRUN_SECRET_KEY!,
     });
 
-    const { data } = await profilesList({ client: postrun.client });
+    const { data } = await profilesList({ client: postrun });
     ```
 
     ```bash cURL
@@ -125,7 +125,7 @@ import { randomUUID } from "node:crypto";
 import { postsCreate } from "@postrun/js";
 
 await postsCreate({
-  client: postrun.client,
+  client: postrun,
   headers: { "Idempotency-Key": randomUUID() },
   body: { dry_run: true, /* ... */ },
 });

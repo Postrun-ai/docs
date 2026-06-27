@@ -5,7 +5,7 @@ description: "Per-account limits, split by reads and writes, with headers on eve
 
 Rate limits are **per account** — shared across every secret key and frontend
 token you hold. Minting more tokens doesn't buy more capacity; the budget belongs
-to the account, so your limit is predictable however many credentials you mint.
+to the account.
 
 Limits apply on a sliding one-minute window, split by what the request does:
 
@@ -15,25 +15,44 @@ Limits apply on a sliding one-minute window, split by what the request does:
 | **Writes** | 100 / min | Mutating `POST`, `PUT`, `PATCH`, `DELETE` |
 | **Post validation** | 5,000 / min | [`POST /posts/validate`](/validating-posts) — its own bucket, so validating in a tight loop never eats into your read budget |
 
+<Note>
+  In local development, the limiter fails **open** — if it's unconfigured you
+  won't see `429` responses. Test rate-limit handling against a staging or
+  production environment.
+</Note>
+
 ## Headers
 
-Every response carries your current budget, so you can pace requests against the
-headers instead of waiting for a `429`:
+Every response carries your current budget:
 
 | Header | Meaning |
 | --- | --- |
 | `X-RateLimit-Limit` | The bucket's ceiling. |
 | `X-RateLimit-Remaining` | Requests left in the current window. |
-| `X-RateLimit-Reset` | Unix-seconds timestamp when the window resets and `Remaining` refills. |
+| `X-RateLimit-Reset` | Unix timestamp (seconds) when the window resets and `Remaining` refills. |
+
+A `429` response also includes `Retry-After` (seconds) — the time to wait before
+retrying. This header appears **only on 429s**; it is absent on successful
+responses.
 
 ## When you exceed a limit
 
-You get `429` [`rate_limited`](/errors/rate_limited) with a `Retry-After` header
-(seconds). Wait that long, then retry — and on a write, send the same
-`Idempotency-Key` so the retry can't double the action:
+A `429` response looks like:
+
+```json
+{
+  "status": 429,
+  "code": "rate_limited",
+  "message": "You have exceeded your request rate limit. Please slow down.",
+  "display_error": "Too many requests — please wait a moment and try again."
+}
+```
+
+Wait the number of seconds in `Retry-After`, then retry. On a write, send the
+same `Idempotency-Key` so the retry can't double the action:
 
 ```ts retry on 429
-// Retry a request when rate-limited, honoring Retry-After.
+// Retry a request when rate-limited, honoring Retry-After (seconds).
 async function send(request: () => Promise<Response>, maxRetries = 5) {
   for (let attempt = 0; ; attempt++) {
     const res = await request();

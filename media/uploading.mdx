@@ -3,7 +3,7 @@ title: "Uploading media"
 description: "Hand the SDK a file; it uploads it resumably and Postrun processes it into a platform-ready rendition for each target."
 ---
 
-Set up `PostrunProvider` and `postrun.client` first — see [React SDK → Get started](/react/get-started). `profileId` is the ID of the profile you're uploading for.
+Set up the SDK client (`createPostrunClient`, or `<PostrunProvider>` for React) first — see [React SDK → Get started](/react/get-started). `profileId` is the ID of the profile you're uploading for.
 
 ## Upload a file
 
@@ -33,14 +33,14 @@ import { mediaCreate, uploadFile } from "@postrun/js";
 
 // 1. Create the asset and receive the upload session
 const { data: media } = await mediaCreate({
-  client: postrun.client,
+  client: postrun,
   body: { profile_id: "prof_3b9d6bcd", targets: ["x", "instagram"] },
 });
 
 // 2. Upload the bytes — resumable multipart, handled for you
 if (media.upload) {
   await uploadFile(file, {
-    client: postrun.client,
+    client: postrun,
     mediaId: media.id,
     session: media.upload,
     onProgress: (fraction) => console.log(Math.round(fraction * 100)), // 0–1
@@ -71,7 +71,7 @@ If the bytes already live at a public `https` URL, skip the upload: pass `source
 import { mediaCreate } from "@postrun/js";
 
 const { data: media } = await mediaCreate({
-  client: postrun.client,
+  client: postrun,
   body: {
     profile_id: "prof_3b9d6bcd",
     source_url: "https://example.com/launch.mp4",
@@ -92,7 +92,7 @@ The React hook tracks both for you. Outside React, `await` the asset with `waitF
 ```ts @postrun/js icon="square-js"
 import { waitForMedia } from "@postrun/js";
 
-const asset = await waitForMedia(media.id, { client: postrun.client });
+const asset = await waitForMedia(media.id, { client: postrun });
 // asset.status is "ready" or "failed"
 // asset.per_platform holds the per-target renditions
 ```
@@ -103,7 +103,7 @@ Pass `onPoll` to surface processing progress, or `timeout` / `signal` to bound t
 
 ```ts @postrun/js icon="square-js"
 const asset = await waitForMedia(media.id, {
-  client: postrun.client,
+  client: postrun,
   onPoll: (m) => console.log(m.progress.percent), // 0–100
   timeout: 5 * 60_000,
   signal: controller.signal,

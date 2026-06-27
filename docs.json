@@ -50,6 +50,13 @@
             ]
           },
           {
+            "group": "Authentication",
+            "icon": "key",
+            "pages": [
+              "authentication"
+            ]
+          },
+          {
             "group": "Connections",
             "icon": "plug",
             "pages": [
@@ -69,11 +76,23 @@
             ]
           },
           {
-            "group": "Core concepts",
+            "group": "Posts",
+            "icon": "paper-plane",
             "pages": [
-              "storage",
-              "authentication",
-              "validating-posts",
+              "validating-posts"
+            ]
+          },
+          {
+            "group": "Storage",
+            "icon": "database",
+            "pages": [
+              "storage"
+            ]
+          },
+          {
+            "group": "Making requests",
+            "icon": "code",
+            "pages": [
               "idempotency",
               "rate-limits"
             ]

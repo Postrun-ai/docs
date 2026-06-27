@@ -97,7 +97,7 @@ function XRendition({ id }) {
 ```ts @postrun/js icon="square-js"
 import { waitForMedia } from "@postrun/js";
 
-const asset = await waitForMedia(media.id, { client: postrun.client });
+const asset = await waitForMedia(media.id, { client: postrun });
 
 const x = asset.per_platform.x;
 if (x?.status === "ready" && x.url) {

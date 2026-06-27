@@ -28,11 +28,11 @@ function Uploader({ profileId }) {
 import { mediaCreate, waitForMedia } from "@postrun/js";
 
 const { data: media } = await mediaCreate({
-  client: postrun.client,
+  client: postrun,
   body: { profile_id: "prof_3b9d6bcd", targets: ["x", "instagram"] },
 });
 
-const asset = await waitForMedia(media.id, { client: postrun.client });
+const asset = await waitForMedia(media.id, { client: postrun });
 
 const x = asset.per_platform.x;
 // x.status   → "ready" or "failed"

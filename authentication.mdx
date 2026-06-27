@@ -3,74 +3,38 @@ title: "Authentication"
 description: "A secret key for your backend, scoped tokens for the browser, with authorization built into every token."
 ---
 
-To let a browser talk to a third-party API safely, you normally stand up a
-backend: it holds the secret, proxies every call, and on each request decides
-whether _this_ user may touch _that_ data. That backend is plumbing you build and
-maintain. With Postrun, you don't need it.
-
-There are two credentials, and every request carries one as
-`Authorization: Bearer <credential>`:
+There are two credentials: your backend holds a secret `pr_` key and mints short-lived scoped tokens; the browser holds only the token and calls Postrun directly. Every request carries one as `Authorization: Bearer <credential>`.
 
 | Credential | Access | Where it can run |
 | --- | --- | --- |
 | **Secret key** (`pr_…`) | Your whole account | Backend only — never the browser |
 | **Scoped token** | Only the profiles and scopes you grant it | Anywhere — browser or backend |
 
-Your backend mints a short-lived **scoped token** from the secret key and hands it
-to the browser. The browser then calls Postrun **directly** — no proxy in between.
+## End-to-end flow
 
-A scoped token isn't browser-only — it works anywhere, and because it's limited
-and short-lived, it's the safer choice for server-side calls too. Reach for the
-secret key only to mint tokens and to make money or structural writes, which a
-token can't do.
-
-<Note>
-  Every request answers two questions. **Authentication** — who is calling? (the
-  bearer credential.) **Authorization** — what may they do? (for a token, the
-  scopes and profiles baked into it.) Postrun enforces both on every request, so
-  there are no permission checks left for you to write.
-</Note>
-
-## Scoped tokens — the recommended path
-
-A scoped token grants the least privilege that does the job, so it's the
-credential to reach for by default. It's the only one that can run in a browser —
-so any user-facing app (a dashboard, a composer, a mobile app) must use one — and
-it's the safer choice on the server too. What this gives you:
-
-- **No proxy backend.** The browser lists posts, reads ad results, uploads media,
-  and publishes — straight to Postrun. You don't write routes that forward calls
-  and re-check permissions.
-- **The token carries its own permissions.** A token is locked to specific
-  **profiles** (whose data) and **scopes** (which actions), and Postrun checks
-  both on every request. You decide what a token can reach at mint time, not in
-  access-control code you maintain.
-- **Safe by default.** The secret key never reaches the browser. A token is
-  short-lived and scoped, and can't perform money or structural writes (more
-  below). A leaked token expires on schedule and can only do what you scoped it
-  to.
-- **One network hop.** The browser reaches Postrun directly, with no proxy
-  round-trip through your backend.
-
-### Mint a token
-
-Minting happens on your **backend**, which holds the secret key. Scope it to
-exactly what the session needs.
+**Step 1 — your backend mints a token.** Call `POST /v1/tokens` with your secret key. Scope it to exactly what this session needs:
 
 <CodeGroup>
-```ts @postrun/js
-import { createPostrunServer } from "@postrun/js/server";
+```ts Backend route (Next.js example)
+// app/api/token/route.ts — server-side only
+import { NextResponse } from "next/server";
 
-// Backend only — holds your secret pr_ key, never the browser.
-const postrun = createPostrunServer({
-  secretKey: process.env.POSTRUN_SECRET_KEY!,
-});
-
-const { token, expires_at } = await postrun.tokens.mint({
-  profile_scope: { type: "external_id", values: ["client_acme"] },
-  scopes: ["posts:read", "posts:write", "media:write"],
-  ttl_seconds: 900,
-});
+export async function GET() {
+  const res = await fetch("https://api.postrun.ai/v1/tokens", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.POSTRUN_SECRET_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      profile_scope: { type: "external_id", values: ["client_acme"] },
+      scopes: ["posts:read", "posts:write", "media:write"],
+      ttl_seconds: 900,
+    }),
+  });
+  const { token } = await res.json();
+  return NextResponse.json({ token });
+}
 ```
 
 ```bash cURL
@@ -85,25 +49,82 @@ curl https://api.postrun.ai/v1/tokens \
 ```
 </CodeGroup>
 
-### Scope it on two axes
+**Step 2 — the browser fetches a token from your route.** Define `getToken` once:
 
-A token's authorization is two independent choices: **whose data** it can reach,
-and **which actions** it can take.
+```ts
+async function getToken(): Promise<string> {
+  const res = await fetch("/api/token");
+  const { token } = await res.json();
+  return token;
+}
+```
 
-**Profiles — whose data.** `profile_scope` picks the profiles the token may act
-on:
+**Step 3 — wire it into the SDK.** Pass `getToken` to either client:
 
-| Selector | Use it when |
+<CodeGroup>
+```ts @postrun/js
+import { createPostrunClient, postsList } from "@postrun/js";
+
+const postrun = createPostrunClient({ getToken });
+
+const { data } = await postsList({ client: postrun, query: { limit: 20 } });
+```
+
+```tsx @postrun/react
+import { PostrunProvider } from "@postrun/react";
+
+export default function App() {
+  return (
+    <PostrunProvider getToken={getToken}>
+      {/* hooks work anywhere inside */}
+    </PostrunProvider>
+  );
+}
+```
+</CodeGroup>
+
+<Note>
+  The React provider re-calls `getToken` automatically when a token is expired
+  or a request returns `401`. See the [React SDK](/react/get-started) for the
+  full provider setup and hooks.
+</Note>
+
+## Token parameters
+
+`POST /v1/tokens` accepts:
+
+| Parameter | Description |
 | --- | --- |
-| `{ "type": "profile_ids", "values": [...] }` | You have Postrun profile ids. |
-| `{ "type": "external_id", "values": [...] }` | You key profiles by [your own id](/storage). Resolved per request, so it also covers profiles created after the token was minted. |
-| `{ "type": "all" }` | The token may act on every profile in the account. |
+| `profile_scope` | Which profiles the token may act on (see below) |
+| `scopes` | Which actions the token may take (see below) |
+| `ttl_seconds` | Lifetime in seconds — min `60`, max `1800`, default `900` |
 
-**Scopes — which actions.** Coarse: one read, one write, and one delete per
-resource. A `:write` grants the matching `:read`, so you never list both. `:delete`
-is an **independent** third action — `:write` does **not** include it, so you can
-grant full read-and-write yet withhold the power to destroy; `:delete` grants the
-matching `:read` (you can always see what you can delete):
+**`profile_scope`** — one of three selectors:
+
+| Selector | Cap | Use it when |
+| --- | --- | --- |
+| `{ "type": "profile_ids", "values": [...] }` | ≤ 100 ids | You have Postrun profile ids. |
+| `{ "type": "external_id", "values": [...] }` | ≤ 50 | You key profiles by [your own id](/storage). Resolved per request, so it covers profiles created after mint. |
+| `{ "type": "all" }` | — | The token may act on every profile in the account. |
+
+Exceeding a cap returns `422` [`validation_failed`](/errors/validation_failed). Minting with a profile id that doesn't exist in your account returns `422` `profile_scope_invalid`.
+
+## Token errors
+
+| Status | Code | Meaning |
+| --- | --- | --- |
+| `401` | [`unauthorized`](/errors/unauthorized) | Token is expired or invalid. Re-mint and retry. |
+| `403` | [`forbidden`](/errors/forbidden) | Token lacks the required scope. Mint with the right scopes. |
+| `404` | [`not_found`](/errors/not_found) | Profile is outside the token's `profile_scope`. The token can't confirm the profile exists. |
+| `422` | `profile_scope_invalid` | Minted with a profile id that doesn't belong to your account. |
+
+There is no `token_expired` code — expiry surfaces as `401 unauthorized`.
+
+## Scopes
+
+A token's authorization is two independent choices: **whose data** (`profile_scope`) and **which actions** (scopes).
+
+Coarse: one read, one write, and one delete per resource. `:write` grants the matching `:read`, so you never list both. `:delete` is an **independent** third action — `:write` does **not** include it, so you can grant full read-and-write yet withhold the power to destroy; `:delete` grants the matching `:read` (you can always see what you can delete):
 
 | Resource | Read | Write | Delete |
 | --- | --- | --- | --- |
@@ -113,78 +134,19 @@ matching `:read` (you can always see what you can delete):
 | Media | `media:read` | `media:write` | `media:delete` |
 | Ads | `ads:read` | `ads:write` | `ads:delete` |
 
-Mint the narrowest set a session needs. Ask a token for a profile it wasn't
-scoped to and you get `404` [`not_found`](/errors/not_found), not `403` — so a
-token can't discover profiles outside its scope.
-
-### Lifetime
-
-`ttl_seconds` sets how long the token lives — between 60 and 1800, defaulting to
-900 (15 minutes). Tokens expire instead of being revoked: there's no revocation
-list to manage, so mint narrowly and re-mint as the session needs. The response
-returns the resolved `expires_at`.
-
-### Use it in the browser
-
-The browser holds only the token, and calls Postrun with it as the bearer — same
-API, narrowed to the token's scopes and profiles.
-
-<CodeGroup>
-```ts @postrun/js
-import { createPostrunClient, postsList } from "@postrun/js";
-
-// Browser — `getToken` fetches the token your backend minted.
-const postrun = createPostrunClient({ getToken });
-
-const { data } = await postsList({ client: postrun, query: { limit: 20 } });
-```
-
-```bash cURL
-curl https://api.postrun.ai/v1/posts \
-  -H "Authorization: Bearer $POSTRUN_FRONTEND_TOKEN"
-```
-</CodeGroup>
-
-<Note>
-  Building a UI? The [React SDK](https://www.npmjs.com/package/@postrun/react)
-  takes `getToken` once in a provider and gives you hooks that fetch, cache, and
-  refresh for you — so you don't manage the token yourself.
-</Note>
+Mint the narrowest set a session needs.
 
 ## Secret keys
 
-Create a `pr_` key in the [dashboard](https://app.postrun.ai). It has **full
-access to your whole account**, so treat it like a password: keep it server-side,
-store it in an environment variable, and never ship it to a browser or commit it.
+Create a `pr_` key in the [dashboard](https://app.postrun.ai). It has **full access to your whole account**, so keep it server-side, store it in an environment variable, and never ship it to a browser or commit it.
 
-A secret key belongs on your **backend**, and ideally does just two things:
+Use the secret key for two things:
 
-1. **Mint scoped tokens** — the flow above, for anything user-facing.
-2. **Money and structural writes** — operations a browser token can't reach (next
-   section), called from your own server.
-
-For everything else — including server-side calls that don't need full account
-access — prefer a scoped token. It keeps the secret key in fewer places and
-limits what a leaked credential can do.
+1. **Minting scoped tokens** — the flow above.
+2. **Money and structural writes** — operations a browser token can't reach (see below).
 
 ## What only a secret key can do
 
-Some writes are **secret-key only** — they don't accept a scoped token at all, no
-matter its scopes. **Money and structural writes** live here: anything that
-changes ad budget or spend, for example, can only be called from your backend. So
-a leaked or over-scoped browser token still can't touch them — like a Stripe
-publishable key that can tokenize a card but can't issue a refund.
+Some writes are **secret-key only** — they don't accept a scoped token at all, regardless of its scopes. Money and structural writes live here: anything that changes ad budget or spend, for example, can only be called from your backend — like a Stripe publishable key that can tokenize a card but can't issue a refund.
 
-Whether an endpoint accepts a token is stated in its
-[API reference](/api-reference) under _Authorizations_. If it lists only the
-secret key, a browser token can't call it.
-
-## Which credential?
-
-| You're building… | Use |
-| --- | --- |
-| A user-facing UI (dashboard, composer, app) | A **scoped token** — required; the secret key can't run in a browser |
-| A server-side call that needs only some profiles or actions | A **scoped token** — least privilege, safer if leaked |
-| A server-side integration that needs full account access | The **secret key** |
-| A money or structural write (ad budget, spend) | The **secret key**, from your backend |
-| Minting tokens | The **secret key**, from your backend |
+Whether an endpoint accepts a token is stated in its [API reference](/api-reference) under _Authorizations_. If it lists only the secret key, a browser token can't call it.
