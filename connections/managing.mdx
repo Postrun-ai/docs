@@ -1,0 +1,89 @@
+---
+title: "Managing connections"
+description: "List a profile's connections, handle re-auth when a grant expires, switch the bound account, and disconnect."
+---
+
+Once accounts are connected, you list them, watch their status, and disconnect when
+needed — all from the SDK.
+
+## List a profile's connections
+
+`useConnections` returns a profile's connections, newest first. Filter by `kind`
+(`posting` / `ads`) or `status`:
+
+```tsx @postrun/react icon="react"
+import { useConnections } from "@postrun/react";
+
+function Connections({ profileId }) {
+  const { data: connections } = useConnections(profileId, { kind: "posting" });
+
+  return (
+    <ul>
+      {connections?.map((c) => (
+        <li key={c.id}>
+          {c.avatar_url && <img src={c.avatar_url} width={20} />}
+          {c.username ?? c.external_account_name} — {c.status}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Status and re-auth
+
+A connection's `status` tells you whether it's usable:
+
+- **`active`** — connected and working.
+- **`pending`** — granted, but no account is bound yet (finish the
+  [account selection](/connections/connecting#the-account-selector)).
+- **`needs_reauth`** — the platform's grant expired or was revoked. The connection
+  can't post or run ads until it's reconnected.
+
+To fix a `needs_reauth` connection, run the **same connect flow** again for that
+profile and platform — `useConnect` refreshes the grant in place. The `reauth_at`
+timestamp tells you when it went stale.
+
+## Switch the bound account
+
+To point a connection at a **different** account on the same grant — say, a different
+Facebook Page — read the reachable accounts and select a new one:
+
+```tsx @postrun/react icon="react"
+import { useDiscoverableAccounts, useSelectAccount } from "@postrun/react";
+
+function SwitchAccount({ connectionId }) {
+  const { data: accounts } = useDiscoverableAccounts(connectionId);
+  const select = useSelectAccount();
+
+  return (
+    <ul>
+      {accounts?.map((a) => (
+        <li key={a.external_account_id}>
+          <button
+            onClick={() => select.mutate({ id: connectionId, external_account_id: a.external_account_id })}
+          >
+            {a.name ?? a.external_account_id}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Disconnect
+
+`useDisconnect` removes a connection:
+
+```tsx @postrun/react icon="react"
+import { useDisconnect } from "@postrun/react";
+
+const disconnect = useDisconnect();
+disconnect.mutate(connectionId);
+```
+
+Disconnecting is always safe — it never fails because a post is scheduled against the
+connection. Any scheduled post that referenced it simply fails gracefully at publish
+time with a typed [`connection_removed`](/errors/overview) reason, so you can reconnect
+and reschedule. Reconnecting later creates a fresh connection.

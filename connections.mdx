@@ -1,0 +1,63 @@
+---
+title: "Connections"
+description: "A connection links a profile to a platform account — an X handle, a Facebook Page, a Google Ads account — that it can post or advertise through."
+---
+
+A **connection** links one of your [profiles](/storage) to a single account on a
+platform — an X handle, a Facebook Page, an Instagram account, a Google Ads
+account. Once connected, that profile can post or run ads through it. A profile can
+hold many connections, one per account, across many platforms.
+
+You never handle a platform password or access token. The account's owner authorizes
+access through the platform's own OAuth, and Postrun holds and refreshes that grant.
+
+## How a connection comes to life
+
+Connecting takes two steps, because **one login can expose more than one account**:
+
+<Steps>
+  <Step title="Grant access">
+    The user signs in to the platform and authorizes access. This produces a grant —
+    but not yet a specific account.
+  </Step>
+  <Step title="Select an account">
+    One grant can reach several accounts — a Facebook login manages multiple Pages, a
+    Google login has multiple ad accounts. You pick the one this connection is for. If
+    the grant reaches exactly one account, this step happens automatically.
+  </Step>
+</Steps>
+
+The result is an **active** connection bound to one specific account. Until an account
+is bound, the connection sits in `pending`.
+
+## What a connection carries
+
+| Field | Meaning |
+| --- | --- |
+| `profile_id` | The profile this connection belongs to. |
+| `platform` | `x`, `linkedin`, `instagram`, `facebook_page`, `tiktok` (social) or `google_ads`, `meta_ads` (ads). |
+| `kind` | `posting` or `ads` — derived from the platform. |
+| `status` | `pending` (granted, no account bound yet) · `active` · `needs_reauth` (the grant expired). |
+| `external_account_id` / `external_account_name` | The platform account it's bound to. |
+| `username` / `avatar_url` / `profile_url` | Cached display for social accounts, so you can render the connection without another call. |
+
+## Connect from your frontend
+
+The entire flow runs **in your app**: the user clicks "Connect", an OAuth popup opens
+(no redirect away from your page), they pick an account if there's more than one, and
+the connection lands `active`. No backend of your own, and no platform tokens to store
+— Postrun mints a short-lived connect session and the SDK drives the rest.
+
+If you're not using React, every connect session also returns a `hosted_connect_url` —
+a Postrun-hosted page that runs the same flow.
+
+## What's next
+
+<CardGroup cols={2}>
+  <Card title="Connecting an account" href="/connections/connecting" icon="plug">
+    The embedded one-click flow, the account selector, and the hosted fallback.
+  </Card>
+  <Card title="Managing connections" href="/connections/managing" icon="gear">
+    List connections, handle re-auth, switch accounts, and disconnect.
+  </Card>
+</CardGroup>

@@ -50,6 +50,15 @@
             ]
           },
           {
+            "group": "Connections",
+            "icon": "plug",
+            "pages": [
+              "connections",
+              "connections/connecting",
+              "connections/managing"
+            ]
+          },
+          {
             "group": "Media",
             "icon": "image",
             "pages": [
