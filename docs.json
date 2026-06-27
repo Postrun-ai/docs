@@ -74,7 +74,223 @@
       {
         "tab": "API Reference",
         "icon": "square-terminal",
-        "openapi": "https://api.postrun.ai/v1/openapi.json"
+        "openapi": "https://api.postrun.ai/v1/openapi.json",
+        "groups": [
+          {
+            "group": "Profiles",
+            "icon": "user",
+            "pages": [
+              "GET /profiles",
+              "POST /profiles",
+              "GET /profiles/{id}",
+              "PATCH /profiles/{id}",
+              "DELETE /profiles/{id}"
+            ]
+          },
+          {
+            "group": "Connections",
+            "icon": "plug",
+            "pages": [
+              "GET /connections/{id}",
+              "PATCH /connections/{id}",
+              "DELETE /connections/{id}",
+              "GET /connections/{id}/accounts",
+              "POST /profiles/{id}/connect",
+              "GET /profiles/{id}/connections"
+            ]
+          },
+          {
+            "group": "Posts",
+            "icon": "paper-plane",
+            "pages": [
+              "GET /posts",
+              "POST /posts",
+              "GET /posts/{id}",
+              "PATCH /posts/{id}",
+              "DELETE /posts/{id}",
+              "POST /posts/validate"
+            ]
+          },
+          {
+            "group": "Media",
+            "icon": "image",
+            "pages": [
+              "GET /media",
+              "POST /media",
+              "GET /media/{id}",
+              "PATCH /media/{id}",
+              "DELETE /media/{id}",
+              "POST /media/{id}/multipart/abort",
+              "POST /media/{id}/multipart/complete",
+              "GET /media/{id}/multipart/parts",
+              "POST /media/{id}/multipart/sign"
+            ]
+          },
+          {
+            "group": "Google Ads",
+            "icon": "google",
+            "pages": [
+              {
+                "group": "Campaigns",
+                "pages": [
+                  "GET /google/{connection_id}/campaigns",
+                  "POST /google/{connection_id}/campaigns",
+                  "GET /google/{connection_id}/campaigns/{campaign_id}/criteria",
+                  "POST /google/{connection_id}/campaigns/{campaign_id}/criteria",
+                  "POST /google/{connection_id}/campaigns/{campaign_id}/criteria/{criterion_id}/remove",
+                  "PATCH /google/{connection_id}/campaigns/{campaign_id}/geo-settings",
+                  "PATCH /google/{connection_id}/campaigns/{campaign_id}/targeting-setting",
+                  "GET /google/{connection_id}/campaigns/{id}",
+                  "PATCH /google/{connection_id}/campaigns/{id}",
+                  "POST /google/{connection_id}/campaigns/{id}/enable",
+                  "POST /google/{connection_id}/campaigns/{id}/pause",
+                  "POST /google/{connection_id}/campaigns/{id}/remove"
+                ]
+              },
+              {
+                "group": "Ad groups",
+                "pages": [
+                  "GET /google/{connection_id}/ad-groups",
+                  "POST /google/{connection_id}/ad-groups",
+                  "GET /google/{connection_id}/ad-groups/{ad_group_id}/criteria",
+                  "POST /google/{connection_id}/ad-groups/{ad_group_id}/criteria",
+                  "POST /google/{connection_id}/ad-groups/{ad_group_id}/criteria/{criterion_id}/remove",
+                  "GET /google/{connection_id}/ad-groups/{id}",
+                  "PATCH /google/{connection_id}/ad-groups/{id}",
+                  "PATCH /google/{connection_id}/ad-groups/{id}/bids",
+                  "POST /google/{connection_id}/ad-groups/{id}/enable",
+                  "POST /google/{connection_id}/ad-groups/{id}/pause",
+                  "POST /google/{connection_id}/ad-groups/{id}/remove"
+                ]
+              },
+              {
+                "group": "Ads",
+                "pages": [
+                  "GET /google/{connection_id}/ads",
+                  "POST /google/{connection_id}/ads",
+                  "GET /google/{connection_id}/ads/{id}",
+                  "POST /google/{connection_id}/ads/{id}/enable",
+                  "POST /google/{connection_id}/ads/{id}/pause",
+                  "POST /google/{connection_id}/ads/{id}/remove",
+                  "GET /google/{connection_id}/ads/tree",
+                  "POST /google/{connection_id}/display-ads"
+                ]
+              },
+              {
+                "group": "Keywords",
+                "pages": [
+                  "GET /google/{connection_id}/keywords",
+                  "POST /google/{connection_id}/keywords",
+                  "GET /google/{connection_id}/keywords/{id}",
+                  "PATCH /google/{connection_id}/keywords/{id}/bid",
+                  "POST /google/{connection_id}/keywords/{id}/enable",
+                  "POST /google/{connection_id}/keywords/{id}/pause",
+                  "POST /google/{connection_id}/keywords/{id}/remove"
+                ]
+              },
+              {
+                "group": "Audiences",
+                "pages": [
+                  "GET /google/{connection_id}/audiences",
+                  "GET /google/{connection_id}/geo-targets/search"
+                ]
+              },
+              {
+                "group": "Conversions",
+                "pages": [
+                  "GET /google/{connection_id}/conversion-actions",
+                  "POST /google/{connection_id}/conversion-actions",
+                  "GET /google/{connection_id}/conversion-actions/{id}",
+                  "PATCH /google/{connection_id}/conversion-actions/{id}",
+                  "POST /google/{connection_id}/conversion-actions/{id}/remove",
+                  "GET /google/{connection_id}/conversion-goals",
+                  "POST /google/{connection_id}/conversion-goals",
+                  "GET /google/{connection_id}/conversions",
+                  "POST /google/{connection_id}/conversions:send",
+                  "GET /google/{connection_id}/conversions/status"
+                ]
+              },
+              {
+                "group": "Budgets",
+                "pages": [
+                  "POST /google/{connection_id}/budgets",
+                  "PATCH /google/{connection_id}/budgets/{id}",
+                  "POST /google/{connection_id}/budgets/{id}/remove"
+                ]
+              },
+              {
+                "group": "Assets",
+                "pages": [
+                  "POST /google/{connection_id}/assets/images"
+                ]
+              },
+              {
+                "group": "Reporting",
+                "pages": [
+                  "POST /google/{connection_id}/gaql",
+                  "POST /google/{connection_id}/insights"
+                ]
+              },
+              {
+                "group": "Account",
+                "pages": [
+                  "GET /google/{connection_id}/account",
+                  "PATCH /google/{connection_id}/url-settings"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Meta Ads",
+            "icon": "meta",
+            "pages": [
+              "GET /meta/{connection_id}/account",
+              "GET /meta/{connection_id}/ads",
+              "GET /meta/{connection_id}/ads/{ad_id}",
+              "GET /meta/{connection_id}/adsets",
+              "GET /meta/{connection_id}/adsets/{adset_id}",
+              "GET /meta/{connection_id}/campaigns",
+              "GET /meta/{connection_id}/campaigns/{campaign_id}",
+              "GET /meta/{connection_id}/insights"
+            ]
+          },
+          {
+            "group": "TikTok",
+            "icon": "tiktok",
+            "pages": [
+              "GET /connections/{id}/tiktok/creator-info"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "bell",
+            "pages": [
+              "GET /webhooks/endpoints",
+              "POST /webhooks/endpoints",
+              "GET /webhooks/endpoints/{id}",
+              "PATCH /webhooks/endpoints/{id}",
+              "DELETE /webhooks/endpoints/{id}",
+              "GET /webhooks/event-types",
+              "POST /webhooks/ping",
+              "POST /webhooks/portal"
+            ]
+          },
+          {
+            "group": "Logs",
+            "icon": "list-check",
+            "pages": [
+              "GET /logs",
+              "GET /logs/{id}"
+            ]
+          },
+          {
+            "group": "Tokens",
+            "icon": "key",
+            "pages": [
+              "POST /tokens"
+            ]
+          }
+        ]
       },
       {
         "tab": "Errors",
