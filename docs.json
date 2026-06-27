@@ -50,6 +50,7 @@
             "pages": [
               "storage",
               "authentication",
+              "validating-posts",
               "idempotency",
               "rate-limits"
             ]

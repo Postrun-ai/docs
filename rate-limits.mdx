@@ -13,6 +13,7 @@ Limits apply on a sliding one-minute window, split by what the request does:
 | --- | --- | --- |
 | **Reads** | 1,000 / min | `GET`, plus read-only `POST` endpoints like `/gaql` and `/google/{connection_id}/insights` |
 | **Writes** | 100 / min | Mutating `POST`, `PUT`, `PATCH`, `DELETE` |
+| **Post validation** | 5,000 / min | [`POST /posts/validate`](/validating-posts) — its own bucket, so validating in a tight loop never eats into your read budget |
 
 ## Headers
 

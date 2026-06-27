@@ -1,0 +1,208 @@
+---
+title: "Validating posts"
+description: "Check that a post will publish cleanly — before you publish it. No side effects; call it as often as you like."
+---
+
+Validation answers one question: **will this post publish cleanly?** — without
+actually publishing it.
+
+You send the post you're about to create, and Postrun checks everything that
+would otherwise only surface as a failed publish: the caption is within the
+platform's limit, the media is the right format and shape, the required fields
+are there. You get back a clear yes-or-no and a list of anything to fix. Nothing
+is stored, and nothing is sent to any social platform.
+
+It's a read — no side effects, safe to call on every keystroke in a composer. You
+get **5,000 validation requests per minute** on a dedicated bucket (see
+[rate limits](/rate-limits)), separate from your normal read budget.
+
+## When to use it
+
+- **Live feedback while composing** — validate as the user types to show "Too
+  long for X" or "This image is the wrong shape" before they hit publish.
+- **Before publishing or scheduling from an agent or batch job** — confirm a
+  generated post is sound before you commit to it.
+- **Anywhere you'd rather catch a problem early** than handle a failed publish.
+
+## The journey
+
+<Steps>
+  <Step title="Send your post to validate">
+    Send the post exactly as you would to publish it — the same `profile_id` and
+    `variants` — but to the `/posts/validate` endpoint.
+  </Step>
+  <Step title="Read the verdict">
+    You get back `publishable` (a simple yes/no) and `issues` — every problem
+    found, all at once, each pointing at the field to fix.
+  </Step>
+  <Step title="Fix and re-validate, or publish">
+    If `publishable` is `false`, show the issues to your user (or fix them
+    automatically), then validate again. Once it's `true`, publish with
+    confidence.
+  </Step>
+</Steps>
+
+## Validate a post
+
+<CodeGroup>
+```ts @postrun/js
+import { postsValidate } from "@postrun/js";
+
+const { data } = await postsValidate({
+  client: postrun.client,
+  body: {
+    profile_id: "prof_3b9d6bcd",
+    variants: [
+      {
+        platform: "x",
+        connection_id: "conn_x7k2",
+        body: "Launching today 🚀",
+        media: [{ media_id: "med_9f2a" }],
+        settings: {},
+      },
+    ],
+  },
+});
+
+if (!data.publishable) {
+  for (const issue of data.issues) {
+    console.log(issue.display_error);
+  }
+}
+```
+
+```bash cURL
+curl https://api.postrun.ai/v1/posts/validate \
+  -H "Authorization: Bearer $POSTRUN_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": "prof_3b9d6bcd",
+    "variants": [
+      {
+        "platform": "x",
+        "connection_id": "conn_x7k2",
+        "body": "Launching today 🚀",
+        "media": [{ "media_id": "med_9f2a" }],
+        "settings": {}
+      }
+    ]
+  }'
+```
+</CodeGroup>
+
+## Reading the response
+
+A post that isn't publishable comes back like this — `publishable: false` and one
+issue per problem:
+
+```json
+{
+  "object": "validation",
+  "publishable": false,
+  "issues": [
+    {
+      "variant_index": 0,
+      "platform": "x",
+      "path": ["body"],
+      "code": "body_too_long",
+      "message": "Post exceeds 280 weighted characters.",
+      "display_error": "Your X post is too long — max 280 characters, yours is 512.",
+      "allowed": ["280"],
+      "got": "512"
+    }
+  ]
+}
+```
+
+Use it like this:
+
+- **`publishable`** — gate on this. `true` means the post is ready; `false` means
+  fix the issues first.
+- **`issues`** — every problem found, so you can surface them all in one pass
+  rather than one-at-a-time. An empty list means nothing is wrong.
+
+Each issue is built to drop straight into your UI:
+
+| Field | Use it for |
+| --- | --- |
+| `display_error` | A short, friendly line you can show your user **as-is**. |
+| `code` | A stable, typed value to branch on if you'd rather render your own copy. Every code is documented in [Errors](/errors/overview). |
+| `variant_index` + `path` | Which channel and which field to highlight. |
+| `allowed` + `got` | The limit and the actual value, on size issues — for messages like "280 max, you have 512". |
+
+<Tip>
+  The simplest integration: if `publishable` is `false`, show each
+  `issue.display_error` next to the right field. That's a complete validation UI.
+</Tip>
+
+## What gets checked
+
+Validation covers everything that decides whether a post is publishable.
+
+### Caption length
+
+Each platform's caption limit is enforced. X is account-aware — a standard
+account is held to 280 characters, but a premium (long-form) account gets the
+higher limit, since validation checks against the connection you're actually
+publishing through:
+
+| Platform | Caption limit |
+| --- | --- |
+| X (standard) | 280 |
+| X (premium / long-form) | 25,000 |
+| LinkedIn | 3,000 |
+| Facebook Page | 63,206 |
+| Instagram | 2,200 (plus ≤30 hashtags, ≤20 mentions) |
+| TikTok (video title) | 2,200 |
+| TikTok (photo description) | 4,000 |
+
+Over the limit returns [`body_too_long`](/errors/body_too_long) with `allowed`
+(the cap) and `got` (your length), so you can render an exact message.
+
+### Media
+
+Every attached image, video, GIF, or document is checked: that it's a supported
+format, the right shape and size for the platform, and finished processing. If an
+asset can't be published you get the specific reason — wrong aspect ratio,
+unsupported codec, too large, still processing, and so on — the same media checks
+the [media API](/storage) runs on upload. The number and type of media also has
+to match the post (for example, a carousel's item count, or a video where the
+platform expects an image).
+
+### TikTok
+
+TikTok posts carry extra publishing options, so validation checks those too:
+
+- **An audience is selected** — TikTok requires you to pick who can view the post
+  (`privacy_level`); validation flags it if it's missing.
+- **Branded content isn't private** — if you mark a post as branded content (paid
+  partnership), it can't be set to "Only me", and validation catches that
+  combination.
+- **Photo and video options don't mix** — options that only apply to a photo post
+  (or only to a video) are rejected on the wrong post type, instead of being
+  silently dropped.
+- **The video fits the account's limit** — validation checks the video's length
+  against the maximum this specific TikTok account is allowed to publish, so an
+  over-length video is caught before you try.
+
+### Content rules
+
+Plus each platform's structural rules: required fields present, the post type
+matching its media, and no conflicting options set together.
+
+### When you get a 422 instead of a verdict
+
+If the post you send is structurally malformed — an unknown platform, or a
+connection or media that isn't yours — you get a `422`
+[error](/errors/validation_failed) instead of a verdict, the same as any other
+endpoint.
+
+## Validation isn't a publish guarantee
+
+Validation checks the post's **content** at the moment you call it. It can't
+predict problems that only happen at publish time — a connection whose login
+expired since you validated, a platform rate limit, or a duplicate-content block.
+Those come back as typed [errors](/errors/overview) on the publish itself.
+
+So: validate to catch content problems early and give your users fast feedback —
+and still handle publish errors when you publish.
