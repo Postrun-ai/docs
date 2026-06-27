@@ -19,6 +19,9 @@
     }
   },
   "favicon": "/favicon.svg",
+  "icons": {
+    "library": "fontawesome"
+  },
   "redirects": [
     {
       "source": "/metadata",
@@ -37,6 +40,7 @@
     "tabs": [
       {
         "tab": "Guides",
+        "icon": "book-open",
         "groups": [
           {
             "group": "Getting started",
@@ -54,24 +58,27 @@
               "idempotency",
               "rate-limits"
             ]
-          },
-          {
-            "group": "React SDK",
-            "pages": [
-              "react/get-started",
-              "react/fetching-and-mutations",
-              "react/posts",
-              "react/media"
-            ]
           }
         ]
       },
       {
+        "tab": "React SDK",
+        "icon": "react",
+        "pages": [
+          "react/get-started",
+          "react/fetching-and-mutations",
+          "react/posts",
+          "react/media"
+        ]
+      },
+      {
         "tab": "API Reference",
+        "icon": "square-terminal",
         "openapi": "https://api.postrun.ai/v1/openapi.json"
       },
       {
         "tab": "Errors",
+        "icon": "triangle-exclamation",
         "groups": [
           {
             "group": "Overview",
