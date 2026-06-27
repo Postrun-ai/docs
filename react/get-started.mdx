@@ -1,12 +1,68 @@
 ---
 title: "Get started"
-description: "Install @postrun/react, wrap your app with a token, and make your first call."
+description: "Build your whole social and ads product in the browser — typed React hooks for posting, media, connections, and ads. Your only backend is minting a token."
 ---
 
-`@postrun/react` is a provider and a set of hooks built on
-[TanStack Query](https://tanstack.com/query). Wrap your app once with a token,
-then call hooks that fetch, cache, and revalidate for you — no `fetch` to write,
-no `QueryClient` to wire up, and every call typed from the API.
+Build your entire social and ads product in the browser. Posting, scheduling,
+media uploads, account connections, ads insights — all from typed React hooks.
+**Your only backend is one endpoint that mints a token.**
+
+Normally this is mostly backend work: an OAuth token vault, a proxy for every
+platform's API, chunked media uploads, status polling, and all the fetching and
+caching in between. `@postrun/react` removes it. Postrun is the storage, the auth
+layer, and the integration to every platform — so a composer, content calendar,
+media library, or ads dashboard becomes a set of hooks instead of a service you
+run.
+
+## What you get
+
+- **Ship without building a backend.** No OAuth token vault, no per-platform proxy,
+  no sync jobs — connect accounts, upload media, publish, schedule, and read
+  insights straight from the browser.
+- **Write components, not plumbing.** Fetching, caching, revalidation, pagination,
+  and live publish-status updates are handled for you. You render state; the hooks
+  keep it fresh.
+- **Type-safe end to end.** Hooks are fully typed against types generated from the
+  API, so a wrong field is a red squiggle in your editor, not a 422 in production.
+- **The hard parts are already solved.** A 4 GB video upload that resumes after a
+  dropped connection, one-click account connect in a popup, a live post preview —
+  each is one hook, not a week of work.
+- **Your secret never ships.** The browser only ever holds a short-lived, scoped
+  token — never your secret key.
+
+## How it works
+
+`@postrun/react` is three layers on top of a frontend-safe token. You install one
+package; they compose automatically.
+
+<Steps>
+  <Step title="A frontend-safe token">
+    Your backend mints a short-lived, **scoped** token from your `pr_` secret key —
+    the secret never reaches the browser. The token's scopes decide exactly what
+    the frontend is allowed to do, which is what makes calling Postrun directly
+    from the browser safe. See [Authentication](/authentication).
+  </Step>
+  <Step title="@postrun/js — the typed client">
+    Generated from the API's OpenAPI spec: one named type per resource, every call
+    typed. It handles auth and requests, plus the fiddly parts — multipart upload
+    and payload assembly.
+  </Step>
+  <Step title="TanStack Query — the data layer">
+    Caching, deduplication, revalidation, infinite pagination, and live polling
+    while a post publishes. It's bundled and pre-wired in a private client — you
+    don't install or configure it.
+  </Step>
+  <Step title="Hooks — what you call">
+    Task-shaped hooks per resource — `useCreatePost`, `useMediaUpload`,
+    `useConnect`, `useCalendar`, and the rest — that wrap the client in Query and
+    add the orchestration (chunked uploads, the OAuth popup, live status). This is
+    the only layer your code touches.
+  </Step>
+</Steps>
+
+That's the whole reason it works: the token makes direct-from-browser calls safe,
+and the layers beneath your hook handle everything between your component and the
+platform — so the only code you write is the hook call.
 
 ## Install
 
@@ -19,13 +75,12 @@ configure it.
 
 ## Get a token
 
-The provider authenticates with a **scoped token**, never your secret key. Your
-backend mints a short-lived token from a `pr_` secret key and exposes it at an
-endpoint your frontend can call — the secret never reaches the browser. See
-[Authentication](/authentication) for the full model and the mint call.
+Your backend mints the scoped token from a `pr_` secret key and exposes it at an
+endpoint your frontend can call. See [Authentication](/authentication) for the
+full model and the mint call.
 
-Because a token is short-lived (15 minutes by default), `getToken` should fetch a
-fresh one whenever the provider asks:
+Give the provider a `getToken` function that returns a valid token, fetching a
+fresh one whenever it's asked:
 
 ```ts
 async function getToken() {
@@ -78,17 +133,22 @@ function Profiles() {
 ```
 
 If your profiles render, you're set up — the provider fetched a token, called the
-API, and cached the result. Every other hook works the same way.
+API, and cached the result. No backend route, no token plumbing in your component:
+that's the whole model. Every other hook works the same way.
 
 ## What's next
 
-The rest of this section goes deep on each area:
-
-- **[Fetching & mutations](/react/fetching-and-mutations)** — the hook model, caching, pagination, and live updates.
-- **Posts, media, and profiles** — the resource hooks, in depth.
-- **Connecting accounts** — the embedded one-click OAuth flow.
-- **Previews** — render a post the way each platform will.
-
-<Card title="Authentication" href="/authentication">
-  How tokens are minted and scoped — the model the provider builds on.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Fetching & mutations" href="/react/fetching-and-mutations" icon="arrows-rotate">
+    The hook model — caching, pagination, and live updates.
+  </Card>
+  <Card title="Posts" href="/react/posts" icon="paper-plane">
+    Compose, publish or schedule, and read the per-platform outcome.
+  </Card>
+  <Card title="Media" href="/react/media" icon="photo-film">
+    Upload with progress, and render the asset once it's ready.
+  </Card>
+  <Card title="Authentication" href="/authentication" icon="key">
+    How scoped tokens are minted — the model every hook builds on.
+  </Card>
+</CardGroup>
