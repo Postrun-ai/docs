@@ -99,16 +99,19 @@ on:
 | `{ "type": "external_id", "values": [...] }` | You key profiles by [your own id](/storage). Resolved per request, so it also covers profiles created after the token was minted. |
 | `{ "type": "all" }` | The token may act on every profile in the account. |
 
-**Scopes — which actions.** Coarse, one read and one write per resource. A
-`:write` also grants the matching `:read`, so you never list both:
+**Scopes — which actions.** Coarse: one read, one write, and one delete per
+resource. A `:write` grants the matching `:read`, so you never list both. `:delete`
+is an **independent** third action — `:write` does **not** include it, so you can
+grant full read-and-write yet withhold the power to destroy; `:delete` grants the
+matching `:read` (you can always see what you can delete):
 
-| Resource | Read | Write |
-| --- | --- | --- |
-| Profiles | `profiles:read` | `profiles:write` |
-| Connections | `connections:read` | `connections:write` |
-| Posts | `posts:read` | `posts:write` |
-| Media | `media:read` | `media:write` |
-| Ads | `ads:read` | `ads:write` |
+| Resource | Read | Write | Delete |
+| --- | --- | --- | --- |
+| Profiles | `profiles:read` | `profiles:write` | `profiles:delete` |
+| Connections | `connections:read` | `connections:write` | `connections:delete` |
+| Posts | `posts:read` | `posts:write` | `posts:delete` |
+| Media | `media:read` | `media:write` | `media:delete` |
+| Ads | `ads:read` | `ads:write` | `ads:delete` |
 
 Mint the narrowest set a session needs. Ask a token for a profile it wasn't
 scoped to and you get `404` [`not_found`](/errors/not_found), not `403` — so a
