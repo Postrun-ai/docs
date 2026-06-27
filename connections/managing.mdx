@@ -3,9 +3,6 @@ title: "Managing connections"
 description: "List a profile's connections, handle re-auth when a grant expires, switch the bound account, and disconnect."
 ---
 
-Once accounts are connected, you list them, watch their status, and disconnect when
-needed — all from the SDK.
-
 ## List a profile's connections
 
 `useConnections` returns a profile's connections, newest first. Filter by `kind`
@@ -15,11 +12,11 @@ needed — all from the SDK.
 import { useConnections } from "@postrun/react";
 
 function Connections({ profileId }) {
-  const { data: connections } = useConnections(profileId, { kind: "posting" });
+  const { data } = useConnections(profileId, { kind: "posting" });
 
   return (
     <ul>
-      {connections?.map((c) => (
+      {data?.data.map((c) => (
         <li key={c.id}>
           {c.avatar_url && <img src={c.avatar_url} width={20} />}
           {c.username ?? c.external_account_name} — {c.status}
@@ -30,24 +27,35 @@ function Connections({ profileId }) {
 }
 ```
 
-## Status and re-auth
+## Re-auth
 
-A connection's `status` tells you whether it's usable:
+When `status === 'needs_reauth'`, the platform's grant expired or was revoked. Run the
+same connect flow again for the same `profileId` and `platform` — `useConnect` refreshes
+the grant in place. The same connection returns to `active`; no new connection is
+created. The `reauth_at` field records when it went stale.
 
-- **`active`** — connected and working.
-- **`pending`** — granted, but no account is bound yet (finish the
-  [account selection](/connections/connecting#the-account-selector)).
-- **`needs_reauth`** — the platform's grant expired or was revoked. The connection
-  can't post or run ads until it's reconnected.
+```tsx @postrun/react icon="react"
+import { useConnect } from "@postrun/react";
 
-To fix a `needs_reauth` connection, run the **same connect flow** again for that
-profile and platform — `useConnect` refreshes the grant in place. The `reauth_at`
-timestamp tells you when it went stale.
+function ReauthButton({ connection }) {
+  const { start } = useConnect({
+    profileId: connection.profile_id,
+    platform: connection.platform,
+  });
+
+  if (connection.status !== "needs_reauth") return null;
+
+  return <button onClick={start}>Reconnect {connection.platform}</button>;
+}
+```
 
 ## Switch the bound account
 
 To point a connection at a **different** account on the same grant — say, a different
-Facebook Page — read the reachable accounts and select a new one:
+Facebook Page — read the reachable accounts and select a new one. Unlike the initial
+[account selector](/connections/connecting#the-account-selector), this doesn't re-run
+OAuth: `useDiscoverableAccounts` reads the accounts already reachable on the stored grant
+and `useSelectAccount` rebinds the connection without opening a popup.
 
 ```tsx @postrun/react icon="react"
 import { useDiscoverableAccounts, useSelectAccount } from "@postrun/react";
@@ -58,7 +66,7 @@ function SwitchAccount({ connectionId }) {
 
   return (
     <ul>
-      {accounts?.map((a) => (
+      {accounts?.data.map((a) => (
         <li key={a.external_account_id}>
           <button
             onClick={() => select.mutate({ id: connectionId, external_account_id: a.external_account_id })}
@@ -83,7 +91,15 @@ const disconnect = useDisconnect();
 disconnect.mutate(connectionId);
 ```
 
-Disconnecting is always safe — it never fails because a post is scheduled against the
-connection. Any scheduled post that referenced it simply fails gracefully at publish
-time with a typed [`connection_removed`](/errors/overview) reason, so you can reconnect
-and reschedule. Reconnecting later creates a fresh connection.
+Disconnecting never blocks on scheduled posts. A scheduled post that referenced the
+connection will fail at publish time — you'll see it in that post's result. Reconnecting
+creates a new connection with a new id; reassign affected posts to it if needed.
+
+## Without the React SDK
+
+The REST equivalents:
+
+- **List** — `GET /v1/profiles/{id}/connections`
+- **Get one** — `GET /v1/connections/{id}`
+- **Switch account** — `PATCH /v1/connections/{id}` with body `{ "external_account_id": "..." }`
+- **Disconnect** — `DELETE /v1/connections/{id}`

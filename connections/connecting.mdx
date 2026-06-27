@@ -4,11 +4,12 @@ description: "Run the whole OAuth flow inside your app with one hook — open th
 ---
 
 `useConnect` runs the entire connect flow in your frontend: it opens the platform's
-OAuth in a popup, handles the grant, shows an account picker when there's more than
-one account, and gives you back an active connection. You drive your UI off a single
+OAuth popup, handles the **grant** (the OAuth authorization the platform gives), shows
+an account picker when there's more than one reachable account, and gives you back a
+**bound** connection (an account attached to it). You drive your UI off a single
 `state.phase`.
 
-## A connect button
+## Basic usage
 
 ```tsx @postrun/react icon="react"
 import { useConnect } from "@postrun/react";
@@ -47,49 +48,106 @@ function ConnectButton({ profileId }) {
 
 Everything you render keys off `state.phase`:
 
-| `phase` | What it means | What to render |
-| --- | --- | --- |
-| `preparing` | Minting the connect session. | A disabled button. |
-| `idle` | Ready — a click will open the popup. | Your "Connect" button. |
-| `connecting` | The popup is open and the grant is in progress. | A loading state. |
-| `picking` | The grant reached **multiple accounts** — the user must choose. | The account picker (see below). |
-| `active` | Done. `state.connection` is the bound connection. | A success state. |
-| `connected_pending` | Granted, but the account binds out-of-band (a slow webhook). A **success** state, not an error. | "Almost there" — refetch the list. |
-| `cancelled` | The user closed the popup. | Offer a retry (`reset()`). |
-| `error` | The attempt failed; `state.reason` says why. | An error state with a retry. |
+| `phase` | What it means |
+| --- | --- |
+| `preparing` | Minting the connect session. |
+| `idle` | Ready — a click will open the popup. |
+| `connecting` | The popup is open and the grant is in progress. |
+| `picking` | The grant reached multiple accounts — the user must choose. |
+| `active` | Done. `state.connection` is the bound connection. |
+| `connected_pending` | Granted, but the account binds out-of-band (a slow webhook). A success state, not an error. |
+| `cancelled` | The user closed the popup. |
+| `error` | The attempt failed; `state.reason` says why. |
+
+When `phase === 'picking'`, render your account picker using `state.accounts` — see
+[The account selector](#the-account-selector) below.
+
+On `'error'` or `'cancelled'`, call `reset()` to return to `idle` and offer a retry:
+
+```tsx @postrun/react icon="react"
+const { state, start, reset } = useConnect({ profileId, platform: "x" });
+
+if (state.phase === "error" || state.phase === "cancelled") {
+  return (
+    <div>
+      {state.phase === "error" && <p>{state.reason}</p>}
+      <button onClick={reset}>Try again</button>
+    </div>
+  );
+}
+```
+
+## Error reasons
+
+`state.reason` (also passed to `onError(reason)`) is one of:
+
+| Reason | When it fires |
+| --- | --- |
+| `prepare_failed` | Couldn't mint the connect session — before any popup opens. |
+| `popup_blocked` | The browser blocked the OAuth popup (user must allow popups). |
+| `auth_failed` | The OAuth grant itself failed. |
+| `connection_not_found` | Couldn't read back the connection after the grant completed. |
+| `select_failed` | Account discovery or selection failed. |
+| `reauth_required` | The grant must be reconnected before an account can be bound. |
 
 ## The account selector
 
-This is the step that trips people up, so it's worth being explicit. **One OAuth
-grant can reach more than one account** — a Facebook login manages every Page you
-admin, a Google login has every ad account you can access. Postrun can't guess which
-one you mean, so after the grant it hands you the list and waits for you to pick.
+**One OAuth grant can reach more than one account** — a Facebook login manages every
+Page you admin, a Google login has every ad account you can access. After the grant
+Postrun hands you the list and waits.
 
-- When `state.phase` is `picking`, `state.accounts` holds the reachable accounts —
-  each a `DiscoverableAccount` with `external_account_id`, `name`, `username`,
+- When `state.phase === 'picking'`, `state.accounts` holds the reachable accounts as
+  `DiscoverableAccount[]`, each with `external_account_id`, `name`, `username`,
   `avatar_url`, and (for ad accounts) `currency`.
-- Render them, and call **`select(account.external_account_id)`** with the chosen one.
-  That binds the connection to that account and moves it to `active`.
-- If the grant reaches **exactly one** account, there's no `picking` phase — Postrun
-  binds it automatically and you go straight to `active`.
+- Call **`select(account.external_account_id)`** to bind the connection to that account
+  and move it to `active`.
+- If the grant reaches **exactly one** account there's no `picking` phase — Postrun
+  binds it automatically.
 
-So a personal X or LinkedIn connect usually skips the picker entirely, while Facebook
-Pages and ad accounts almost always show it.
+Personal X or LinkedIn connects usually skip the picker; Facebook Pages and ad accounts
+almost always show it.
 
 ## One rule: start in the click handler
 
 Call `start()` **directly inside the user's click handler**, with no `await` before
-it. Browsers only let you open a popup synchronously, inside a real user gesture — so
-`start()` opens the OAuth popup immediately, then does its async work.
+it. Browsers only open a popup synchronously, inside a real user gesture.
 
 For a **single** "Connect X" button, that's automatic: the hook pre-mints the session
 on mount (`prepareOnMount` defaults to `true`), so the first click already has a
-session and opens the popup.
+session.
 
-For a **multi-platform picker** (a row of "Connect X / LinkedIn / TikTok" buttons),
+For a **multi-platform picker** — a row of "Connect X / LinkedIn / TikTok" buttons —
 pre-minting every session on mount is wasteful. Set `prepareOnMount: false` and call
-`prepare()` on each button's `onPointerEnter` / `onFocus`, so the session is ready by
-the time the user clicks — without minting all of them up front.
+`prepare()` on `onPointerEnter`/`onFocus` so the session is ready by the time the
+user clicks:
+
+```tsx @postrun/react icon="react"
+import { useConnect } from "@postrun/react";
+
+function PlatformRow({ profileId }) {
+  const x = useConnect({ profileId, platform: "x", prepareOnMount: false });
+  const linkedin = useConnect({ profileId, platform: "linkedin", prepareOnMount: false });
+
+  return (
+    <div>
+      <button
+        onPointerEnter={() => x.prepare()}
+        onFocus={() => x.prepare()}
+        onClick={x.start}
+      >
+        Connect X
+      </button>
+      <button
+        onPointerEnter={() => linkedin.prepare()}
+        onFocus={() => linkedin.prepare()}
+        onClick={linkedin.start}
+      >
+        Connect LinkedIn
+      </button>
+    </div>
+  );
+}
+```
 
 ## Callbacks
 
@@ -100,10 +158,22 @@ Pass these instead of polling `state` if you'd rather react to events:
 - **`onSuccess()`** — fired on `active` **or** `connected_pending` (use it to close
   your dialog; the connections list auto-refetches either way).
 - **`onCancelled()`** — the user closed the popup.
-- **`onError(reason)`** — the attempt failed, with a typed reason.
+- **`onError(reason)`** — the attempt failed, with the same typed reason as `state.reason`.
 
-## No-JS fallback
+## Without the React SDK
 
-If you can't use the React SDK, `POST /v1/profiles/{id}/connect` returns a
-`hosted_connect_url` — a Postrun-hosted page that runs the exact same grant-and-pick
-flow, then returns the user to you.
+`POST /v1/profiles/{id}/connect` returns a `hosted_connect_url` — a Postrun-hosted
+page that runs the grant-and-pick flow, then returns the user to your app.
+
+```ts
+const res = await fetch(`https://api.postrun.ai/v1/profiles/${profileId}/connect`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ platform: "facebook_page" }),
+});
+const { hosted_connect_url } = await res.json();
+window.location.href = hosted_connect_url; // or window.open(hosted_connect_url)
+```
