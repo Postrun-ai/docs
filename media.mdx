@@ -1,0 +1,75 @@
+---
+title: "Media"
+description: "Every platform wants video and images in a different shape. Here's why that's hard — and how Postrun turns one upload into a ready rendition for each."
+---
+
+Attaching a photo or a video to a post sounds simple. It isn't. Each platform
+accepts a different set of formats, codecs, sizes, durations, and aspect ratios —
+and when a file doesn't fit, you usually don't find out until the publish fails,
+asynchronously, with an error code you have to look up.
+
+## Every platform is strict about something different
+
+No two platforms draw the line in the same place. Each one is fussy about a
+different thing:
+
+- **X** only accepts one video codec, and has the shortest length limit of the
+  bunch.
+- **Instagram** hard-rejects a feed image whose aspect ratio is too tall or too
+  wide — an error, not a crop.
+- **Facebook** reels only take vertical-to-landscape video; a square clip is
+  rejected.
+- **LinkedIn** accepts only one container format.
+- **TikTok** caps video length *per account* — and you only learn the limit by
+  asking TikTok at publish time.
+
+Each rule is manageable on its own. The problem is that a **single file has to
+satisfy all of them at once**, and they conflict:
+
+- A video long enough for LinkedIn is too long for X.
+- A square video that's fine on X and Instagram is rejected by Facebook.
+- A file size that's fine on LinkedIn is over the limit on Instagram.
+
+## Then there's encoding
+
+The codec usually isn't something you choose — it's whatever the file already is.
+
+Phones shoot **HEVC (H.265)** by default. Most platforms accept it; **X doesn't —
+it only takes H.264.** So the same clip publishes fine to most platforms and
+silently fails on one, unless you **re-encode** it first. That means running
+**ffmpeg** on a server — and doing it well, because re-encoding every file is slow
+and lossy when most files didn't need it. It's a real pipeline with workers, not a
+library call.
+
+## Images have their own traps
+
+Beyond per-platform size and dimension limits, some formats can't be sent at all.
+**AVIF, TIFF, and SVG** aren't accepted by the platforms' image pipelines, so they
+have to be **converted** to JPEG or PNG first — and to the *right* one, because
+flattening a transparent PNG to JPEG puts a black box behind it.
+
+## Large files and flaky uploads
+
+A multi-gigabyte video uploaded in a single request dies on any network blip, and
+your user starts over from zero. Doing it right means **chunked, resumable
+uploads** — split the file, upload the parts, retry the ones that fail, and resume
+after a dropped connection instead of restarting.
+
+## And you find out too late
+
+The worst part isn't any single rule — it's *when* you learn you broke one. Most of
+these checks only run when you publish, often asynchronously, and the error comes
+back as an opaque platform code. The failure shows up in production, on your user's
+post, not in your editor. The exact limits also change without notice, so code that
+was correct last quarter quietly starts failing.
+
+## How Postrun handles it
+
+Postrun's media pipeline collapses all of this into **one upload**. You hand it the
+file and the platforms you intend to post to; it produces a ready rendition for
+each — re-encoding only when a target requires it, fitting each platform's current
+limits, and handling resumable uploads and format conversion for you. If something
+genuinely can't fit a platform, you get a **typed reason up front**, before you
+publish — not an opaque failure after.
+
+The rest of this section covers how to use it.
