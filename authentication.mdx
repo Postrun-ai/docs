@@ -32,8 +32,11 @@ export async function GET() {
       ttl_seconds: 900,
     }),
   });
-  const { token } = await res.json();
-  return NextResponse.json({ token });
+  if (!res.ok) throw new Error("Failed to mint token");
+
+  // 201 → { token, expires_at }
+  const { token, expires_at } = await res.json();
+  return NextResponse.json({ token, expires_at });
 }
 ```
 
@@ -49,12 +52,17 @@ curl https://api.postrun.ai/v1/tokens \
 ```
 </CodeGroup>
 
-**Step 2 — the browser fetches a token from your route.** Define `getToken` once:
+**Step 2 — the browser fetches a token from your route.** `getToken` runs on first mount and again whenever a request returns `401`, so cache the token in memory and only re-mint when it's close to expiring:
 
 ```ts
+let cached: { token: string; exp: number } | null = null;
+
 async function getToken(): Promise<string> {
+  if (cached && cached.exp - Date.now() > 30_000) return cached.token;
+
   const res = await fetch("/api/token");
-  const { token } = await res.json();
+  const { token, expires_at } = await res.json();
+  cached = { token, exp: new Date(expires_at).getTime() };
   return token;
 }
 ```
@@ -84,20 +92,24 @@ export default function App() {
 </CodeGroup>
 
 <Note>
-  The React provider re-calls `getToken` automatically when a token is expired
-  or a request returns `401`. See the [React SDK](/react/get-started) for the
-  full provider setup and hooks.
+  The React provider re-calls `getToken` automatically when a token expires or a
+  request returns `401` — your caching `getToken` re-mints only when needed. See the
+  [React SDK](/react/get-started) for the full provider setup and hooks.
 </Note>
 
 ## Token parameters
 
-`POST /v1/tokens` accepts:
+`POST /v1/tokens` (secret key only) accepts:
 
 | Parameter | Description |
 | --- | --- |
-| `profile_scope` | Which profiles the token may act on (see below) |
-| `scopes` | Which actions the token may take (see below) |
-| `ttl_seconds` | Lifetime in seconds — min `60`, max `1800`, default `900` |
+| `profile_scope` | Which profiles the token may act on (see below). |
+| `scopes` | Which actions the token may take — at least one (see below). |
+| `ttl_seconds` | Lifetime in seconds — min `60`, max `1800`, default `900`. |
+
+It returns `201` with `{ token, expires_at }`. **Expiry is the only revocation** —
+there's no revocation store, so a leaked token stays valid until it expires. Prefer a
+short TTL for higher-risk sessions; the `900`-second default suits most flows.
 
 **`profile_scope`** — one of three selectors:
 
@@ -105,18 +117,25 @@ export default function App() {
 | --- | --- | --- |
 | `{ "type": "profile_ids", "values": [...] }` | ≤ 100 ids | You have Postrun profile ids. |
 | `{ "type": "external_id", "values": [...] }` | ≤ 50 | You key profiles by [your own id](/storage). Resolved per request, so it covers profiles created after mint. |
-| `{ "type": "all" }` | — | The token may act on every profile in the account. |
+| `{ "type": "all" }` | — | The token may act on every profile in the account — fully-trusted sessions only. |
 
-Exceeding a cap returns `422` [`validation_failed`](/errors/validation_failed). Minting with a profile id that doesn't exist in your account returns `422` `profile_scope_invalid`.
+Exceeding a cap returns `422` [`validation_failed`](/errors/validation_failed). A `profile_ids` value that isn't in your account is rejected at mint with `422 profile_scope_invalid`.
+
+<Warning>
+  An `external_id` value is **not** checked at mint. If it matches no profile, the
+  token mints successfully but every request made with it returns `404`. Verify your
+  `external_id` values resolve to real profiles before minting in production.
+</Warning>
 
 ## Token errors
 
+These are the errors a request made **with a token** can return:
+
 | Status | Code | Meaning |
 | --- | --- | --- |
-| `401` | [`unauthorized`](/errors/unauthorized) | Token is expired or invalid. Re-mint and retry. |
+| `401` | [`unauthorized`](/errors/unauthorized) | Token is expired or invalid. Re-mint and retry — the React provider does this for you. |
 | `403` | [`forbidden`](/errors/forbidden) | Token lacks the required scope. Mint with the right scopes. |
-| `404` | [`not_found`](/errors/not_found) | Profile is outside the token's `profile_scope`. The token can't confirm the profile exists. |
-| `422` | `profile_scope_invalid` | Minted with a profile id that doesn't belong to your account. |
+| `404` | [`not_found`](/errors/not_found) | Profile is outside the token's `profile_scope` — the token can't confirm it exists. |
 
 There is no `token_expired` code — expiry surfaces as `401 unauthorized`.
 
@@ -124,7 +143,7 @@ There is no `token_expired` code — expiry surfaces as `401 unauthorized`.
 
 A token's authorization is two independent choices: **whose data** (`profile_scope`) and **which actions** (scopes).
 
-Coarse: one read, one write, and one delete per resource. `:write` grants the matching `:read`, so you never list both. `:delete` is an **independent** third action — `:write` does **not** include it, so you can grant full read-and-write yet withhold the power to destroy; `:delete` grants the matching `:read` (you can always see what you can delete):
+Coarse: one read, one write, and one delete per resource. `:write` grants the matching `:read` — you don't need to list both. `:delete` is an **independent** third action — `:write` does **not** include it, so you can grant full read-and-write yet withhold the power to destroy; `:delete` grants the matching `:read` (you can always see what you can delete):
 
 | Resource | Read | Write | Delete |
 | --- | --- | --- | --- |
@@ -134,7 +153,21 @@ Coarse: one read, one write, and one delete per resource. `:write` grants the ma
 | Media | `media:read` | `media:write` | `media:delete` |
 | Ads | `ads:read` | `ads:write` | `ads:delete` |
 
-Mint the narrowest set a session needs.
+Mint the narrowest set a session needs. Common sets:
+
+| Session | Scopes |
+| --- | --- |
+| Composer (publish a post) | `posts:write`, `media:write`, `connections:read` |
+| Ads dashboard (read-only) | `ads:read` |
+| Account manager (full CRUD, no destroy) | `profiles:read`, `profiles:write`, `connections:read`, `connections:write`, `posts:read`, `posts:write` |
+
+## Security
+
+<Warning>
+  - **Never call `POST /v1/tokens` from the browser** — it needs the secret key. Mint only on your backend, behind your own auth.
+  - **Don't grant `{ "type": "all" }` to untrusted users.** Combined with write or delete scopes it's account-admin for those areas — scope to the specific profiles a session needs.
+  - **Never derive authorization from `metadata`.** It's browser-writable and descriptive only; gate permissions on the token's scopes, not on stored data.
+</Warning>
 
 ## Secret keys
 
